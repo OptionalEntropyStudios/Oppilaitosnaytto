@@ -3,8 +3,8 @@
   "WorkspaceRootPath": "C:\\VR-peli_N\u00E4ytt\u00F6\\oppilaitosnaytto\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{EA200BFC-B8BE-444B-B70E-22DD68F5F7DB}|Oppilaitosnaytto.csproj|c:\\vr-peli_n\u00E4ytt\u00F6\\oppilaitosnaytto\\newscript.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{EA200BFC-B8BE-444B-B70E-22DD68F5F7DB}|Oppilaitosnaytto.csproj|solutionrelative:newscript.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\VR-peli_N\u00E4ytt\u00F6\\oppilaitosnaytto\\Scripts\\mySqlTestConneciton.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Scripts\\mySqlTestConneciton.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -31,14 +31,14 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "NewScript.cs",
-              "DocumentMoniker": "C:\\VR-peli_N\u00E4ytt\u00F6\\oppilaitosnaytto\\NewScript.cs",
-              "RelativeDocumentMoniker": "NewScript.cs",
-              "ToolTip": "C:\\VR-peli_N\u00E4ytt\u00F6\\oppilaitosnaytto\\NewScript.cs*",
-              "RelativeToolTip": "NewScript.cs*",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAA==",
+              "Title": "mySqlTestConneciton.cs",
+              "DocumentMoniker": "C:\\VR-peli_N\u00E4ytt\u00F6\\oppilaitosnaytto\\Scripts\\mySqlTestConneciton.cs",
+              "RelativeDocumentMoniker": "Scripts\\mySqlTestConneciton.cs",
+              "ToolTip": "C:\\VR-peli_N\u00E4ytt\u00F6\\oppilaitosnaytto\\Scripts\\mySqlTestConneciton.cs",
+              "RelativeToolTip": "Scripts\\mySqlTestConneciton.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-26T09:17:25.114Z",
+              "WhenOpened": "2025-03-26T12:30:48.408Z",
               "EditorCaption": ""
             }
           ]

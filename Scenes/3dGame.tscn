@@ -1,0 +1,205 @@
+[gd_scene load_steps=18 format=3 uid="uid://d056snonfvi60"]
+
+[ext_resource type="Script" uid="uid://lgwkiwnyg0f" path="res://Scripts/gameManager.gd" id="1_60nol"]
+[ext_resource type="Texture2D" uid="uid://c83308uqsktgw" path="res://Textures/Developer Textures/PNG/Dark/texture_03.png" id="1_hrvet"]
+[ext_resource type="PackedScene" uid="uid://dlnlalfhir7cd" path="res://Scenes/player.tscn" id="2_fyujw"]
+[ext_resource type="Texture2D" uid="uid://cuvyruy6kh3ye" path="res://Textures/Developer Textures/PNG/Orange/texture_04.png" id="3_8h1sn"]
+[ext_resource type="Texture2D" uid="uid://cg6swr8l6xlfl" path="res://Textures/Developer Textures/PNG/Dark/texture_05.png" id="4_xjy7c"]
+[ext_resource type="PackedScene" uid="uid://7w2clgeffpes" path="res://Scenes/robot1_breakable.tscn" id="5_nwu5k"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_fyujw"]
+sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+ground_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+
+[sub_resource type="Sky" id="Sky_60nol"]
+sky_material = SubResource("ProceduralSkyMaterial_fyujw")
+
+[sub_resource type="Environment" id="Environment_8h1sn"]
+background_mode = 2
+sky = SubResource("Sky_60nol")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fyujw"]
+albedo_texture = ExtResource("1_hrvet")
+albedo_texture_force_srgb = true
+uv1_scale = Vector3(306.15, 306.15, 306.15)
+uv2_scale = Vector3(301.95, 301.95, 301.95)
+uv2_triplanar = true
+
+[sub_resource type="QuadMesh" id="QuadMesh_60nol"]
+material = SubResource("StandardMaterial3D_fyujw")
+size = Vector2(1500, 1500)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_hrvet"]
+size = Vector3(1500, 15.0071, 1500)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xjy7c"]
+albedo_texture = ExtResource("3_8h1sn")
+uv1_triplanar = true
+
+[sub_resource type="PrismMesh" id="PrismMesh_8h1sn"]
+left_to_right = 1.0
+size = Vector3(4, 2, 3.5)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nwu5k"]
+albedo_texture = ExtResource("4_xjy7c")
+uv1_triplanar = true
+uv2_triplanar = true
+
+[sub_resource type="LabelSettings" id="LabelSettings_fyujw"]
+font_size = 32
+
+[sub_resource type="LabelSettings" id="LabelSettings_60nol"]
+font_size = 32
+
+[node name="3dGame" type="Node3D"]
+script = ExtResource("1_60nol")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_8h1sn")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+shadow_enabled = true
+
+[node name="ground" type="StaticBody3D" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="ground"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, -0.5, 0.249943, 0.25)
+mesh = SubResource("QuadMesh_60nol")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -7.50364, 0)
+visible = false
+shape = SubResource("BoxShape3D_hrvet")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, 1.12491, -4.47601)
+use_collision = true
+size = Vector3(6, 1.75, 8.5)
+material = SubResource("StandardMaterial3D_xjy7c")
+
+[node name="CSGBox3D14" type="CSGBox3D" parent="ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, 0.87491, 9.77399)
+use_collision = true
+size = Vector3(22, 1.25, 1.25)
+material = SubResource("StandardMaterial3D_xjy7c")
+
+[node name="CSGBox3D15" type="CSGBox3D" parent="ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, 4.87491, 29.524)
+use_collision = true
+size = Vector3(22, 9.25, 1.25)
+material = SubResource("StandardMaterial3D_xjy7c")
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.75, 0.99991, -4.47601)
+use_collision = true
+size = Vector3(3.5, 2, 8.5)
+material = SubResource("StandardMaterial3D_xjy7c")
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.25, 1.12491, -6.97601)
+use_collision = true
+size = Vector3(3.5, 1.75, 3.5)
+material = SubResource("StandardMaterial3D_xjy7c")
+
+[node name="CSGBox3D8" type="CSGBox3D" parent="ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.5, 1.12491, -6.97601)
+use_collision = true
+size = Vector3(4, 1.75, 3.5)
+material = SubResource("StandardMaterial3D_xjy7c")
+
+[node name="CSGBox3D9" type="CSGBox3D" parent="ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.5, 2.12491, -9.72601)
+use_collision = true
+size = Vector3(4, 3.75, 9)
+material = SubResource("StandardMaterial3D_xjy7c")
+
+[node name="CSGBox3D10" type="CSGBox3D" parent="ground"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -1, 2.12491, -11.476)
+use_collision = true
+size = Vector3(5.5, 3.75, 17)
+material = SubResource("StandardMaterial3D_xjy7c")
+
+[node name="CSGBox3D4" type="CSGMesh3D" parent="ground"]
+transform = Transform3D(1.31134e-07, 0, 1, 0, 1, 0, -1, 0, 1.31134e-07, 2.25, 0.99991, -3.22145)
+use_collision = true
+mesh = SubResource("PrismMesh_8h1sn")
+material = SubResource("StandardMaterial3D_xjy7c")
+
+[node name="CSGBox3D6" type="CSGMesh3D" parent="ground"]
+transform = Transform3D(1.31134e-07, 0, 1, 0, 1, 0, -1, 0, 1.31134e-07, 5.75, 0.99991, 1.77855)
+use_collision = true
+mesh = SubResource("PrismMesh_8h1sn")
+material = SubResource("StandardMaterial3D_xjy7c")
+
+[node name="CSGBox3D7" type="CSGMesh3D" parent="ground"]
+transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, -7.5, 2.99991, -6.97145)
+use_collision = true
+mesh = SubResource("PrismMesh_8h1sn")
+material = SubResource("StandardMaterial3D_xjy7c")
+
+[node name="CSGBox3D11" type="CSGMesh3D" parent="ground"]
+transform = Transform3D(1, 0, -2.44784e-07, 0, 1, 0, 1.74846e-07, 0, 1.4, -7.5, 0.99991, -2.72145)
+use_collision = true
+mesh = SubResource("PrismMesh_8h1sn")
+material = SubResource("StandardMaterial3D_xjy7c")
+
+[node name="CSGBox3D5" type="CSGBox3D" parent="ground"]
+transform = Transform3D(2.98023e-08, 0, 1, 0, 1, 0, -1, 0, 2.98023e-08, 351, 4.875, -185.875)
+use_collision = true
+size = Vector3(377.25, 9.25, 687)
+material = SubResource("StandardMaterial3D_nwu5k")
+
+[node name="CSGBox3D12" type="CSGBox3D" parent="ground"]
+transform = Transform3D(2.98023e-08, 0, 1, 0, 1, 0, -1, 0, 2.98023e-08, -354.875, 4.875, -160.375)
+use_collision = true
+size = Vector3(428.25, 9.25, 682.75)
+material = SubResource("StandardMaterial3D_nwu5k")
+
+[node name="CSGBox3D13" type="CSGBox3D" parent="ground"]
+transform = Transform3D(2.98023e-08, 0, 1, 0, 1, 0, -1, 0, 2.98023e-08, -2.875, 4.875, -21.125)
+use_collision = true
+size = Vector3(13.75, 9.25, 21.25)
+material = SubResource("StandardMaterial3D_nwu5k")
+
+[node name="breakable" parent="ground" instance=ExtResource("5_nwu5k")]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 3.75, 2.25, 24)
+
+[node name="breakable2" parent="ground" instance=ExtResource("5_nwu5k")]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0.25, 2.25, 24)
+
+[node name="breakable3" parent="ground" instance=ExtResource("5_nwu5k")]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -3, 2.25, 24)
+
+[node name="breakable4" parent="ground" instance=ExtResource("5_nwu5k")]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -7, 2.25, 24)
+
+[node name="Player" parent="." instance=ExtResource("2_fyujw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.7379, 0.530449, 3.31178)
+jumpForce = 15.0
+gravityForce = 1.0
+
+[node name="moveStateLable" type="Label" parent="Player"]
+offset_right = 194.0
+offset_bottom = 45.0
+text = "moveState:"
+label_settings = SubResource("LabelSettings_fyujw")
+uppercase = true
+
+[node name="standStateLabel" type="Label" parent="Player"]
+offset_top = 43.0
+offset_right = 207.0
+offset_bottom = 88.0
+text = "standState:"
+label_settings = SubResource("LabelSettings_60nol")
+uppercase = true
+
+[node name="groundedStateLabel" type="Label" parent="Player"]
+offset_top = 94.0
+offset_right = 207.0
+offset_bottom = 139.0
+text = "groundedState:"
+label_settings = SubResource("LabelSettings_60nol")
+uppercase = true

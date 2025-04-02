@@ -1,0 +1,73 @@
+[gd_scene load_steps=11 format=3 uid="uid://d056snonfvi60"]
+
+[ext_resource type="Texture2D" uid="uid://c83308uqsktgw" path="res://Textures/Developer Textures/PNG/Dark/texture_03.png" id="1_hrvet"]
+[ext_resource type="PackedScene" uid="uid://dlnlalfhir7cd" path="res://Scenes/player.tscn" id="2_fyujw"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_fyujw"]
+sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+ground_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+
+[sub_resource type="Sky" id="Sky_60nol"]
+sky_material = SubResource("ProceduralSkyMaterial_fyujw")
+
+[sub_resource type="Environment" id="Environment_8h1sn"]
+background_mode = 2
+sky = SubResource("Sky_60nol")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fyujw"]
+albedo_texture = ExtResource("1_hrvet")
+albedo_texture_force_srgb = true
+uv1_scale = Vector3(100, 100, 100)
+uv2_scale = Vector3(100, 100, 100)
+
+[sub_resource type="QuadMesh" id="QuadMesh_60nol"]
+material = SubResource("StandardMaterial3D_fyujw")
+size = Vector2(1500, 1500)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_hrvet"]
+size = Vector3(1500, 15.0071, 1500)
+
+[sub_resource type="LabelSettings" id="LabelSettings_fyujw"]
+font_size = 32
+
+[sub_resource type="LabelSettings" id="LabelSettings_60nol"]
+font_size = 32
+
+[node name="3dGame" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_8h1sn")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+shadow_enabled = true
+
+[node name="ground" type="StaticBody3D" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="ground"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
+mesh = SubResource("QuadMesh_60nol")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -7.50364, 0)
+shape = SubResource("BoxShape3D_hrvet")
+
+[node name="Player" parent="." instance=ExtResource("2_fyujw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20.3798, 0.0304488, 25.5139)
+
+[node name="moveStateLable" type="Label" parent="Player"]
+offset_right = 194.0
+offset_bottom = 45.0
+text = "moveState:"
+label_settings = SubResource("LabelSettings_fyujw")
+uppercase = true
+
+[node name="standStateLabel" type="Label" parent="Player"]
+offset_top = 43.0
+offset_right = 207.0
+offset_bottom = 88.0
+text = "standState:"
+label_settings = SubResource("LabelSettings_60nol")
+uppercase = true

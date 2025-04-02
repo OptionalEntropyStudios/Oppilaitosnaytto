@@ -1,0 +1,51 @@
+[gd_scene load_steps=9 format=3 uid="uid://dyf5f3dy48pyp"]
+
+[ext_resource type="PackedScene" uid="uid://b4ysuy43poobf" path="res://addons/godot-xr-tools/functions/function_pickup.tscn" id="2_3xbsf"]
+[ext_resource type="PackedScene" uid="uid://njx823gyk04n" path="res://addons/godot-xr-tools/hands/scenes/highpoly/left_hand.tscn" id="3_gasai"]
+[ext_resource type="PackedScene" uid="uid://bl2nuu3qhlb5k" path="res://addons/godot-xr-tools/functions/movement_direct.tscn" id="3_kuoa5"]
+[ext_resource type="PackedScene" uid="uid://diyu06cw06syv" path="res://addons/godot-xr-tools/player/player_body.tscn" id="3_y0w3v"]
+[ext_resource type="PackedScene" uid="uid://raeeicvvindd" path="res://addons/godot-xr-tools/hands/scenes/highpoly/right_hand.tscn" id="5_7asex"]
+[ext_resource type="PackedScene" uid="uid://b6bk2pj8vbj28" path="res://addons/godot-xr-tools/functions/movement_turn.tscn" id="5_gasai"]
+[ext_resource type="PackedScene" uid="uid://tys2keamgf5b" path="res://Scenes/pistolHolster.tscn" id="7_7asex"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3xbsf"]
+radius = 0.0358473
+height = 1.5
+
+[node name="xrPlayer" type="XROrigin3D"]
+
+[node name="XRCamera3D" type="XRCamera3D" parent="."]
+
+[node name="ControllerLeft" type="XRController3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.097978, 0, 0)
+tracker = &"left_hand"
+pose = &"aim"
+
+[node name="FunctionPickup" parent="ControllerLeft" instance=ExtResource("2_3xbsf")]
+grab_distance = 0.1
+
+[node name="MovementDirect" parent="ControllerLeft" instance=ExtResource("3_kuoa5")]
+strafe = true
+
+[node name="LeftHand" parent="ControllerLeft" instance=ExtResource("3_gasai")]
+
+[node name="ControllerRight" type="XRController3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0654244, 0, 0)
+tracker = &"right_hand"
+pose = &"aim"
+
+[node name="FunctionPickup" parent="ControllerRight" instance=ExtResource("2_3xbsf")]
+grab_distance = 0.1
+
+[node name="MovementTurn" parent="ControllerRight" instance=ExtResource("5_gasai")]
+
+[node name="RightHand" parent="ControllerRight" instance=ExtResource("5_7asex")]
+
+[node name="PlayerBody" parent="." instance=ExtResource("3_y0w3v")]
+
+[node name="hitCollision" type="CollisionShape3D" parent="PlayerBody"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.779624, 0)
+shape = SubResource("CapsuleShape3D_3xbsf")
+
+[node name="pistolHolster" parent="PlayerBody" instance=ExtResource("7_7asex")]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 1.06319, -0.318411)

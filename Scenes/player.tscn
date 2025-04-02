@@ -1,0 +1,88 @@
+[gd_scene load_steps=8 format=3 uid="uid://dlnlalfhir7cd"]
+
+[ext_resource type="Script" uid="uid://dxa0bwyy34ccj" path="res://Scripts/player.gd" id="1_v0iea"]
+[ext_resource type="Script" uid="uid://cnm0ekkxl4ry" path="res://Scripts/playerCamera.gd" id="2_cvnsp"]
+[ext_resource type="Script" uid="uid://crgkcws0dma23" path="res://Scripts/weaponManager.gd" id="2_fkybt"]
+[ext_resource type="PackedScene" uid="uid://duxk1kj5jiwfe" path="res://Scenes/fpsPistol.tscn" id="2_vgqql"]
+[ext_resource type="Texture2D" uid="uid://dfoukqnfyx05t" path="res://Textures/crosshair.png" id="3_6t5aa"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_f60y1"]
+radius = 0.3
+
+[sub_resource type="LabelSettings" id="LabelSettings_fkybt"]
+font_size = 100
+font_color = Color(1, 0.407843, 1, 1)
+outline_size = 15
+outline_color = Color(0, 0, 0, 1)
+
+[node name="Player" type="CharacterBody3D"]
+script = ExtResource("1_v0iea")
+
+[node name="playerBody" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_f60y1")
+
+[node name="playerCamera" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+current = true
+fov = 90.0
+near = 0.001
+script = ExtResource("2_cvnsp")
+
+[node name="weaponManager" type="Node3D" parent="playerCamera"]
+script = ExtResource("2_fkybt")
+
+[node name="shootRay" type="RayCast3D" parent="playerCamera/weaponManager"]
+target_position = Vector3(0, 0, -100)
+debug_shape_custom_color = Color(0.874723, 0, 0.120174, 1)
+debug_shape_thickness = 5
+
+[node name="pistol" parent="playerCamera/weaponManager" instance=ExtResource("2_vgqql")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0.13, -0.276, -0.73)
+
+[node name="playerUI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="crosshair" type="TextureRect" parent="playerUI"]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("3_6t5aa")
+
+[node name="ammoTextContainer" type="MarginContainer" parent="playerUI"]
+custom_minimum_size = Vector2(10, 10)
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -40.0
+offset_top = -40.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="ammoCounter" type="Label" parent="playerUI/ammoTextContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "XX / XX"
+label_settings = SubResource("LabelSettings_fkybt")
+
+[connection signal="reloadButtonPressed" from="playerCamera/weaponManager" to="playerCamera/weaponManager/pistol" method="reload"]
