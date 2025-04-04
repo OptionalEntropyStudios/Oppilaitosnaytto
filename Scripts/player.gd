@@ -14,11 +14,11 @@ var crouchingHeight
 @export var jumpForce : float = 35.0
 @export var gravityForce : float = 3.5
 #DEBUGGING
-@onready var moveStateLbl: Label = $moveStateLable
+@onready var moveStateLbl: Label = $playerUI/moveStateLable
 var prevMoveState
-@onready var standStateLbl: Label = $standStateLabel
+@onready var standStateLbl: Label = $playerUI/standStateLabel
 var prevStandState
-@onready var groundedStateLbl: Label = $groundedStateLabel
+@onready var groundedStateLbl: Label = $playerUI/groundedStateLabel
 var prevGroundedState
 #END OF DEBUGGING
 func _ready() -> void:

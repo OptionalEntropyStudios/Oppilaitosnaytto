@@ -1,10 +1,14 @@
-[gd_scene load_steps=8 format=3 uid="uid://dlnlalfhir7cd"]
+[gd_scene load_steps=14 format=3 uid="uid://dlnlalfhir7cd"]
 
 [ext_resource type="Script" uid="uid://dxa0bwyy34ccj" path="res://Scripts/player.gd" id="1_v0iea"]
+[ext_resource type="Script" uid="uid://dnuip41re4566" path="res://Scenes/interactionManager.gd" id="2_8erm5"]
 [ext_resource type="Script" uid="uid://cnm0ekkxl4ry" path="res://Scripts/playerCamera.gd" id="2_cvnsp"]
 [ext_resource type="Script" uid="uid://crgkcws0dma23" path="res://Scripts/weaponManager.gd" id="2_fkybt"]
 [ext_resource type="PackedScene" uid="uid://duxk1kj5jiwfe" path="res://Scenes/fpsPistol.tscn" id="2_vgqql"]
 [ext_resource type="Texture2D" uid="uid://dfoukqnfyx05t" path="res://Textures/crosshair.png" id="3_6t5aa"]
+[ext_resource type="Script" uid="uid://ocsked4lccm7" path="res://Scripts/gunHolder.gd" id="5_f1ek2"]
+[ext_resource type="PackedScene" uid="uid://dw5fnend2q2to" path="res://Scenes/smg.tscn" id="5_x3wgy"]
+[ext_resource type="PackedScene" uid="uid://j77oe421boc8" path="res://Scenes/shotgun.tscn" id="6_3smsa"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_f60y1"]
 radius = 0.3
@@ -14,6 +18,13 @@ font_size = 100
 font_color = Color(1, 0.407843, 1, 1)
 outline_size = 15
 outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_8erm5"]
+font_size = 20
+
+[sub_resource type="LabelSettings" id="LabelSettings_f1ek2"]
+line_spacing = -10.0
+font_size = 20
 
 [node name="Player" type="CharacterBody3D"]
 script = ExtResource("1_v0iea")
@@ -25,20 +36,100 @@ shape = SubResource("CapsuleShape3D_f60y1")
 [node name="playerCamera" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
 current = true
-fov = 90.0
+fov = 65.0
 near = 0.001
 script = ExtResource("2_cvnsp")
+lookSensitivity = 20.0
+
+[node name="interactionManager" type="Node3D" parent="playerCamera"]
+script = ExtResource("2_8erm5")
+
+[node name="interactionRay" type="RayCast3D" parent="playerCamera/interactionManager"]
+target_position = Vector3(0, 0, -3)
+debug_shape_custom_color = Color(0, 1, 0, 0.72549)
+debug_shape_thickness = 1
 
 [node name="weaponManager" type="Node3D" parent="playerCamera"]
 script = ExtResource("2_fkybt")
+swayStrength = 0.2
+
+[node name="gunHolder" type="Node3D" parent="playerCamera/weaponManager"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.11, -0.155, -0.365)
+script = ExtResource("5_f1ek2")
+swayLeft = Vector3(0, 0.3, 0)
+swayRight = Vector3(0, -0.3, 0)
+
+[node name="smg" parent="playerCamera/weaponManager/gunHolder" node_paths=PackedStringArray("camera", "body") instance=ExtResource("5_x3wgy")]
+transform = Transform3D(1, 0, -7.45058e-09, 0, 1, 0, 7.45058e-09, 0, 1, 0.000400824, 0.0395191, 0.0660882)
+visible = false
+camera = NodePath("../../..")
+body = NodePath("../../../..")
+bulletDamage = 4
+fireAnimSpeedScale = 2.5
+
+[node name="pistol" parent="playerCamera/weaponManager/gunHolder" node_paths=PackedStringArray("camera", "body") instance=ExtResource("2_vgqql")]
+transform = Transform3D(-0.295, 0, -4.47035e-08, 0, 0.295, 0, 4.47035e-08, 0, -0.295, -0.000360919, -0.00399995, -0.0700908)
+visible = false
+camera = NodePath("../../..")
+body = NodePath("../../../..")
+magazineSize = 10
+ammoInMagazine = 10
+reserveAmmoAmount = 50
+fireAnimSpeedScale = 1.0
+
+[node name="shotgun" parent="playerCamera/weaponManager/gunHolder" node_paths=PackedStringArray("camera", "body") instance=ExtResource("6_3smsa")]
+transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0, 0)
+visible = false
+camera = NodePath("../../..")
+body = NodePath("../../../..")
+magazineSize = 6
+ammoInMagazine = 6
+reserveAmmoAmount = 18
+recoilAmount = 7.0
+isShotgun = true
+shotGunSpreadAmount = 2.5
 
 [node name="shootRay" type="RayCast3D" parent="playerCamera/weaponManager"]
 target_position = Vector3(0, 0, -100)
 debug_shape_custom_color = Color(0.874723, 0, 0.120174, 1)
 debug_shape_thickness = 5
 
-[node name="pistol" parent="playerCamera/weaponManager" instance=ExtResource("2_vgqql")]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0.13, -0.276, -0.73)
+[node name="shotGunRays" type="Node3D" parent="playerCamera/weaponManager"]
+
+[node name="shootRay" type="RayCast3D" parent="playerCamera/weaponManager/shotGunRays"]
+target_position = Vector3(0, 0, -15)
+debug_shape_custom_color = Color(0.874723, 0, 0.120174, 1)
+debug_shape_thickness = 5
+
+[node name="shootRay2" type="RayCast3D" parent="playerCamera/weaponManager/shotGunRays"]
+target_position = Vector3(0, 0, -15)
+debug_shape_custom_color = Color(0.874723, 0, 0.120174, 1)
+debug_shape_thickness = 5
+
+[node name="shootRay3" type="RayCast3D" parent="playerCamera/weaponManager/shotGunRays"]
+target_position = Vector3(0, 0, -15)
+debug_shape_custom_color = Color(0.874723, 0, 0.120174, 1)
+debug_shape_thickness = 5
+
+[node name="shootRay4" type="RayCast3D" parent="playerCamera/weaponManager/shotGunRays"]
+target_position = Vector3(0, 0, -15)
+debug_shape_custom_color = Color(0.874723, 0, 0.120174, 1)
+debug_shape_thickness = 5
+
+[node name="shootRay5" type="RayCast3D" parent="playerCamera/weaponManager/shotGunRays"]
+target_position = Vector3(0, 0, -15)
+debug_shape_custom_color = Color(0.874723, 0, 0.120174, 1)
+debug_shape_thickness = 5
+
+[node name="shootRay6" type="RayCast3D" parent="playerCamera/weaponManager/shotGunRays"]
+target_position = Vector3(0, 0, -15)
+debug_shape_custom_color = Color(0.874723, 0, 0.120174, 1)
+debug_shape_thickness = 5
+
+[node name="shootRay7" type="RayCast3D" parent="playerCamera/weaponManager/shotGunRays"]
+target_position = Vector3(0, 0, -15)
+debug_shape_custom_color = Color(0.874723, 0, 0.120174, 1)
+debug_shape_thickness = 5
 
 [node name="playerUI" type="Control" parent="."]
 layout_mode = 3
@@ -85,4 +176,69 @@ size_flags_horizontal = 4
 text = "XX / XX"
 label_settings = SubResource("LabelSettings_fkybt")
 
-[connection signal="reloadButtonPressed" from="playerCamera/weaponManager" to="playerCamera/weaponManager/pistol" method="reload"]
+[node name="moveStateLable" type="Label" parent="playerUI"]
+offset_left = 2.0
+offset_top = -6.0
+offset_right = 196.0
+offset_bottom = 39.0
+text = "moveState:"
+label_settings = SubResource("LabelSettings_8erm5")
+uppercase = true
+
+[node name="standStateLabel" type="Label" parent="playerUI"]
+offset_left = 1.0
+offset_top = 11.0
+offset_right = 208.0
+offset_bottom = 56.0
+text = "standState:"
+label_settings = SubResource("LabelSettings_f1ek2")
+uppercase = true
+
+[node name="groundedStateLabel" type="Label" parent="playerUI"]
+offset_top = 27.0
+offset_right = 284.0
+offset_bottom = 72.0
+text = "groundedState:"
+label_settings = SubResource("LabelSettings_f1ek2")
+uppercase = true
+
+[node name="gunNameLabel" type="Label" parent="playerUI"]
+offset_top = 44.0
+offset_right = 284.0
+offset_bottom = 89.0
+text = "groundedState:"
+label_settings = SubResource("LabelSettings_f1ek2")
+uppercase = true
+
+[node name="gunDamageLabel" type="Label" parent="playerUI"]
+offset_left = 1.0
+offset_top = 61.0
+offset_right = 285.0
+offset_bottom = 106.0
+text = "groundedState:"
+label_settings = SubResource("LabelSettings_f1ek2")
+uppercase = true
+
+[node name="gunFullAutoStatus" type="Label" parent="playerUI"]
+offset_top = 77.0
+offset_right = 284.0
+offset_bottom = 122.0
+text = "groundedState:"
+label_settings = SubResource("LabelSettings_f1ek2")
+uppercase = true
+
+[node name="gunFullAutoStatus2" type="Label" parent="playerUI"]
+offset_left = 4.0
+offset_top = 651.0
+offset_right = 288.0
+offset_bottom = 715.0
+text = "[1] = Pistol
+[2] = Smg
+[3] = Shotgun"
+label_settings = SubResource("LabelSettings_f1ek2")
+uppercase = true
+
+[connection signal="reloadButtonPressed" from="playerCamera/weaponManager" to="playerCamera/weaponManager/gunHolder/smg" method="reload"]
+[connection signal="reloadButtonPressed" from="playerCamera/weaponManager" to="playerCamera/weaponManager/gunHolder/pistol" method="reload"]
+[connection signal="reloadButtonPressed" from="playerCamera/weaponManager" to="playerCamera/weaponManager/gunHolder/shotgun" method="reload"]
+[connection signal="oneAmmoLoaded" from="playerCamera/weaponManager/gunHolder/shotgun" to="playerCamera/weaponManager" method="updateEquippedGunAmmoCounter"]

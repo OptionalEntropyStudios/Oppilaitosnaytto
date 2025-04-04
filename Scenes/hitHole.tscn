@@ -1,0 +1,20 @@
+[gd_scene load_steps=5 format=3 uid="uid://dsk30uudipakb"]
+
+[ext_resource type="Script" uid="uid://c08c2yabc28e5" path="res://Scripts/hitHole.gd" id="1_d2kj8"]
+[ext_resource type="Texture2D" uid="uid://b77768ptw30s5" path="res://Textures/hitHole.png" id="1_hwsfc"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hwsfc"]
+transparency = 1
+albedo_texture = ExtResource("1_hwsfc")
+metallic_specular = 0.0
+
+[sub_resource type="QuadMesh" id="QuadMesh_jssi0"]
+material = SubResource("StandardMaterial3D_hwsfc")
+size = Vector2(0.1, 0.1)
+
+[node name="hitHole" type="Node3D" groups=["decal"]]
+script = ExtResource("1_d2kj8")
+
+[node name="hitHoleMesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, -0.01)
+mesh = SubResource("QuadMesh_jssi0")

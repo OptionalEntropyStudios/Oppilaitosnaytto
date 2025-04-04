@@ -4,5 +4,3 @@
 
 [node name="gunBase" type="Node3D"]
 script = ExtResource("1_sg3wx")
-
-[node name="gunMesh" type="MeshInstance3D" parent="."]

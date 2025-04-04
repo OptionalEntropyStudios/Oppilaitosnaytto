@@ -6,6 +6,8 @@
 [ext_resource type="Texture2D" uid="uid://cuvyruy6kh3ye" path="res://Textures/Developer Textures/PNG/Orange/texture_04.png" id="3_8h1sn"]
 [ext_resource type="Texture2D" uid="uid://cg6swr8l6xlfl" path="res://Textures/Developer Textures/PNG/Dark/texture_05.png" id="4_xjy7c"]
 [ext_resource type="PackedScene" uid="uid://7w2clgeffpes" path="res://Scenes/robot1_breakable.tscn" id="5_nwu5k"]
+[ext_resource type="PackedScene" uid="uid://d3hhupns508pe" path="res://Scenes/baseScenes/button.tscn" id="6_pjkvo"]
+[ext_resource type="PackedScene" uid="uid://i7ahrw2gbwu" path="res://Scenes/randomColorDonut.tscn" id="7_0phou"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_fyujw"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
@@ -47,14 +49,13 @@ albedo_texture = ExtResource("4_xjy7c")
 uv1_triplanar = true
 uv2_triplanar = true
 
-[sub_resource type="LabelSettings" id="LabelSettings_fyujw"]
-font_size = 32
-
-[sub_resource type="LabelSettings" id="LabelSettings_60nol"]
-font_size = 32
-
 [node name="3dGame" type="Node3D"]
 script = ExtResource("1_60nol")
+
+[node name="Player" parent="." instance=ExtResource("2_fyujw")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -1.7379, 0.530449, 3.31178)
+jumpForce = 15.0
+gravityForce = 1.0
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_8h1sn")
@@ -80,16 +81,40 @@ use_collision = true
 size = Vector3(6, 1.75, 8.5)
 material = SubResource("StandardMaterial3D_xjy7c")
 
-[node name="CSGBox3D14" type="CSGBox3D" parent="ground"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, 0.87491, 9.77399)
+[node name="CSGBox3D16" type="CSGBox3D" parent="ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.25, 7.12491, 37.399)
 use_collision = true
-size = Vector3(22, 1.25, 1.25)
+size = Vector3(3.25, 13.75, 21.5)
 material = SubResource("StandardMaterial3D_xjy7c")
 
-[node name="CSGBox3D15" type="CSGBox3D" parent="ground"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, 4.87491, 29.524)
+[node name="CSGBox3D17" type="CSGBox3D" parent="ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.75, 4.87491, 36.524)
 use_collision = true
-size = Vector3(22, 9.25, 1.25)
+size = Vector3(3.25, 9.25, 3.75)
+material = SubResource("StandardMaterial3D_xjy7c")
+
+[node name="CSGBox3D20" type="CSGBox3D" parent="ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.75, 10.7499, 36.524)
+use_collision = true
+size = Vector3(34.75, 2.5, 3.75)
+material = SubResource("StandardMaterial3D_xjy7c")
+
+[node name="CSGBox3D18" type="CSGBox3D" parent="ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.875, 4.87491, 11.899)
+use_collision = true
+size = Vector3(3, 9.25, 18)
+material = SubResource("StandardMaterial3D_xjy7c")
+
+[node name="CSGBox3D19" type="CSGBox3D" parent="ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.875, 1.12491, 18.274)
+use_collision = true
+size = Vector3(5.25, 1.75, 12.25)
+material = SubResource("StandardMaterial3D_xjy7c")
+
+[node name="CSGBox3D21" type="CSGBox3D" parent="ground"]
+transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, -11.875, -0.18853, 10.1271)
+use_collision = true
+size = Vector3(3.5, 1.75, 5.71082)
 material = SubResource("StandardMaterial3D_xjy7c")
 
 [node name="CSGBox3D3" type="CSGBox3D" parent="ground"]
@@ -147,9 +172,9 @@ mesh = SubResource("PrismMesh_8h1sn")
 material = SubResource("StandardMaterial3D_xjy7c")
 
 [node name="CSGBox3D5" type="CSGBox3D" parent="ground"]
-transform = Transform3D(2.98023e-08, 0, 1, 0, 1, 0, -1, 0, 2.98023e-08, 351, 4.875, -185.875)
+transform = Transform3D(2.98023e-08, 0, 1, 0, 1, 0, -1, 0, 2.98023e-08, 351, 4.875, -185.75)
 use_collision = true
-size = Vector3(377.25, 9.25, 687)
+size = Vector3(377.5, 9.25, 687)
 material = SubResource("StandardMaterial3D_nwu5k")
 
 [node name="CSGBox3D12" type="CSGBox3D" parent="ground"]
@@ -164,42 +189,74 @@ use_collision = true
 size = Vector3(13.75, 9.25, 21.25)
 material = SubResource("StandardMaterial3D_nwu5k")
 
-[node name="breakable" parent="ground" instance=ExtResource("5_nwu5k")]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 3.75, 2.25, 24)
+[node name="button" parent="ground" instance=ExtResource("6_pjkvo")]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -13.5, 1, 5)
+textOnTheButton = "change Color"
 
-[node name="breakable2" parent="ground" instance=ExtResource("5_nwu5k")]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0.25, 2.25, 24)
+[node name="button2" parent="ground" instance=ExtResource("6_pjkvo")]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -13.5, 1, 3.75)
 
-[node name="breakable3" parent="ground" instance=ExtResource("5_nwu5k")]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -3, 2.25, 24)
+[node name="button3" parent="ground" instance=ExtResource("6_pjkvo")]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -13.5, 1, 2.5)
 
-[node name="breakable4" parent="ground" instance=ExtResource("5_nwu5k")]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -7, 2.25, 24)
+[node name="randomColorBox" parent="ground" instance=ExtResource("7_0phou")]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -13.5, 2.25, 5)
 
-[node name="Player" parent="." instance=ExtResource("2_fyujw")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.7379, 0.530449, 3.31178)
-jumpForce = 15.0
-gravityForce = 1.0
+[node name="robot1" parent="." instance=ExtResource("5_nwu5k")]
+transform = Transform3D(-0.258819, 0, 0.965926, 0, 1, 0, -0.965926, 0, -0.258819, 6.75, 1, 25.25)
 
-[node name="moveStateLable" type="Label" parent="Player"]
-offset_right = 194.0
-offset_bottom = 45.0
-text = "moveState:"
-label_settings = SubResource("LabelSettings_fyujw")
-uppercase = true
+[node name="robot2" parent="." instance=ExtResource("5_nwu5k")]
+transform = Transform3D(-0.258819, 0, 0.965926, 0, 1, 0, -0.965926, 0, -0.258819, 3.75, 1, 25.25)
 
-[node name="standStateLabel" type="Label" parent="Player"]
-offset_top = 43.0
-offset_right = 207.0
-offset_bottom = 88.0
-text = "standState:"
-label_settings = SubResource("LabelSettings_60nol")
-uppercase = true
+[node name="robot3" parent="." instance=ExtResource("5_nwu5k")]
+transform = Transform3D(-0.258819, 0, 0.965926, 0, 1, 0, -0.965926, 0, -0.258819, 0.25, 1, 25.25)
 
-[node name="groundedStateLabel" type="Label" parent="Player"]
-offset_top = 94.0
-offset_right = 207.0
-offset_bottom = 139.0
-text = "groundedState:"
-label_settings = SubResource("LabelSettings_60nol")
-uppercase = true
+[node name="robot4" parent="." instance=ExtResource("5_nwu5k")]
+transform = Transform3D(-0.258819, 0, 0.965926, 0, 1, 0, -0.965926, 0, -0.258819, -3.75, 1, 25.25)
+
+[node name="robot5" parent="." instance=ExtResource("5_nwu5k")]
+transform = Transform3D(-0.258819, 0, 0.965926, 0, 1, 0, -0.965926, 0, -0.258819, 8.75, 1, 20.75)
+
+[node name="robot6" parent="." instance=ExtResource("5_nwu5k")]
+transform = Transform3D(-0.258819, 0, 0.965926, 0, 1, 0, -0.965926, 0, -0.258819, 4.75, 1, 20.75)
+
+[node name="robot7" parent="." instance=ExtResource("5_nwu5k")]
+transform = Transform3D(-0.258819, 0, 0.965926, 0, 1, 0, -0.965926, 0, -0.258819, 1, 1, 20.75)
+
+[node name="robot8" parent="." instance=ExtResource("5_nwu5k")]
+transform = Transform3D(0.258819, 0, 0.965926, -0.836516, 0.5, 0.224144, -0.482963, -0.866025, 0.12941, -3, 5.75, 20.75)
+
+[node name="robot9" parent="." instance=ExtResource("5_nwu5k")]
+transform = Transform3D(0.258819, 0, 0.965926, -0.836516, 0.5, 0.224144, -0.482963, -0.866025, 0.12941, 4.25, 7.5, 20.75)
+
+[node name="robot10" parent="." instance=ExtResource("5_nwu5k")]
+transform = Transform3D(0.258819, 0, 0.965926, -0.836516, 0.5, 0.224144, -0.482963, -0.866025, 0.12941, -8.5, 6, 20.75)
+
+[node name="robot11" parent="." instance=ExtResource("5_nwu5k")]
+transform = Transform3D(0.258819, 0, 0.965926, -0.836516, 0.5, 0.224144, -0.482963, -0.866025, 0.12941, -8.5, 6, 12.75)
+
+[node name="robot12" parent="." instance=ExtResource("5_nwu5k")]
+transform = Transform3D(1, -2.26955e-07, -2.68221e-07, 2.68221e-07, 1, -3.42727e-07, 0, 7.41723e-08, 1, -15, 11, 16.25)
+
+[node name="robot13" parent="." instance=ExtResource("5_nwu5k")]
+transform = Transform3D(1, -2.26955e-07, -2.68221e-07, 2.68221e-07, 1, -3.42727e-07, 0, 7.41723e-08, 1, -15, 11, 13.5)
+
+[node name="robot14" parent="." instance=ExtResource("5_nwu5k")]
+transform = Transform3D(1, -2.26955e-07, -2.68221e-07, 2.68221e-07, 1, -3.42727e-07, 0, 7.41723e-08, 1, -15, 11, 11)
+
+[node name="robot15" parent="." instance=ExtResource("5_nwu5k")]
+transform = Transform3D(1, -2.26955e-07, -2.68221e-07, 2.68221e-07, 1, -3.42727e-07, 0, 7.41723e-08, 1, -15, 11, 8.25)
+
+[node name="robot16" parent="." instance=ExtResource("5_nwu5k")]
+transform = Transform3D(1, -2.26955e-07, -2.68221e-07, 2.68221e-07, 1, -3.42727e-07, 0, 7.41723e-08, 1, -15, 11, 5.75)
+
+[node name="robot17" parent="." instance=ExtResource("5_nwu5k")]
+transform = Transform3D(1, -2.26955e-07, -2.68221e-07, 2.68221e-07, 1, -3.42727e-07, 0, 7.41723e-08, 1, -15, 11, 3)
+
+[node name="robot18" parent="." instance=ExtResource("5_nwu5k")]
+transform = Transform3D(1, -2.26955e-07, -2.68221e-07, 2.68221e-07, 1, -3.42727e-07, 0, 7.41723e-08, 1, -15, 11, 0.5)
+
+[node name="robot19" parent="." instance=ExtResource("5_nwu5k")]
+transform = Transform3D(1, -2.26955e-07, -2.68221e-07, 2.68221e-07, 1, -3.42727e-07, 0, 7.41723e-08, 1, -15, 11, -2.25)
+
+[connection signal="buttonPressed" from="ground/button" to="ground/randomColorBox" method="changeDonutColor"]

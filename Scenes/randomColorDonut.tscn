@@ -1,0 +1,15 @@
+[gd_scene load_steps=4 format=3 uid="uid://i7ahrw2gbwu"]
+
+[ext_resource type="Script" uid="uid://h000yq268sfr" path="res://Scripts/randomColorDonut.gd" id="1_uk6tw"]
+[ext_resource type="Material" uid="uid://bxfqvbs31pr2d" path="res://Textures/randomColorDonut.tres" id="2_hncic"]
+
+[sub_resource type="TorusMesh" id="TorusMesh_axh84"]
+material = ExtResource("2_hncic")
+inner_radius = 0.226
+
+[node name="randomColorBox" type="Node3D"]
+script = ExtResource("1_uk6tw")
+
+[node name="donut" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
+mesh = SubResource("TorusMesh_axh84")

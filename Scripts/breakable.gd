@@ -19,6 +19,9 @@ func takeDamage(damage : int):
 func die():
 	deathSound.play()
 	deathEffect.emitting = true
+	for child in get_children():
+		if(child.is_in_group("decal")):
+			child.queue_free()
 	mesh.visible = false
 	
 
