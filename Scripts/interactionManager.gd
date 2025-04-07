@@ -7,5 +7,4 @@ func _process(delta: float) -> void:
 		var hitObject = interactRay.get_collider()
 		if(hitObject.is_in_group("button")):
 			if(Input.is_action_just_pressed("interact")):
-				print("pressed button")
 				hitObject.press()

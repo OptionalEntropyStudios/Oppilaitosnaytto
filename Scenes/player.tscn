@@ -1,7 +1,7 @@
 [gd_scene load_steps=14 format=3 uid="uid://dlnlalfhir7cd"]
 
 [ext_resource type="Script" uid="uid://dxa0bwyy34ccj" path="res://Scripts/player.gd" id="1_v0iea"]
-[ext_resource type="Script" uid="uid://dnuip41re4566" path="res://Scenes/interactionManager.gd" id="2_8erm5"]
+[ext_resource type="Script" uid="uid://dnuip41re4566" path="res://Scripts/interactionManager.gd" id="2_8erm5"]
 [ext_resource type="Script" uid="uid://cnm0ekkxl4ry" path="res://Scripts/playerCamera.gd" id="2_cvnsp"]
 [ext_resource type="Script" uid="uid://crgkcws0dma23" path="res://Scripts/weaponManager.gd" id="2_fkybt"]
 [ext_resource type="PackedScene" uid="uid://duxk1kj5jiwfe" path="res://Scenes/fpsPistol.tscn" id="2_vgqql"]
@@ -51,11 +51,12 @@ debug_shape_thickness = 1
 
 [node name="weaponManager" type="Node3D" parent="playerCamera"]
 script = ExtResource("2_fkybt")
-swayStrength = 0.2
 
 [node name="gunHolder" type="Node3D" parent="playerCamera/weaponManager"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.11, -0.155, -0.365)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.06, -0.178, -0.405)
 script = ExtResource("5_f1ek2")
+swayLimit = 5.0
+swayLerpSpeed = 2.0
 swayLeft = Vector3(0, 0.3, 0)
 swayRight = Vector3(0, -0.3, 0)
 
@@ -64,72 +65,81 @@ transform = Transform3D(1, 0, -7.45058e-09, 0, 1, 0, 7.45058e-09, 0, 1, 0.000400
 visible = false
 camera = NodePath("../../..")
 body = NodePath("../../../..")
+ammoInMagazine = 200
+reserveAmmoAmount = 600
 bulletDamage = 4
-fireAnimSpeedScale = 2.5
+magazineSize = 200
+recoilAmount = 1.0
 
 [node name="pistol" parent="playerCamera/weaponManager/gunHolder" node_paths=PackedStringArray("camera", "body") instance=ExtResource("2_vgqql")]
-transform = Transform3D(-0.295, 0, -4.47035e-08, 0, 0.295, 0, 4.47035e-08, 0, -0.295, -0.000360919, -0.00399995, -0.0700908)
+transform = Transform3D(-0.295, 0, -4.47035e-08, 0, 0.295, 0, 4.47035e-08, 0, -0.295, -0.000360921, -0.040143, -0.0700908)
 visible = false
 camera = NodePath("../../..")
 body = NodePath("../../../..")
-magazineSize = 10
 ammoInMagazine = 10
 reserveAmmoAmount = 50
-fireAnimSpeedScale = 1.0
+magazineSize = 10
 
 [node name="shotgun" parent="playerCamera/weaponManager/gunHolder" node_paths=PackedStringArray("camera", "body") instance=ExtResource("6_3smsa")]
 transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0, 0)
 visible = false
 camera = NodePath("../../..")
 body = NodePath("../../../..")
-magazineSize = 6
 ammoInMagazine = 6
-reserveAmmoAmount = 18
+reserveAmmoAmount = 20
+magazineSize = 6
 recoilAmount = 7.0
 isShotgun = true
 shotGunSpreadAmount = 2.5
 
 [node name="shootRay" type="RayCast3D" parent="playerCamera/weaponManager"]
 target_position = Vector3(0, 0, -100)
-debug_shape_custom_color = Color(0.874723, 0, 0.120174, 1)
-debug_shape_thickness = 5
+collision_mask = 10
+debug_shape_custom_color = Color(0.4, 0.584314, 0.258824, 0.454902)
 
 [node name="shotGunRays" type="Node3D" parent="playerCamera/weaponManager"]
 
 [node name="shootRay" type="RayCast3D" parent="playerCamera/weaponManager/shotGunRays"]
 target_position = Vector3(0, 0, -15)
-debug_shape_custom_color = Color(0.874723, 0, 0.120174, 1)
-debug_shape_thickness = 5
+collision_mask = 10
+debug_shape_custom_color = Color(0.87451, 0, 0.121569, 0.498039)
+debug_shape_thickness = 1
 
 [node name="shootRay2" type="RayCast3D" parent="playerCamera/weaponManager/shotGunRays"]
 target_position = Vector3(0, 0, -15)
-debug_shape_custom_color = Color(0.874723, 0, 0.120174, 1)
-debug_shape_thickness = 5
+collision_mask = 10
+debug_shape_custom_color = Color(0.87451, 0, 0.121569, 0.498039)
+debug_shape_thickness = 1
 
 [node name="shootRay3" type="RayCast3D" parent="playerCamera/weaponManager/shotGunRays"]
 target_position = Vector3(0, 0, -15)
-debug_shape_custom_color = Color(0.874723, 0, 0.120174, 1)
-debug_shape_thickness = 5
+collision_mask = 10
+debug_shape_custom_color = Color(0.87451, 0, 0.121569, 0.498039)
+debug_shape_thickness = 1
 
 [node name="shootRay4" type="RayCast3D" parent="playerCamera/weaponManager/shotGunRays"]
 target_position = Vector3(0, 0, -15)
-debug_shape_custom_color = Color(0.874723, 0, 0.120174, 1)
-debug_shape_thickness = 5
+collision_mask = 10
+debug_shape_custom_color = Color(0.87451, 0, 0.121569, 0.498039)
+debug_shape_thickness = 1
 
 [node name="shootRay5" type="RayCast3D" parent="playerCamera/weaponManager/shotGunRays"]
 target_position = Vector3(0, 0, -15)
-debug_shape_custom_color = Color(0.874723, 0, 0.120174, 1)
-debug_shape_thickness = 5
+collision_mask = 10
+debug_shape_custom_color = Color(0.87451, 0, 0.121569, 0.498039)
+debug_shape_thickness = 1
 
 [node name="shootRay6" type="RayCast3D" parent="playerCamera/weaponManager/shotGunRays"]
 target_position = Vector3(0, 0, -15)
-debug_shape_custom_color = Color(0.874723, 0, 0.120174, 1)
-debug_shape_thickness = 5
+collision_mask = 10
+debug_shape_custom_color = Color(0.87451, 0, 0.121569, 0.498039)
+debug_shape_thickness = 1
 
 [node name="shootRay7" type="RayCast3D" parent="playerCamera/weaponManager/shotGunRays"]
 target_position = Vector3(0, 0, -15)
-debug_shape_custom_color = Color(0.874723, 0, 0.120174, 1)
-debug_shape_thickness = 5
+collision_mask = 10
+debug_shape_custom_color = Color(0.87451, 0, 0.121569, 0.498039)
+debug_shape_thickness = 1
 
 [node name="playerUI" type="Control" parent="."]
 layout_mode = 3
@@ -177,6 +187,7 @@ text = "XX / XX"
 label_settings = SubResource("LabelSettings_fkybt")
 
 [node name="moveStateLable" type="Label" parent="playerUI"]
+layout_mode = 0
 offset_left = 2.0
 offset_top = -6.0
 offset_right = 196.0
@@ -186,6 +197,7 @@ label_settings = SubResource("LabelSettings_8erm5")
 uppercase = true
 
 [node name="standStateLabel" type="Label" parent="playerUI"]
+layout_mode = 0
 offset_left = 1.0
 offset_top = 11.0
 offset_right = 208.0
@@ -195,6 +207,7 @@ label_settings = SubResource("LabelSettings_f1ek2")
 uppercase = true
 
 [node name="groundedStateLabel" type="Label" parent="playerUI"]
+layout_mode = 0
 offset_top = 27.0
 offset_right = 284.0
 offset_bottom = 72.0
@@ -203,6 +216,7 @@ label_settings = SubResource("LabelSettings_f1ek2")
 uppercase = true
 
 [node name="gunNameLabel" type="Label" parent="playerUI"]
+layout_mode = 0
 offset_top = 44.0
 offset_right = 284.0
 offset_bottom = 89.0
@@ -211,6 +225,7 @@ label_settings = SubResource("LabelSettings_f1ek2")
 uppercase = true
 
 [node name="gunDamageLabel" type="Label" parent="playerUI"]
+layout_mode = 0
 offset_left = 1.0
 offset_top = 61.0
 offset_right = 285.0
@@ -220,6 +235,7 @@ label_settings = SubResource("LabelSettings_f1ek2")
 uppercase = true
 
 [node name="gunFullAutoStatus" type="Label" parent="playerUI"]
+layout_mode = 0
 offset_top = 77.0
 offset_right = 284.0
 offset_bottom = 122.0
@@ -228,6 +244,7 @@ label_settings = SubResource("LabelSettings_f1ek2")
 uppercase = true
 
 [node name="gunFullAutoStatus2" type="Label" parent="playerUI"]
+layout_mode = 0
 offset_left = 4.0
 offset_top = 651.0
 offset_right = 288.0
@@ -238,6 +255,7 @@ text = "[1] = Pistol
 label_settings = SubResource("LabelSettings_f1ek2")
 uppercase = true
 
+[connection signal="canLookNow" from="." to="playerCamera" method="onLevelLoaded"]
 [connection signal="reloadButtonPressed" from="playerCamera/weaponManager" to="playerCamera/weaponManager/gunHolder/smg" method="reload"]
 [connection signal="reloadButtonPressed" from="playerCamera/weaponManager" to="playerCamera/weaponManager/gunHolder/pistol" method="reload"]
 [connection signal="reloadButtonPressed" from="playerCamera/weaponManager" to="playerCamera/weaponManager/gunHolder/shotgun" method="reload"]

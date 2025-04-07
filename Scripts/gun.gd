@@ -1,11 +1,12 @@
 extends Node3D
 class_name gun
+var owned : bool = false
 @onready var bulletHitDecal = preload("res://Scenes/hitHole.tscn")
 @export var camera : Camera3D
 @export var body: CharacterBody3D
 @onready var animationPlayer: AnimationPlayer = $AnimationPlayer
 
-@export var bulletDamage : int = 5
+
 @export var reloading : bool
 @export var usesMagazines : bool
 @export var equipped : bool #Check if the gun is equipped or not
@@ -13,11 +14,20 @@ class_name gun
 @export var triggerReset : bool = true
 @export var cycleFinished : bool = true
 
-@export var magazineSize : int #how muh ammo can be in one magazine
+
 @export var ammoInMagazine : int #how many bullets left
 @export var reserveAmmoAmount : int
 
-@export var fireAnimSpeedScale : float
+@export var baseDamage : int
+@export var baseFirerate : float
+@export var baseMagazineSize : int
+@export var baseReloadSpeed : float
+##UPGRADABLE STATS
+@export var bulletDamage : int = 5 #upgradeID in database = 1
+@export var firerate : float = 1 #upgradeID in database = 2
+@export var magazineSize : int #upgradeID in database = 3 - how muh ammo can be in one magazine
+@export var reloadSpeed : float = 1 #upgradeID in database = 4
+##END OF UPGRADABLE STATS
 
 @export var recoilAmount : float
 
@@ -33,16 +43,14 @@ func shoot(shootRay : RayCast3D, shotgunRayParent : Node3D):
 			if(not fullAuto and triggerReset and !animationPlayer.is_playing()):
 				applyRecoil()
 				triggerReset = false
-				animationPlayer.play("shoot", -1, fireAnimSpeedScale)
+				animationPlayer.play("shoot", -1, firerate)
 				ammoInMagazine -= 1
 				if(!isShotgun):
-					shootRay.enabled = true
 					if(shootRay.is_colliding() and shootRay.get_collider() != null):
 						var hitObject = shootRay.get_collider()
 						addHitHole(hitObject, shootRay.get_collision_point(), shootRay.get_collision_normal())
 						if(hitObject is breakable):
 							hitObject.takeDamage(bulletDamage)
-					shootRay.enabled = false
 				else:
 					for pelletRay in shotgunRayParent.get_children():
 						pelletRay.rotation_degrees.x = randf_range(-shotGunSpreadAmount,shotGunSpreadAmount)
@@ -54,7 +62,7 @@ func shoot(shootRay : RayCast3D, shotgunRayParent : Node3D):
 								hitObject.takeDamage(bulletDamage)
 			elif(fullAuto and cycleFinished and !animationPlayer.is_playing()):
 				applyRecoil()
-				animationPlayer.play("shoot", -1, fireAnimSpeedScale)
+				animationPlayer.play("shoot", -1, firerate)
 				ammoInMagazine -= 1
 				if(shootRay.is_colliding() and shootRay.get_collider() != null):
 					var hitObject = shootRay.get_collider()
@@ -75,7 +83,7 @@ func reload():
 	if(usesMagazines): #If the gun is like a pistol with a magazine
 		if(reserveAmmoAmount > 0 and ammoInMagazine < magazineSize):
 			reloading = true
-			animationPlayer.play("reload")
+			animationPlayer.play("reload", -1, reloadSpeed)
 	else: #If the gun has individual shells or bullets being used, like sniper os shotgun
 		if(reserveAmmoAmount > 0 and ammoInMagazine < magazineSize):
 			reloading = true
@@ -121,7 +129,8 @@ func addHitHole(objectThatWasHit : Node3D, hitPoint : Vector3, hitPointNormal : 
 	var pointingUp = Vector3.UP
 	var pointingDown = Vector3.DOWN
 	var hitHole = bulletHitDecal.instantiate()
-	objectThatWasHit.add_child(hitHole)
+	#get_tree().get_root()
+	objectThatWasHit.add_child(hitHole) #Lisätään "pää" noodin lapseksi, että skaalaus pysyy ennallaan
 	hitHole.global_transform.origin = hitPoint
 	if(hitPoint == pointingUp or hitPoint == pointingDown):
 		hitHole.look_at(hitPoint + hitPointNormal, Vector3.RIGHT)

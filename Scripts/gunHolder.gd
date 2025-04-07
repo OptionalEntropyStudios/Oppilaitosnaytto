@@ -1,8 +1,8 @@
 extends Node3D
 
 var mouseMovement
-var swayLimit : float = 6
-var swayLerpSpeed : float = 5
+@export var swayLimit : float = 6
+@export var swayLerpSpeed : float = 5
 
 @export var swayLeft : Vector3
 @export var swayRight : Vector3

@@ -360,10 +360,13 @@ _data = {
 [node name="smg" instance=ExtResource("1_2ecjt")]
 usesMagazines = true
 fullAuto = true
-magazineSize = 20
 ammoInMagazine = 20
 reserveAmmoAmount = 120
-fireAnimSpeedScale = 1.0
+baseDamage = 4
+baseFirerate = 1.0
+baseMagazineSize = 20
+baseReloadSpeed = 1.0
+magazineSize = 20
 recoilAmount = 1.5
 
 [node name="gunMesh" type="Node3D" parent="." index="0"]

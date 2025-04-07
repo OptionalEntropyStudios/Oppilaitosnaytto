@@ -1,5 +1,9 @@
 extends CharacterBody3D
 
+var username : String
+var setUsername : bool = false
+@onready var weaponManager: Node3D = $playerCamera/weaponManager
+
 @export var stopSpeed : float = 3 * 10
 var currentSpeed : float
 @export var walkingSpeed : float = 50
@@ -24,11 +28,14 @@ var prevGroundedState
 func _ready() -> void:
 	standingHeight = playerBody.scale.y
 	crouchingHeight = standingHeight / 2
+	username = loadLastLoggedInUser()
+	weaponManager.playerName = username
+	#weaponManager.checkGunStatsAndOwnership()
 func _physics_process(delta: float) -> void:
 	gravity()
 	checkJump()
 	doMovementStuff(delta) #Handle all the movement logic in this function
-	move_and_slide()
+	move_and_slide() #Built in script to handle the actual translation of the player body when input is applied
 func _process(delta: float) -> void:
 	if(is_on_floor() != prevGroundedState):
 		groundedStateLbl.text = "GROUNDEDSTATE : " + str(is_on_floor())
@@ -86,3 +93,22 @@ func gravity():
 func checkJump():
 	if(Input.is_action_just_pressed("jump") and is_on_floor()):
 		velocity.y += jumpForce
+
+signal canLookNow
+func tellCameraItIsOkToLook():
+	canLookNow.emit()
+
+func makeGunManagerCheckGunOwnerships():
+	if(!username.is_empty()):
+		username = loadLastLoggedInUser()
+	await get_tree().create_timer(0.5).timeout
+	weaponManager.checkOwnedGuns(username)
+
+func loadLastLoggedInUser() -> String:
+	var currentUserFile = FileAccess.open("user://currentUser.txt", FileAccess.READ)
+	if(currentUserFile != null):
+		var usrnm = currentUserFile.get_as_text()
+		if(!usrnm.is_empty()):
+			return usrnm
+		else: return ""
+	else: return ""

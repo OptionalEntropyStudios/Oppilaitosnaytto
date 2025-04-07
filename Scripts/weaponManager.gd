@@ -2,15 +2,18 @@ extends Node3D
 
 @onready var shootRay: RayCast3D = $shootRay
 @onready var camera: Camera3D = $".."
+@onready var playerName : String
 @onready var pistol = $gunHolder/pistol
 @onready var smg = $gunHolder/smg
 @onready var shotgun = $gunHolder/shotgun
 
+var dbConnectionScript = preload("res://Scripts/mySqlTestConneciton.cs")
+var dbConnectionManager
 @onready var hand: Node3D = $gunHolder
 
-signal reloadButtonPressed
-enum guns {PISTOL, SMG, SHOTGUN}
-var equippedGunEnum : guns
+signal reloadButtonPressed #to be used to signal reload in the the guns' scripts
+enum guns {PISTOL, SMG, SHOTGUN} #available guns in the game
+var equippedGunEnum : guns #Keeps track of the enumerator value for which gun is equipped
 var equippedGun : gun
 var gunToEquip
 
@@ -24,24 +27,25 @@ var gunToEquip
 
 #DEBUG OVER
 func _ready() -> void:
-	gunToEquip = guns.PISTOL
-	equipGun(gunToEquip)
+	dbConnectionManager = dbConnectionScript.new()
 	randomizePelletRays()
 func _process(delta: float) -> void:
-	if(!equippedGun.animationPlayer.is_playing()):
-		getGunSelection()
-		if(gunToEquip != equippedGunEnum):
-			equipGun(gunToEquip)
-	if(Input.is_action_pressed("shoot")):
-		equippedGun.shoot(shootRay, shotGunRaysParent)
-	if(Input.is_action_just_released("shoot")):
-		equippedGun.onFireKeyUp()
-	if(Input.is_action_just_pressed("reload")):
-		reloadButtonPressed.emit()
-	updateEquippedGunAmmoCounter()
-
-func equipGun(gun : guns):
-	match gun:
+	if(equippedGun != null):
+		if(!equippedGun.animationPlayer.is_playing()):
+			getGunSelection()
+			if(gunToEquip != equippedGunEnum):
+				equipGun(gunToEquip)
+		if(Input.is_action_pressed("shoot")):
+			equippedGun.shoot(shootRay, shotGunRaysParent)
+		if(Input.is_action_just_released("shoot")):
+			equippedGun.onFireKeyUp()
+		if(Input.is_action_just_pressed("reload")):
+			reloadButtonPressed.emit()
+		updateEquippedGunAmmoCounter()
+	else:
+		ammoCounter.visible = false
+func equipGun(firearm : guns):
+	match firearm:
 		guns.PISTOL:
 			pistol.getEquipped()
 			smg.getUnEquipped()
@@ -64,25 +68,102 @@ func equipGun(gun : guns):
 		gunFullAutoLbl.text =  "GUN FIREMODE = FULL AUTO"
 	else: gunFullAutoLbl.text = "GUN FIREMODE = SEMI AUTO"
 func getGunSelection():
-	if(Input.is_action_just_pressed("equipPistol")):
+	if(Input.is_action_just_pressed("equipPistol") and pistol.owned):
 		gunToEquip = guns.PISTOL
-		print("Player wants to equip " + guns.keys()[gunToEquip])
-	if(Input.is_action_just_pressed("equipSMG")):
+	if(Input.is_action_just_pressed("equipSMG") and smg.owned):
 		gunToEquip = guns.SMG
-		print("Player wants to equip " + guns.keys()[gunToEquip])
-	if(Input.is_action_just_pressed("equipShotgun")):
+	if(Input.is_action_just_pressed("equipShotgun") and smg.owned):
 		gunToEquip = guns.SHOTGUN
-		print("Player wants to equip " + guns.keys()[gunToEquip])
 
 @onready var ammoCounter: Label = $"../../playerUI/ammoTextContainer/ammoCounter"
 
 func updateEquippedGunAmmoCounter():
+	if(!ammoCounter.visible):
+		ammoCounter.visible = true
 	ammoCounter.text = str(equippedGun.ammoInMagazine) + " / " + str(equippedGun.reserveAmmoAmount)
-@export var swayStrength : float
-@export var swayLimit : float = 3.5
-
 func randomizePelletRays():
 	var spread = shotgun.shotGunSpreadAmount
 	for ray in shotGunRaysParent.get_children():
 		ray.rotation_degrees.x = randf_range(-spread, spread)
 		ray.rotation_degrees.y = randf_range(-spread, spread)
+
+func checkGunStatsAndOwnership():
+	if(!playerName.is_empty()):
+		checkOwnedGuns(playerName)
+	else: print("function checkGunStatsAndOwnership - playerName is empty")
+func checkOwnedGuns(username : String):
+	pistol.owned = dbConnectionManager.isOwned(username, pistol.name)
+	smg.owned = dbConnectionManager.isOwned(username, smg.name)
+	shotgun.owned = dbConnectionManager.isOwned(username, shotgun.name)
+	if(shotgun.owned):
+		gunToEquip = guns.SHOTGUN
+	if(smg.owned):
+		gunToEquip = guns.SMG
+	if(pistol.owned):
+		gunToEquip = guns.PISTOL
+	if(gunToEquip != null):
+		equipGun(gunToEquip)
+	print("function checkOwnedGuns gonna call updateWeaponStats() next")
+	updateWeaponStats()
+enum weaponUpgrades{BULLETDAMAGE = 1, FIRERATE = 2, MAGAZINESIZE = 3, RELOADSPEED = 4} #To minimize "magic numbers in the below function
+##Function will update each owned gun's stats based on those in the database
+func updateWeaponStats():
+	##Update pistol's stats
+	if(pistol.owned):
+		pistol.bulletDamage = pistol.baseDamage + getWeaponStat(weaponUpgrades.BULLETDAMAGE, "pistol")
+		pistol.firerate = pistol.baseFirerate + getWeaponStat(weaponUpgrades.FIRERATE, "pistol")
+		pistol.magazineSize = pistol.baseMagazineSize + getWeaponStat(weaponUpgrades.MAGAZINESIZE, "pistol")
+		pistol.reloadSpeed = pistol.baseReloadSpeed + getWeaponStat(weaponUpgrades.RELOADSPEED, "pistol")
+		pistol.ammoInMagazine = pistol.magazineSize
+		pistol.reserveAmmoAmount = pistol.magazineSize * 3
+	#update smgs stats
+	if(smg.owned):
+		smg.bulletDamage = smg.baseDamage + getWeaponStat(weaponUpgrades.BULLETDAMAGE, "smg")
+		smg.firerate = smg.baseFirerate + getWeaponStat(weaponUpgrades.FIRERATE, "smg")
+		smg.magazineSize = smg.baseMagazineSize + getWeaponStat(weaponUpgrades.MAGAZINESIZE, "smg")
+		smg.reloadSpeed = smg.baseReloadSpeed + getWeaponStat(weaponUpgrades.RELOADSPEED, "smg")
+		smg.ammoInMagazine = smg.magazineSize
+		smg.reserveAmmoAmount = smg.magazineSize * 3
+	#update shotgun stats
+	if(shotgun.owned):
+		shotgun.bulletDamage = shotgun.baseDamage + getWeaponStat(weaponUpgrades.BULLETDAMAGE, "shotgun")
+		shotgun.firerate = shotgun.baseFirerate + getWeaponStat(weaponUpgrades.FIRERATE, "shotgun")
+		shotgun.magazineSize = shotgun.baseMagazineSize + getWeaponStat(weaponUpgrades.MAGAZINESIZE, "shotgun")
+		shotgun.reloadSpeed = shotgun.baseReloadSpeed + getWeaponStat(weaponUpgrades.RELOADSPEED, "shotgun")
+		shotgun.ammoInMagazine = shotgun.magazineSize
+		shotgun.reserveAmmoAmount = shotgun.magazineSize * 3
+	
+##Calculates the actual value of the stat based on the level and which weapon it be
+func getWeaponStat(stat : weaponUpgrades, weapon : String) -> float:
+	print("function getWeaponStat called for " + weapon + " and " + str(weaponUpgrades.keys()[stat - 1]))
+	var damageMultiplier
+	var firerateMultiplier
+	var magazineSizeMultiplier
+	var reloadSpeedMultiplier
+	##Different guns have different multipliers for the levels
+	if(weapon == "pistol"):
+		damageMultiplier = 3 #Each level will add 3 to the damage of one bullet
+		firerateMultiplier = 0.2 #Each level will make the firerate a fifth faster
+		magazineSizeMultiplier = 2 #Each level will add 2 bullets to the maximum capacity
+		reloadSpeedMultiplier = 0.33 #Each level will make the reload a 33% faster
+	if(weapon == "smg"):
+		damageMultiplier = 2
+		firerateMultiplier = 0.25
+		magazineSizeMultiplier = 10 
+		reloadSpeedMultiplier = 0.33
+	if(weapon == "shotgun"):
+		damageMultiplier = 8
+		firerateMultiplier = 0.1
+		magazineSizeMultiplier = 1
+		reloadSpeedMultiplier = 0.5
+	var upgradeLvl = dbConnectionManager.GetWeaponUpgradeLvl(playerName, weapon, stat)
+	match stat:
+		weaponUpgrades.BULLETDAMAGE:
+			return upgradeLvl * damageMultiplier
+		weaponUpgrades.FIRERATE:
+			return upgradeLvl * firerateMultiplier
+		weaponUpgrades.MAGAZINESIZE:
+			return upgradeLvl * magazineSizeMultiplier
+		weaponUpgrades.RELOADSPEED:
+			return upgradeLvl * reloadSpeedMultiplier
+	return 0.0

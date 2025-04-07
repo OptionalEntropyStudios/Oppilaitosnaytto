@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Oppilaitosnaytto"
-run/main_scene="uid://d056snonfvi60"
+run/main_scene="uid://dlhnk4bxiffhf"
 config/features=PackedStringArray("4.4", "C#", "Forward Plus")
 config/icon="res://icon.svg"
 
@@ -49,6 +49,7 @@ gunMenu=""
 pistolMagazine=""
 decal=""
 button=""
+navMesh=""
 
 [input]
 

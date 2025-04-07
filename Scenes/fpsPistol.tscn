@@ -378,9 +378,13 @@ _data = {
 
 [node name="pistol" instance=ExtResource("1_s1xqh")]
 usesMagazines = true
-magazineSize = 12
 ammoInMagazine = 12
 reserveAmmoAmount = 10000
+baseDamage = 5
+baseFirerate = 1.0
+baseMagazineSize = 8
+baseReloadSpeed = 1.0
+magazineSize = 12
 recoilAmount = 1.0
 
 [node name="gunMesh2" type="Node3D" parent="." index="0"]

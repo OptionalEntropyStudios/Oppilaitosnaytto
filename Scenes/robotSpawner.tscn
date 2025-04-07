@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://0orcepfanghb"]
+
+[ext_resource type="Script" uid="uid://d32aa6hd04rab" path="res://Scripts/robotSpawner.gd" id="1_l8tyx"]
+
+[node name="robotSpawner" type="Marker3D"]
+script = ExtResource("1_l8tyx")
+
+[node name="spawnPositions" type="Node3D" parent="."]
+
+[node name="spawnPos1" type="Marker3D" parent="spawnPositions"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
