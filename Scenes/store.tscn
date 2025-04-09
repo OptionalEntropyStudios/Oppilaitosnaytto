@@ -1,4 +1,4 @@
-[gd_scene load_steps=44 format=4 uid="uid://bq1xtqimjoq4p"]
+[gd_scene load_steps=46 format=4 uid="uid://bq1xtqimjoq4p"]
 
 [ext_resource type="Script" uid="uid://bgepx8tw7vfct" path="res://Scripts/store.gd" id="1_c3i85"]
 [ext_resource type="PackedScene" uid="uid://d3hhupns508pe" path="res://Scenes/baseScenes/button.tscn" id="2_h38w0"]
@@ -10,6 +10,12 @@
 [ext_resource type="Texture2D" uid="uid://661tv40fwlql" path="res://Models/shotgun_shotgunFrameDiffuse.png" id="7_cwvkk"]
 [ext_resource type="Texture2D" uid="uid://ba44am2t460fg" path="res://Models/shotgun_shellSlideNSight.png" id="8_w72gx"]
 [ext_resource type="Texture2D" uid="uid://cmrayc3v4sl0t" path="res://Models/sgSight_shotgunFrameDiffuse.png" id="9_w72gx"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_w72gx"]
+size = Vector3(2.0061, 0.916443, 0.126099)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_cd1ed"]
+size = Vector3(2.0061, 0.697388, 0.431641)
 
 [sub_resource type="BoxMesh" id="BoxMesh_mcxav"]
 size = Vector3(2, 0.92, 0.13)
@@ -479,8 +485,16 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_e6rsa")
 
-[node name="store" type="Node3D"]
+[node name="store" type="StaticBody3D"]
 script = ExtResource("1_c3i85")
+
+[node name="screenCollider" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.337555, -0.0996704)
+shape = SubResource("BoxShape3D_w72gx")
+
+[node name="buttonPanelCollider" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.431047, 0.90233, 0, -0.90233, 0.431047, 0, -0.492523, 0.206533)
+shape = SubResource("BoxShape3D_cd1ed")
 
 [node name="screen" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.338458, -0.100195)
@@ -514,6 +528,24 @@ font_size = 15
 [node name="gunsMenu" type="Node3D" parent="."]
 script = ExtResource("3_j65sj")
 
+[node name="upgradeButtons" type="Node3D" parent="gunsMenu"]
+
+[node name="damageUpgrade" parent="gunsMenu/upgradeButtons" instance=ExtResource("2_h38w0")]
+transform = Transform3D(0.215, 0, 0, 0, 0.215, 0, 0, 0, 0.215, -0.756377, 0, -0.0444247)
+textOnTheButton = "damage  +1"
+
+[node name="capacityUpgrade" parent="gunsMenu/upgradeButtons" instance=ExtResource("2_h38w0")]
+transform = Transform3D(0.215, 0, 0, 0, 0.215, 0, 0, 0, 0.215, -0.38113, 0, -0.0444247)
+textOnTheButton = "cap + 1"
+
+[node name="firerateUpgrade" parent="gunsMenu/upgradeButtons" instance=ExtResource("2_h38w0")]
+transform = Transform3D(0.215, 0, 0, 0, 0.215, 0, 0, 0, 0.215, 0.224276, 0, -0.0444247)
+textOnTheButton = "firerate + 1"
+
+[node name="reloadUpgrade" parent="gunsMenu/upgradeButtons" instance=ExtResource("2_h38w0")]
+transform = Transform3D(0.215, 0, 0, 0, 0.215, 0, 0, 0, 0.215, 0.716612, 0, -0.0444247)
+textOnTheButton = "reload + 1"
+
 [node name="menuTitle" type="Label3D" parent="gunsMenu"]
 transform = Transform3D(1, 0, 0, 0, 0.978885, -0.204411, 0, 0.204411, 0.978885, 0, 0.738816, -0.00642904)
 text = "gun menu"
@@ -531,8 +563,9 @@ transform = Transform3D(0.375, 0, 0, 0, 0.166715, 0.335904, 0, -0.335904, 0.1667
 textOnTheButton = "shotgun"
 
 [node name="gunBuyMenuButton" parent="gunsMenu" instance=ExtResource("2_h38w0")]
-transform = Transform3D(0.21, 0, 0, 0, 0.0925024, 0.188529, 0, -0.188529, 0.0925024, 0, -0.346897, 0.367388)
-textOnTheButton = "open gun buy menu"
+transform = Transform3D(0.255, 0, 0, 0, 0.117513, 0.226309, 0, -0.226309, 0.117513, 0, -0.367323, 0.366303)
+enabled = false
+textOnTheButton = "open buy menu"
 
 [node name="pistolMenu" type="Node3D" parent="gunsMenu"]
 visible = false
@@ -581,22 +614,6 @@ text = "capacity"
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.669793, 0.340997, 0)
 pixel_size = 0.002
 text = "reload speed"
-
-[node name="damageUpgrade" parent="gunsMenu/pistolMenu" instance=ExtResource("2_h38w0")]
-transform = Transform3D(0.215, 0, 0, 0, 0.215, 0, 0, 0, 0.215, -0.756377, 0, -0.0444247)
-textOnTheButton = "damage  +1"
-
-[node name="capacityUpgrade" parent="gunsMenu/pistolMenu" instance=ExtResource("2_h38w0")]
-transform = Transform3D(0.215, 0, 0, 0, 0.215, 0, 0, 0, 0.215, -0.38113, 0, -0.0444247)
-textOnTheButton = "cap + 1"
-
-[node name="firerateUpgrade" parent="gunsMenu/pistolMenu" instance=ExtResource("2_h38w0")]
-transform = Transform3D(0.215, 0, 0, 0, 0.215, 0, 0, 0, 0.215, 0.224276, 0, -0.0444247)
-textOnTheButton = "firerate + 1"
-
-[node name="reloadUpgrade" parent="gunsMenu/pistolMenu" instance=ExtResource("2_h38w0")]
-transform = Transform3D(0.215, 0, 0, 0, 0.215, 0, 0, 0, 0.215, 0.716612, 0, -0.0444247)
-textOnTheButton = "reload + 1"
 
 [node name="smgMenu" type="Node3D" parent="gunsMenu"]
 visible = false
@@ -693,101 +710,101 @@ pixel_size = 0.002
 [node name="buyMenu" type="Node3D" parent="gunsMenu"]
 visible = false
 
-[node name="buyPistol" type="Node3D" parent="gunsMenu/buyMenu"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.611263, 0.278152, 0)
+[node name="buyPistolButton" parent="gunsMenu/buyMenu" instance=ExtResource("2_h38w0")]
+transform = Transform3D(0.345, 0, 0, 0, 0.345, 0, 0, 0, 0.345, -0.611263, 0.077388, 0)
+textOnTheButton = "buy pistol"
 
-[node name="pistolMesh" type="Node3D" parent="gunsMenu/buyMenu/buyPistol"]
+[node name="buyPistol" type="Node3D" parent="gunsMenu/buyMenu/buyPistolButton"]
+transform = Transform3D(2.89855, 0, 0, 0, 2.89855, 0, 0, 0, 2.89855, 0, 0.581925, 0)
+
+[node name="pistolMesh" type="Node3D" parent="gunsMenu/buyMenu/buyPistolButton/buyPistol"]
 transform = Transform3D(-1.96701e-09, 0, -0.045, 0, 0.045, 0, 0.045, 0, -1.96701e-09, -0.0407138, 0.0849312, -0.0367478)
 
-[node name="pistolFrame" type="MeshInstance3D" parent="gunsMenu/buyMenu/buyPistol/pistolMesh"]
+[node name="pistolFrame" type="MeshInstance3D" parent="gunsMenu/buyMenu/buyPistolButton/buyPistol/pistolMesh"]
 mesh = SubResource("ArrayMesh_2w7xe")
 skeleton = NodePath("")
 
-[node name="magazine" type="MeshInstance3D" parent="gunsMenu/buyMenu/buyPistol/pistolMesh"]
+[node name="magazine" type="MeshInstance3D" parent="gunsMenu/buyMenu/buyPistolButton/buyPistol/pistolMesh"]
 mesh = SubResource("ArrayMesh_mlwig")
 skeleton = NodePath("")
 
-[node name="pistolSlide" type="MeshInstance3D" parent="gunsMenu/buyMenu/buyPistol/pistolMesh"]
+[node name="pistolSlide" type="MeshInstance3D" parent="gunsMenu/buyMenu/buyPistolButton/buyPistol/pistolMesh"]
 mesh = SubResource("ArrayMesh_mos1m")
 skeleton = NodePath("")
 
-[node name="pistolTrigger" type="MeshInstance3D" parent="gunsMenu/buyMenu/buyPistol/pistolMesh"]
+[node name="pistolTrigger" type="MeshInstance3D" parent="gunsMenu/buyMenu/buyPistolButton/buyPistol/pistolMesh"]
 mesh = SubResource("ArrayMesh_w763r")
 skeleton = NodePath("")
 
-[node name="buyPistolButton" parent="gunsMenu/buyMenu/buyPistol" instance=ExtResource("2_h38w0")]
-transform = Transform3D(0.345, 0, 0, 0, 0.345, 0, 0, 0, 0.345, 0, -0.200764, 0)
-textOnTheButton = "buy pistol"
-
-[node name="priceLbl" type="Label3D" parent="gunsMenu/buyMenu/buyPistol"]
+[node name="priceLbl" type="Label3D" parent="gunsMenu/buyMenu/buyPistolButton/buyPistol"]
 transform = Transform3D(1, 0, 0, 0, 0.968065, -0.250701, 0, 0.250701, 0.968065, 0, 0.179213, -0.0183342)
 pixel_size = 0.001
 modulate = Color(1, 1, 0.341176, 1)
 text = "botom text"
 
-[node name="buySmg" type="Node3D" parent="gunsMenu/buyMenu"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.187252, 0)
+[node name="buySmgButton" parent="gunsMenu/buyMenu" instance=ExtResource("2_h38w0")]
+transform = Transform3D(0.345, 0, 0, 0, 0.345, 0, 0, 0, 0.345, 0, 0.059243, 0)
+textOnTheButton = "buy smg"
 
-[node name="smgMesh" type="Node3D" parent="gunsMenu/buyMenu/buySmg"]
+[node name="buySmg" type="Node3D" parent="gunsMenu/buyMenu/buySmgButton"]
+transform = Transform3D(2.89855, 0, 0, 0, 2.89855, 0, 0, 0, 2.89855, 0, 0.371041, 0)
+
+[node name="smgMesh" type="Node3D" parent="gunsMenu/buyMenu/buySmgButton/buySmg"]
 transform = Transform3D(-1.1365e-08, 0, -0.26, 0, 0.26, 0, 0.26, 0, -1.1365e-08, 0.0541653, 0.214058, -0.0355922)
 
-[node name="SMG" type="MeshInstance3D" parent="gunsMenu/buyMenu/buySmg/smgMesh"]
+[node name="SMG" type="MeshInstance3D" parent="gunsMenu/buyMenu/buySmgButton/buySmg/smgMesh"]
 transform = Transform3D(0.1514, 0, 0, 0, 0.1514, 0, 0, 0, 0.1514, 0, 0, 0)
 mesh = SubResource("ArrayMesh_xbi58")
 skeleton = NodePath("")
 
-[node name="smgSlide" type="MeshInstance3D" parent="gunsMenu/buyMenu/buySmg/smgMesh"]
+[node name="smgSlide" type="MeshInstance3D" parent="gunsMenu/buyMenu/buySmgButton/buySmg/smgMesh"]
 transform = Transform3D(0.1514, 0, 0, 0, 0.1514, 0, 0, 0, 0.1514, 0, 0, 0)
 mesh = SubResource("ArrayMesh_5icrn")
 skeleton = NodePath("")
 
-[node name="smgMagazine" type="MeshInstance3D" parent="gunsMenu/buyMenu/buySmg/smgMesh"]
+[node name="smgMagazine" type="MeshInstance3D" parent="gunsMenu/buyMenu/buySmgButton/buySmg/smgMesh"]
 transform = Transform3D(0.1514, 0, 0, 0, 0.1514, 0, 0, 0, 0.1514, 0, 0, 0)
 mesh = SubResource("ArrayMesh_kt8pg")
 skeleton = NodePath("")
 
-[node name="buySmgButton" parent="gunsMenu/buyMenu/buySmg" instance=ExtResource("2_h38w0")]
-transform = Transform3D(0.345, 0, 0, 0, 0.345, 0, 0, 0, 0.345, 0, -0.128009, 0)
-textOnTheButton = "buy smg"
-
-[node name="priceLbl" type="Label3D" parent="gunsMenu/buyMenu/buySmg"]
+[node name="priceLbl" type="Label3D" parent="gunsMenu/buyMenu/buySmgButton/buySmg"]
 transform = Transform3D(1, 0, 0, 0, 0.968065, -0.250701, 0, 0.250701, 0.968065, 0, 0.279046, -0.0183342)
 pixel_size = 0.001
 modulate = Color(1, 1, 0.341176, 1)
 text = "botom text"
 
-[node name="buyShotgun" type="Node3D" parent="gunsMenu/buyMenu"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.667413, 0.27897, 0)
+[node name="buyShotgunButton" parent="gunsMenu/buyMenu" instance=ExtResource("2_h38w0")]
+transform = Transform3D(0.345, 0, 0, 0, 0.345, 0, 0, 0, 0.345, 0.667413, 0.09504, 0)
+textOnTheButton = "buy shotgun"
 
-[node name="shotgunMesh" type="Node3D" parent="gunsMenu/buyMenu/buyShotgun"]
+[node name="buyShotgun" type="Node3D" parent="gunsMenu/buyMenu/buyShotgunButton"]
+transform = Transform3D(2.89855, 0, 0, 0, 2.89855, 0, 0, 0, 2.89855, 0, 0.53313, 0)
+
+[node name="shotgunMesh" type="Node3D" parent="gunsMenu/buyMenu/buyShotgunButton/buyShotgun"]
 transform = Transform3D(-2.16371e-08, 0, -0.495, 0, 0.495, 0, 0.495, 0, -2.16371e-08, 0, 0.0699439, -0.034052)
 
-[node name="shotgunFrame" type="MeshInstance3D" parent="gunsMenu/buyMenu/buyShotgun/shotgunMesh"]
+[node name="shotgunFrame" type="MeshInstance3D" parent="gunsMenu/buyMenu/buyShotgunButton/buyShotgun/shotgunMesh"]
 mesh = SubResource("ArrayMesh_ik22o")
 skeleton = NodePath("")
 
-[node name="shell" type="MeshInstance3D" parent="gunsMenu/buyMenu/buyShotgun/shotgunMesh"]
+[node name="shell" type="MeshInstance3D" parent="gunsMenu/buyMenu/buyShotgunButton/buyShotgun/shotgunMesh"]
 mesh = SubResource("ArrayMesh_whnr7")
 skeleton = NodePath("")
 
-[node name="loadingCover" type="MeshInstance3D" parent="gunsMenu/buyMenu/buyShotgun/shotgunMesh"]
+[node name="loadingCover" type="MeshInstance3D" parent="gunsMenu/buyMenu/buyShotgunButton/buyShotgun/shotgunMesh"]
 mesh = SubResource("ArrayMesh_182rm")
 skeleton = NodePath("")
 
-[node name="shotGunSlide" type="MeshInstance3D" parent="gunsMenu/buyMenu/buyShotgun/shotgunMesh"]
+[node name="shotGunSlide" type="MeshInstance3D" parent="gunsMenu/buyMenu/buyShotgunButton/buyShotgun/shotgunMesh"]
 mesh = SubResource("ArrayMesh_4hntr")
 skeleton = NodePath("")
 
-[node name="shotGunSight2" type="MeshInstance3D" parent="gunsMenu/buyMenu/buyShotgun/shotgunMesh"]
+[node name="shotGunSight2" type="MeshInstance3D" parent="gunsMenu/buyMenu/buyShotgunButton/buyShotgun/shotgunMesh"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.45058e-09, 0.148274, 0.17256)
 mesh = SubResource("ArrayMesh_svior")
 skeleton = NodePath("")
 
-[node name="buyShotgunButton" parent="gunsMenu/buyMenu/buyShotgun" instance=ExtResource("2_h38w0")]
-transform = Transform3D(0.345, 0, 0, 0, 0.345, 0, 0, 0, 0.345, 0, -0.18393, 0)
-textOnTheButton = "buy shotgun"
-
-[node name="priceLbl" type="Label3D" parent="gunsMenu/buyMenu/buyShotgun"]
+[node name="priceLbl" type="Label3D" parent="gunsMenu/buyMenu/buyShotgunButton/buyShotgun"]
 transform = Transform3D(1, 0, 0, 0, 0.968065, -0.250701, 0, 0.250701, 0.968065, 0, 0.183101, -0.0183342)
 pixel_size = 0.001
 modulate = Color(1, 1, 0.341176, 1)
@@ -805,14 +822,14 @@ text = "equipment menu"
 [connection signal="buttonPressed" from="screen/buttonPanel/gunMenuBtn" to="." method="selectGunsMenu"]
 [connection signal="buttonPressed" from="screen/buttonPanel/equipmentMenuBtn" to="." method="selectEquipmentMenu"]
 [connection signal="updateGunOwnerShip" from="gunsMenu" to="." method="onGunBought"]
+[connection signal="buttonPressed" from="gunsMenu/upgradeButtons/damageUpgrade" to="gunsMenu" method="buyDamageUpgrade"]
+[connection signal="buttonPressed" from="gunsMenu/upgradeButtons/capacityUpgrade" to="gunsMenu" method="buyMagazineCapacityUpgrade"]
+[connection signal="buttonPressed" from="gunsMenu/upgradeButtons/firerateUpgrade" to="gunsMenu" method="buyFirerateUpgrade"]
+[connection signal="buttonPressed" from="gunsMenu/upgradeButtons/reloadUpgrade" to="gunsMenu" method="buyReloadSpeedUpgrade"]
 [connection signal="buttonPressed" from="gunsMenu/pistolMenuButton" to="gunsMenu" method="openPistolMenu"]
 [connection signal="buttonPressed" from="gunsMenu/smgMenuButton" to="gunsMenu" method="openSmgMenu"]
 [connection signal="buttonPressed" from="gunsMenu/shotgunmenuButton" to="gunsMenu" method="openShotgunMenu"]
 [connection signal="buttonPressed" from="gunsMenu/gunBuyMenuButton" to="gunsMenu" method="openGunBuyMenu"]
-[connection signal="buttonPressed" from="gunsMenu/pistolMenu/damageUpgrade" to="gunsMenu" method="buyDamageUpgrade"]
-[connection signal="buttonPressed" from="gunsMenu/pistolMenu/capacityUpgrade" to="gunsMenu" method="buyMagazineCapacityUpgrade"]
-[connection signal="buttonPressed" from="gunsMenu/pistolMenu/firerateUpgrade" to="gunsMenu" method="buyFirerateUpgrade"]
-[connection signal="buttonPressed" from="gunsMenu/pistolMenu/reloadUpgrade" to="gunsMenu" method="buyReloadSpeedUpgrade"]
-[connection signal="buttonPressed" from="gunsMenu/buyMenu/buyPistol/buyPistolButton" to="gunsMenu" method="buyPistol"]
-[connection signal="buttonPressed" from="gunsMenu/buyMenu/buySmg/buySmgButton" to="gunsMenu" method="buySmg"]
-[connection signal="buttonPressed" from="gunsMenu/buyMenu/buyShotgun/buyShotgunButton" to="gunsMenu" method="buyShotgun"]
+[connection signal="buttonPressed" from="gunsMenu/buyMenu/buyPistolButton" to="gunsMenu" method="buyPistol"]
+[connection signal="buttonPressed" from="gunsMenu/buyMenu/buySmgButton" to="gunsMenu" method="buySmg"]
+[connection signal="buttonPressed" from="gunsMenu/buyMenu/buyShotgunButton" to="gunsMenu" method="buyShotgun"]

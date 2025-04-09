@@ -6,8 +6,10 @@ class_name breakable
 @export var deathSound : AudioStreamPlayer3D
 @export var deathEffect : GPUParticles3D
 
-@onready var mesh: MeshInstance3D = $robot1Mesh
-@onready var hitBox: CollisionShape3D = $hitBox
+@export var mesh: MeshInstance3D
+@export var hitBox: CollisionShape3D 
+@export var headHitBox: CollisionShape3D
+
 func takeDamage(damage : int):
 	health -= damage
 	hitSound.play()
@@ -20,10 +22,8 @@ func die():
 	deathSound.play()
 	deathEffect.emitting = true
 	for child in get_children():
-		if(child.is_in_group("decal")):
+		if(child is not GPUParticles3D):
 			child.queue_free()
-	mesh.visible = false
-	
 
 func onDeathEffectFinished():
 	queue_free()

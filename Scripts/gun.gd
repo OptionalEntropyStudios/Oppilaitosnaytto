@@ -2,6 +2,7 @@ extends Node3D
 class_name gun
 var owned : bool = false
 @onready var bulletHitDecal = preload("res://Scenes/hitHole.tscn")
+@onready var hitDamageIndicator = preload("res://Scenes/baseScenes/damageIndicator.tscn")
 @export var camera : Camera3D
 @export var body: CharacterBody3D
 @onready var animationPlayer: AnimationPlayer = $AnimationPlayer
@@ -51,6 +52,11 @@ func shoot(shootRay : RayCast3D, shotgunRayParent : Node3D):
 						addHitHole(hitObject, shootRay.get_collision_point(), shootRay.get_collision_normal())
 						if(hitObject is breakable):
 							hitObject.takeDamage(bulletDamage)
+							var damageIndicator = hitDamageIndicator.instantiate()
+							get_tree().root.add_child(damageIndicator)
+							damageIndicator.global_position = shootRay.get_collision_point()
+							damageIndicator.damageText.text = "-" + str(bulletDamage)
+							#damageIndicator.look_at(self.global_position, Vector3.UP)
 				else:
 					for pelletRay in shotgunRayParent.get_children():
 						pelletRay.rotation_degrees.x = randf_range(-shotGunSpreadAmount,shotGunSpreadAmount)
@@ -60,6 +66,11 @@ func shoot(shootRay : RayCast3D, shotgunRayParent : Node3D):
 							addHitHole(hitObject, pelletRay.get_collision_point(), pelletRay.get_collision_normal())
 							if(hitObject is breakable):
 								hitObject.takeDamage(bulletDamage)
+								var damageIndicator = hitDamageIndicator.instantiate()
+								get_tree().root.add_child(damageIndicator)
+								damageIndicator.global_position = pelletRay.get_collision_point()
+								damageIndicator.damageText.text = "-" + str(bulletDamage)
+								#damageIndicator.look_at(self.global_position, Vector3.UP)
 			elif(fullAuto and cycleFinished and !animationPlayer.is_playing()):
 				applyRecoil()
 				animationPlayer.play("shoot", -1, firerate)
@@ -69,6 +80,11 @@ func shoot(shootRay : RayCast3D, shotgunRayParent : Node3D):
 					addHitHole(hitObject, shootRay.get_collision_point(), shootRay.get_collision_normal())
 					if(hitObject is breakable):
 						hitObject.takeDamage(bulletDamage)
+						var damageIndicator = hitDamageIndicator.instantiate()
+						get_tree().root.add_child(damageIndicator)
+						damageIndicator.global_position = shootRay.get_collision_point()
+						damageIndicator.damageText.text = "-" + str(bulletDamage)
+						#damageIndicator.look_at(self.global_position, Vector3.UP)
 
 func onReloadAnimationFinished(): #Called when the reload animation is done
 	var bulletsMissingFromMagazine = magazineSize - ammoInMagazine #check how many bullets are missing from the mag
@@ -129,10 +145,9 @@ func addHitHole(objectThatWasHit : Node3D, hitPoint : Vector3, hitPointNormal : 
 	var pointingUp = Vector3.UP
 	var pointingDown = Vector3.DOWN
 	var hitHole = bulletHitDecal.instantiate()
-	#get_tree().get_root()
-	objectThatWasHit.add_child(hitHole) #Lisätään "pää" noodin lapseksi, että skaalaus pysyy ennallaan
+	objectThatWasHit.add_child(hitHole)
 	hitHole.global_transform.origin = hitPoint
-	if(hitPoint == pointingUp or hitPoint == pointingDown):
+	if(hitPoint == pointingUp or hitPoint == pointingDown): #If the collided surface's normal is pointing up or down, change the lookat vector to the right so decal points straight up/down
 		hitHole.look_at(hitPoint + hitPointNormal, Vector3.RIGHT)
 	else:
 		hitHole.look_at(hitPoint + hitPointNormal, Vector3.UP)

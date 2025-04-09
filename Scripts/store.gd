@@ -21,6 +21,11 @@ func _ready() -> void:
 	refreshCreditsAmount()
 	gunsMenu.weaponManager = weaponManager
 	gunsMenu.gunHolder = gunHolder
+	gunsMenu.hideAllBuyGunButtons()
+	gunsMenu.hideAllGunMenus()
+	gunsMenu.hideAllGunMenuButtons()
+	gunsMenu.hideGunBuyMenuButton()
+	gunsMenu.hideUpgradeButtons()
 	storeReady.emit()
 func refreshCreditsAmount():
 	userCredits = dbConnectionManager.getUserCredits(username)
@@ -29,11 +34,19 @@ func refreshCreditsAmount():
 func selectGunsMenu():
 	equipmentMenu.deSelect()
 	gunsMenu.select()
-
+	gunsMenu.showOwnedGunMenus()
+	gunsMenu.hideAllBuyGunButtons()
+	gunsMenu.hideAllGunMenus()
+	gunsMenu.hideUpgradeButtons()
+	if(!gunsMenu.pistolOwned or !gunsMenu.smgOwned or !gunsMenu.shotgun):
+		gunsMenu.showGunBuyMenuButton()
 func selectEquipmentMenu():
 	equipmentMenu.select()
 	gunsMenu.deSelect()
-
+	gunsMenu.hideUpgradeButtons()
+	gunsMenu.hideAllGunMenuButtons()
+	gunsMenu.hideAllBuyGunButtons()
+	gunsMenu.hideGunBuyMenuButton()
 func loadLastLoggedInUser() -> String:
 	var currentUserFile = FileAccess.open("user://currentUser.txt", FileAccess.READ)
 	if(currentUserFile != null):

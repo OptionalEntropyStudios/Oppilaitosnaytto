@@ -135,7 +135,7 @@ func updateWeaponStats():
 	
 ##Calculates the actual value of the stat based on the level and which weapon it be
 func getWeaponStat(stat : weaponUpgrades, weapon : String) -> float:
-	print("function getWeaponStat called for " + weapon + " and " + str(weaponUpgrades.keys()[stat - 1]))
+	#print("function getWeaponStat called for " + weapon + " and " + str(weaponUpgrades.keys()[stat - 1]))
 	var damageMultiplier
 	var firerateMultiplier
 	var magazineSizeMultiplier

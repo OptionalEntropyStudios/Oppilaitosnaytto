@@ -19,9 +19,10 @@ collision_bounce = 0.0
 material = SubResource("StandardMaterial3D_omdkh")
 size = Vector2(0.1, 0.1)
 
-[node name="breakable" type="Node3D" node_paths=PackedStringArray("hitSound", "deathEffect")]
+[node name="breakable" type="Node3D" node_paths=PackedStringArray("hitSound", "deathSound", "deathEffect")]
 script = ExtResource("1_lb0jm")
 hitSound = NodePath("hitSound")
+deathSound = NodePath("deathSound")
 deathEffect = NodePath("deathEffect")
 
 [node name="hitSound" type="AudioStreamPlayer3D" parent="."]

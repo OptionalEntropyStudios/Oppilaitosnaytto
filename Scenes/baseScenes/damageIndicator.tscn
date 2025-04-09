@@ -1,0 +1,21 @@
+[gd_scene load_steps=2 format=3 uid="uid://2gbbrk4aqalc"]
+
+[ext_resource type="Script" uid="uid://d1op3femem80u" path="res://Scripts/damageIndicator.gd" id="1_20757"]
+
+[node name="damageIndicator" type="Node3D" node_paths=PackedStringArray("damageText")]
+script = ExtResource("1_20757")
+fontSize = 60
+elevationSpeed = 4.0
+damageText = NodePath("damageText")
+rainbowText = true
+
+[node name="damageText" type="Label3D" parent="."]
+transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0, 0)
+pixel_size = 0.025
+billboard = 1
+no_depth_test = true
+texture_filter = 0
+modulate = Color(0.891291, 4.18738e-06, 8.66354e-07, 1)
+text = "-15"
+font_size = 50
+outline_size = 6
