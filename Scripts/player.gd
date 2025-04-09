@@ -1,5 +1,7 @@
 extends CharacterBody3D
 
+@export var health : int = 100
+@export var maxHealth : int = 100
 var username : String
 var setUsername : bool = false
 @onready var weaponManager: Node3D = $playerCamera/weaponManager
@@ -30,6 +32,8 @@ func _ready() -> void:
 	crouchingHeight = standingHeight / 2
 	username = loadLastLoggedInUser()
 	weaponManager.playerName = username
+	health = maxHealth
+	healthCounter.text = str(health)
 	#weaponManager.checkGunStatsAndOwnership()
 func _physics_process(delta: float) -> void:
 	gravity()
@@ -112,3 +116,20 @@ func loadLastLoggedInUser() -> String:
 			return usrnm
 		else: return ""
 	else: return ""
+
+@onready var healthCounter: Label = $playerUI/healthTextContainer/healthIndicator
+@onready var hitColorIndicator: ColorRect = $playerUI/hitIndicator
+
+func takeDamage(damage : int):
+	health -= damage
+	healthCounter.text = str(health)
+	if(health < 0):
+		die()
+
+signal playerDied
+func die():
+	print("I fucking died :(")
+	playerDied.emit()
+
+func getAmmo():
+	weaponManager.addAmmoToGunReservers()

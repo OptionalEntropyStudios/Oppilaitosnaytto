@@ -1,0 +1,37 @@
+[gd_scene load_steps=5 format=3 uid="uid://34d41xek5lk0"]
+
+[ext_resource type="Script" uid="uid://dxl536pe8fh3x" path="res://Scripts/robotBullet.gd" id="1_hu5yp"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_eu46w"]
+albedo_color = Color(0, 1, 0, 1)
+metallic = 0.78
+metallic_specular = 0.53
+roughness = 0.0
+emission_enabled = true
+emission = Color(0, 1, 0, 1)
+emission_energy_multiplier = 3.49
+
+[sub_resource type="SphereMesh" id="SphereMesh_eu46w"]
+material = SubResource("StandardMaterial3D_eu46w")
+radius = 0.25
+height = 0.5
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_eu46w"]
+radius = 0.3
+
+[node name="robotBullet" type="RigidBody3D"]
+collision_layer = 0
+gravity_scale = 0.0
+script = ExtResource("1_hu5yp")
+damageAmount = 10
+speed = 10.0
+
+[node name="bulletMesh" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_eu46w")
+
+[node name="hitDetector" type="Area3D" parent="."]
+
+[node name="hitCollider" type="CollisionShape3D" parent="hitDetector"]
+shape = SubResource("SphereShape3D_eu46w")
+
+[connection signal="body_entered" from="hitDetector" to="." method="bulletHitSomething"]

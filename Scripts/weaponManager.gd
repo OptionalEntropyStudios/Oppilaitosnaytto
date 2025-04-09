@@ -115,7 +115,7 @@ func updateWeaponStats():
 		pistol.magazineSize = pistol.baseMagazineSize + getWeaponStat(weaponUpgrades.MAGAZINESIZE, "pistol")
 		pistol.reloadSpeed = pistol.baseReloadSpeed + getWeaponStat(weaponUpgrades.RELOADSPEED, "pistol")
 		pistol.ammoInMagazine = pistol.magazineSize
-		pistol.reserveAmmoAmount = pistol.magazineSize * 3
+		pistol.reserveAmmoAmount = pistol.magazineSize * 5
 	#update smgs stats
 	if(smg.owned):
 		smg.bulletDamage = smg.baseDamage + getWeaponStat(weaponUpgrades.BULLETDAMAGE, "smg")
@@ -123,7 +123,7 @@ func updateWeaponStats():
 		smg.magazineSize = smg.baseMagazineSize + getWeaponStat(weaponUpgrades.MAGAZINESIZE, "smg")
 		smg.reloadSpeed = smg.baseReloadSpeed + getWeaponStat(weaponUpgrades.RELOADSPEED, "smg")
 		smg.ammoInMagazine = smg.magazineSize
-		smg.reserveAmmoAmount = smg.magazineSize * 3
+		smg.reserveAmmoAmount = smg.magazineSize * 5
 	#update shotgun stats
 	if(shotgun.owned):
 		shotgun.bulletDamage = shotgun.baseDamage + getWeaponStat(weaponUpgrades.BULLETDAMAGE, "shotgun")
@@ -131,7 +131,7 @@ func updateWeaponStats():
 		shotgun.magazineSize = shotgun.baseMagazineSize + getWeaponStat(weaponUpgrades.MAGAZINESIZE, "shotgun")
 		shotgun.reloadSpeed = shotgun.baseReloadSpeed + getWeaponStat(weaponUpgrades.RELOADSPEED, "shotgun")
 		shotgun.ammoInMagazine = shotgun.magazineSize
-		shotgun.reserveAmmoAmount = shotgun.magazineSize * 3
+		shotgun.reserveAmmoAmount = shotgun.magazineSize * 5
 	
 ##Calculates the actual value of the stat based on the level and which weapon it be
 func getWeaponStat(stat : weaponUpgrades, weapon : String) -> float:
@@ -167,3 +167,10 @@ func getWeaponStat(stat : weaponUpgrades, weapon : String) -> float:
 		weaponUpgrades.RELOADSPEED:
 			return upgradeLvl * reloadSpeedMultiplier
 	return 0.0
+
+
+func addAmmoToGunReservers():
+	pistol.reserveAmmoAmount += pistol.magazineSize * 2
+	smg.reserveAmmoAmount += smg.magazineSize * 2
+	shotgun.reserveAmmoAmount += shotgun.magazineSize * 2
+	updateEquippedGunAmmoCounter()

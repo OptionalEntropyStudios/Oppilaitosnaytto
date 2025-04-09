@@ -50,6 +50,7 @@ pistolMagazine=""
 decal=""
 button=""
 navMesh=""
+player=""
 
 [input]
 

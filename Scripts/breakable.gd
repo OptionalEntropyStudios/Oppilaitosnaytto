@@ -10,15 +10,19 @@ class_name breakable
 @export var hitBox: CollisionShape3D 
 @export var headHitBox: CollisionShape3D
 
+signal destroyed
+var gotKilled : bool = false
 func takeDamage(damage : int):
 	health -= damage
 	hitSound.play()
-	if(health <= 0):
+	if(health <= 0 and !gotKilled):
 		die()
 		hitBox.disabled = true
 
 
 func die():
+	gotKilled = true
+	destroyed.emit()
 	deathSound.play()
 	deathEffect.emitting = true
 	for child in get_children():

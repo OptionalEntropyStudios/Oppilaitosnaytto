@@ -1,7 +1,8 @@
-[gd_scene load_steps=11 format=4 uid="uid://7w2clgeffpes"]
+[gd_scene load_steps=12 format=4 uid="uid://7w2clgeffpes"]
 
 [ext_resource type="Script" uid="uid://huhvcjijh3bw" path="res://Scenes/breakableAIController.gd" id="1_17rk6"]
 [ext_resource type="Texture2D" uid="uid://bpuo5oxxo8pal" path="res://Models/robot_meatShield_robot1Diffuse.png" id="2_c5t10"]
+[ext_resource type="PackedScene" uid="uid://vvayuvxv2yev" path="res://robotCannon.tscn" id="3_c5t10"]
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_lb0jm"]
 direction = Vector3(1, 1, 0)
@@ -63,17 +64,19 @@ shadow_mesh = SubResource("ArrayMesh_2pbmm")
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_17rk6"]
 height = 3.38232
+radius = 1.06445
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_c5t10"]
-radius = 0.947478
+radius = 1.11546
 
-[node name="robot1" type="CharacterBody3D" node_paths=PackedStringArray("hitSound", "deathSound", "deathEffect", "mesh", "hitBox", "headHitBox")]
+[node name="robot1" type="CharacterBody3D" node_paths=PackedStringArray("cannon", "hitSound", "deathSound", "deathEffect", "mesh", "hitBox", "headHitBox")]
 collision_layer = 9
 collision_mask = 9
 script = ExtResource("1_17rk6")
-moveSpeed = 10.0
+cannon = NodePath("robotCannon")
+moveSpeed = 3.0
 accelerationSpeed = 15.0
-health = 50
+health = 10
 hitSound = NodePath("hitSound")
 deathSound = NodePath("deathSound")
 deathEffect = NodePath("deathEffect")
@@ -115,7 +118,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.75902, 0)
 shape = SubResource("CylinderShape3D_17rk6")
 
 [node name="headHitBox" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.4703, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.4142, 0)
 shape = SubResource("SphereShape3D_c5t10")
+
+[node name="robotCannon" parent="." instance=ExtResource("3_c5t10")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.44152, 1.57737, -1.09749)
 
 [connection signal="finished" from="deathEffect" to="." method="onDeathEffectFinished"]

@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://dlnlalfhir7cd"]
+[gd_scene load_steps=15 format=3 uid="uid://dlnlalfhir7cd"]
 
 [ext_resource type="Script" uid="uid://dxa0bwyy34ccj" path="res://Scripts/player.gd" id="1_v0iea"]
 [ext_resource type="Script" uid="uid://dnuip41re4566" path="res://Scripts/interactionManager.gd" id="2_8erm5"]
@@ -19,6 +19,12 @@ font_color = Color(1, 0.407843, 1, 1)
 outline_size = 15
 outline_color = Color(0, 0, 0, 1)
 
+[sub_resource type="LabelSettings" id="LabelSettings_tx1dd"]
+font_size = 100
+font_color = Color(1, 0, 0.266667, 1)
+outline_size = 10
+outline_color = Color(0.400756, 0.147507, 0.237757, 1)
+
 [sub_resource type="LabelSettings" id="LabelSettings_8erm5"]
 font_size = 20
 
@@ -26,7 +32,7 @@ font_size = 20
 line_spacing = -10.0
 font_size = 20
 
-[node name="Player" type="CharacterBody3D"]
+[node name="Player" type="CharacterBody3D" groups=["player"]]
 script = ExtResource("1_v0iea")
 
 [node name="playerBody" type="CollisionShape3D" parent="."]
@@ -175,8 +181,9 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -40.0
-offset_top = -40.0
+offset_left = -355.33
+offset_top = -137.0
+offset_right = -16.3301
 grow_horizontal = 0
 grow_vertical = 0
 
@@ -185,6 +192,22 @@ layout_mode = 2
 size_flags_horizontal = 4
 text = "XX / XX"
 label_settings = SubResource("LabelSettings_fkybt")
+
+[node name="healthTextContainer" type="MarginContainer" parent="playerUI"]
+custom_minimum_size = Vector2(10, 10)
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -137.0
+offset_right = 171.0
+grow_vertical = 0
+
+[node name="healthIndicator" type="Label" parent="playerUI/healthTextContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "100"
+label_settings = SubResource("LabelSettings_tx1dd")
 
 [node name="moveStateLable" type="Label" parent="playerUI"]
 layout_mode = 0
@@ -243,17 +266,26 @@ text = "groundedState:"
 label_settings = SubResource("LabelSettings_f1ek2")
 uppercase = true
 
-[node name="gunFullAutoStatus2" type="Label" parent="playerUI"]
+[node name="bindInfo" type="Label" parent="playerUI"]
 layout_mode = 0
 offset_left = 4.0
-offset_top = 651.0
+offset_top = 168.0
 offset_right = 288.0
-offset_bottom = 715.0
+offset_bottom = 232.0
 text = "[1] = Pistol
 [2] = Smg
 [3] = Shotgun"
 label_settings = SubResource("LabelSettings_f1ek2")
 uppercase = true
+
+[node name="hitIndicator" type="ColorRect" parent="playerUI"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 0, 0, 0)
 
 [connection signal="canLookNow" from="." to="playerCamera" method="onLevelLoaded"]
 [connection signal="reloadButtonPressed" from="playerCamera/weaponManager" to="playerCamera/weaponManager/gunHolder/smg" method="reload"]
