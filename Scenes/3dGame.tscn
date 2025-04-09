@@ -378,6 +378,7 @@ transform = Transform3D(1, -2.26955e-07, -2.68221e-07, 2.68221e-07, 1, -3.42727e
 transform = Transform3D(1, -2.26955e-07, -2.68221e-07, 2.68221e-07, 1, -3.42727e-07, 0, 7.41723e-08, 1, -15, 11, -2.25)
 
 [connection signal="giveAmmo" from="robotSpawner" to="Player" method="getAmmo"]
+[connection signal="refreshCredits" from="robotSpawner" to="store" method="refreshCreditsAmount"]
 [connection signal="playerDied" from="Player" to="robotSpawner" method="onPlayerDied"]
 [connection signal="updateUserGunOwnership" from="store" to="Player" method="makeGunManagerCheckGunOwnerships"]
 [connection signal="buttonPressed" from="spawnRobotsButton" to="robotSpawner" method="toggleRobotSpawning"]

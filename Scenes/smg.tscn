@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=4 uid="uid://dw5fnend2q2to"]
+[gd_scene load_steps=17 format=4 uid="uid://dw5fnend2q2to"]
 
 [ext_resource type="PackedScene" uid="uid://rmplx8vqgi6x" path="res://Scenes/baseScenes/gunBase.tscn" id="1_2ecjt"]
 [ext_resource type="Texture2D" uid="uid://hrusl3x1x232" path="res://Models/smg_smgFrameDiffuse.png" id="2_sovh5"]
@@ -357,7 +357,18 @@ _data = {
 &"shoot": SubResource("Animation_5j6yl")
 }
 
-[node name="smg" instance=ExtResource("1_2ecjt")]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_udryi"]
+emission_enabled = true
+emission = Color(1, 1, 0, 1)
+emission_energy_multiplier = 16.0
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_udryi"]
+material = SubResource("StandardMaterial3D_udryi")
+size = Vector2(0.06, 0.06)
+orientation = 2
+
+[node name="smg" node_paths=PackedStringArray("muzzleEffect") instance=ExtResource("1_2ecjt")]
+muzzleEffect = NodePath("MeshInstance3D")
 usesMagazines = true
 fullAuto = true
 ammoInMagazine = 20
@@ -389,3 +400,8 @@ skeleton = NodePath("../..")
 libraries = {
 &"": SubResource("AnimationLibrary_tsr3n")
 }
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.546425)
+visible = false
+mesh = SubResource("PlaneMesh_udryi")

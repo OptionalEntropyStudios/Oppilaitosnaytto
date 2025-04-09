@@ -24,7 +24,7 @@ collision_layer = 0
 gravity_scale = 0.0
 script = ExtResource("1_hu5yp")
 damageAmount = 10
-speed = 10.0
+speed = 15.0
 
 [node name="bulletMesh" type="MeshInstance3D" parent="."]
 mesh = SubResource("SphereMesh_eu46w")

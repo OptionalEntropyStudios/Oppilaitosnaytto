@@ -6,7 +6,7 @@ var owned : bool = false
 @export var camera : Camera3D
 @export var body: CharacterBody3D
 @onready var animationPlayer: AnimationPlayer = $AnimationPlayer
-
+@export var muzzleEffect : MeshInstance3D
 
 @export var reloading : bool
 @export var usesMagazines : bool
@@ -44,8 +44,12 @@ func shoot(shootRay : RayCast3D, shotgunRayParent : Node3D):
 			if(not fullAuto and triggerReset and !animationPlayer.is_playing()):
 				applyRecoil()
 				triggerReset = false
+				muzzleEffect.rotation.z = randf_range(0, 180)
+				muzzleEffect.show()
 				animationPlayer.play("shoot", -1, firerate)
 				ammoInMagazine -= 1
+				await get_tree().create_timer(0.01).timeout
+				muzzleEffect.hide()
 				if(!isShotgun):
 					if(shootRay.is_colliding() and shootRay.get_collider() != null):
 						var hitObject = shootRay.get_collider()
@@ -73,8 +77,12 @@ func shoot(shootRay : RayCast3D, shotgunRayParent : Node3D):
 								#damageIndicator.look_at(self.global_position, Vector3.UP)
 			elif(fullAuto and cycleFinished and !animationPlayer.is_playing()):
 				applyRecoil()
+				muzzleEffect.rotation.z = randf_range(0, 180)
+				muzzleEffect.show()
 				animationPlayer.play("shoot", -1, firerate)
 				ammoInMagazine -= 1
+				await get_tree().create_timer(0.01).timeout
+				muzzleEffect.hide()
 				if(shootRay.is_colliding() and shootRay.get_collider() != null):
 					var hitObject = shootRay.get_collider()
 					addHitHole(hitObject, shootRay.get_collision_point(), shootRay.get_collision_normal())

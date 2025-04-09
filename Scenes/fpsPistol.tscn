@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=4 uid="uid://duxk1kj5jiwfe"]
+[gd_scene load_steps=21 format=4 uid="uid://duxk1kj5jiwfe"]
 
 [ext_resource type="PackedScene" uid="uid://rmplx8vqgi6x" path="res://Scenes/baseScenes/gunBase.tscn" id="1_s1xqh"]
 [ext_resource type="Texture2D" uid="uid://b5cpavxbsqnu1" path="res://Models/xPistol_pistolTexture.png" id="2_4jper"]
@@ -376,7 +376,17 @@ _data = {
 &"shoot": SubResource("Animation_s1xqh")
 }
 
-[node name="pistol" instance=ExtResource("1_s1xqh")]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_s1xqh"]
+emission_enabled = true
+emission = Color(1, 1, 0, 1)
+emission_energy_multiplier = 16.0
+
+[sub_resource type="QuadMesh" id="QuadMesh_4jper"]
+material = SubResource("StandardMaterial3D_s1xqh")
+size = Vector2(0.195, 0.24)
+
+[node name="pistol" node_paths=PackedStringArray("muzzleEffect") instance=ExtResource("1_s1xqh")]
+muzzleEffect = NodePath("MeshInstance3D")
 usesMagazines = true
 ammoInMagazine = 12
 reserveAmmoAmount = 10000
@@ -413,3 +423,8 @@ skeleton = NodePath("")
 libraries = {
 &"": SubResource("AnimationLibrary_0s8pg")
 }
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." index="2"]
+transform = Transform3D(-1, 0, 1.50996e-07, 0, 1, 0, -1.50996e-07, 0, -1, 0, 0.113997, 0.425354)
+visible = false
+mesh = SubResource("QuadMesh_4jper")

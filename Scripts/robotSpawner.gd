@@ -38,8 +38,14 @@ var robotSpeedWaveModifier : float = .1
 
 var wavesSinceLastIncreasedCreditAwardAmount : int = 0
 var creditAwardIncreaseInterval : int = 2
+var playerName
+var dbConnectionScript = preload("res://Scripts/mySqlTestConneciton.cs")
+var dbConnectionManager
 func _ready() -> void:
 	timeSinceLastRobotSpawned = 0.0
+	await get_tree().create_timer(0.5).timeout
+	playerName = playerCharacter.username
+	dbConnectionManager = dbConnectionScript.new()
 func _process(delta: float) -> void:
 	if(needToSpawnRobots):
 		if(timeSinceLastRobotSpawned > robotSpawnInterval):
@@ -125,7 +131,7 @@ func elevateRobotStats():
 	giveAmmo.emit()
 	print("script robotSpawner - The robotSpeed for the next wave will be " + str(robotSpeed) + " and health will be " + str(robotHealth) + " and we will spawn " + str(robotsPerWave) + " of them")
 
-
+signal refreshCredits
 func onPlayerDied() -> void:
 	needToSpawnRobots = false
 	for robot in get_children():
@@ -133,5 +139,7 @@ func onPlayerDied() -> void:
 			robot.queue_free()
 	print("the player destroyed " + str(robotsDestroyedDuringRun) + " and earned " + str(earnedCredits) + " credits in total before dying")
 	playerCharacter.global_position = basePosition.global_position
-	await get_tree().create_timer(1).timeout
-	playerCharacter.health = playerCharacter.maxHealth
+	var currentUserCredits = dbConnectionManager.getUserCredits(playerName)
+	var totalCredits = currentUserCredits + earnedCredits
+	dbConnectionManager.updateUserCredits(playerName, totalCredits)
+	refreshCredits.emit()

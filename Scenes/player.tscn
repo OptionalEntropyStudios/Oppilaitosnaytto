@@ -59,16 +59,13 @@ debug_shape_thickness = 1
 script = ExtResource("2_fkybt")
 
 [node name="gunHolder" type="Node3D" parent="playerCamera/weaponManager"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.06, -0.178, -0.405)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.065, -0.098, -0.192)
 script = ExtResource("5_f1ek2")
-swayLimit = 5.0
-swayLerpSpeed = 2.0
 swayLeft = Vector3(0, 0.3, 0)
 swayRight = Vector3(0, -0.3, 0)
 
 [node name="smg" parent="playerCamera/weaponManager/gunHolder" node_paths=PackedStringArray("camera", "body") instance=ExtResource("5_x3wgy")]
-transform = Transform3D(1, 0, -7.45058e-09, 0, 1, 0, 7.45058e-09, 0, 1, 0.000400824, 0.0395191, 0.0660882)
-visible = false
+transform = Transform3D(1, 0, -7.45058e-09, 0, 1, 0, 7.45058e-09, 0, 1, -0.01, 0.02, 0.0951872)
 camera = NodePath("../../..")
 body = NodePath("../../../..")
 ammoInMagazine = 200
@@ -78,7 +75,7 @@ magazineSize = 200
 recoilAmount = 1.0
 
 [node name="pistol" parent="playerCamera/weaponManager/gunHolder" node_paths=PackedStringArray("camera", "body") instance=ExtResource("2_vgqql")]
-transform = Transform3D(-0.295, 0, -4.47035e-08, 0, 0.295, 0, 4.47035e-08, 0, -0.295, -0.000360921, -0.040143, -0.0700908)
+transform = Transform3D(-0.295, 0, 2.57897e-08, 0, 0.295, 0, -2.57897e-08, 0, -0.295, -0.02, -0.00999999, -0.0908128)
 visible = false
 camera = NodePath("../../..")
 body = NodePath("../../../..")
@@ -87,7 +84,7 @@ reserveAmmoAmount = 50
 magazineSize = 10
 
 [node name="shotgun" parent="playerCamera/weaponManager/gunHolder" node_paths=PackedStringArray("camera", "body") instance=ExtResource("6_3smsa")]
-transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0, 0)
+transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, -0.035, -0.00999999, 0.0141872)
 visible = false
 camera = NodePath("../../..")
 body = NodePath("../../../..")

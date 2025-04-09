@@ -2,6 +2,7 @@ extends CharacterBody3D
 
 @export var health : int = 100
 @export var maxHealth : int = 100
+var healthIndicatorAlpha : float = 0.0
 var username : String
 var setUsername : bool = false
 @onready var weaponManager: Node3D = $playerCamera/weaponManager
@@ -48,6 +49,10 @@ func _process(delta: float) -> void:
 		playerBody.scale.y = crouchingHeight
 	elif(playerBody.scale.y != standingHeight):
 		playerBody.scale.y = standingHeight
+	if(healthIndicatorAlpha > 0.0):
+		healthIndicatorAlpha -= delta / 2
+	hitColorIndicator.color = Color(1, 0, 0, healthIndicatorAlpha)
+		
 func checkStandState() -> standState:
 	if(Input.is_action_pressed("crouch")):
 		return standState.CROUCHING
@@ -122,14 +127,16 @@ func loadLastLoggedInUser() -> String:
 
 func takeDamage(damage : int):
 	health -= damage
+	healthIndicatorAlpha += 0.3
 	healthCounter.text = str(health)
-	if(health < 0):
+	if(health <= 0):
 		die()
 
 signal playerDied
 func die():
 	print("I fucking died :(")
 	playerDied.emit()
-
+	health = maxHealth
+	healthCounter.text = str(health)
 func getAmmo():
 	weaponManager.addAmmoToGunReservers()

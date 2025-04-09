@@ -221,6 +221,17 @@ public partial class mySqlTestConneciton : Node
         return price;
     }
 
+    public void updateUserCredits(string username, int credits)
+    {
+        string awardQuery = $"UPDATE player SET credits = {credits} WHERE username = '{username}'";
+        connection = new MySqlConnection(connectionString);
+        connection.Open();
+        MySqlCommand command = connection.CreateCommand();
+        command.CommandText = awardQuery;
+        command.ExecuteNonQuery();
+        connection.Close();
+        GD.Print($"{username}'s credit balance is now {credits}");
+    }
     public bool CanBuyGun(string username, string gunType)
     {
         int credits = getUserCredits(username);

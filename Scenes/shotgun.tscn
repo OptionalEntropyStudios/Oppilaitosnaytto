@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=4 uid="uid://j77oe421boc8"]
+[gd_scene load_steps=28 format=4 uid="uid://j77oe421boc8"]
 
 [ext_resource type="PackedScene" uid="uid://rmplx8vqgi6x" path="res://Scenes/baseScenes/gunBase.tscn" id="1_8claw"]
 [ext_resource type="Texture2D" uid="uid://661tv40fwlql" path="res://Models/shotgun_shotgunFrameDiffuse.png" id="2_0vijm"]
@@ -631,7 +631,18 @@ _data = {
 &"singleReload": SubResource("Animation_nc2j0")
 }
 
-[node name="shotgun" instance=ExtResource("1_8claw")]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_udryi"]
+emission_enabled = true
+emission = Color(1, 1, 0, 1)
+emission_energy_multiplier = 16.0
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_0vijm"]
+material = SubResource("StandardMaterial3D_udryi")
+size = Vector2(0.175, 0.215)
+orientation = 2
+
+[node name="shotgun" node_paths=PackedStringArray("muzzleEffect") instance=ExtResource("1_8claw")]
+muzzleEffect = NodePath("MeshInstance3D")
 baseDamage = 10
 baseFirerate = 1.0
 baseMagazineSize = 5
@@ -668,3 +679,8 @@ skeleton = NodePath("")
 libraries = {
 &"": SubResource("AnimationLibrary_amvni")
 }
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." index="2"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0.0264055, 0.504)
+visible = false
+mesh = SubResource("PlaneMesh_0vijm")
