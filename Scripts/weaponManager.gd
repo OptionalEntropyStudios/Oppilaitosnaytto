@@ -81,7 +81,7 @@ func getGunSelection():
 		gunToEquip = guns.PISTOL
 	if(Input.is_action_just_pressed("equipSMG") and smg.owned):
 		gunToEquip = guns.SMG
-	if(Input.is_action_just_pressed("equipShotgun") and smg.owned):
+	if(Input.is_action_just_pressed("equipShotgun") and shotgun.owned):
 		gunToEquip = guns.SHOTGUN
 
 @onready var ammoCounter: Label = $"../../playerUI/ammoTextContainer/ammoCounter"
@@ -99,7 +99,6 @@ func randomizePelletRays():
 func checkGunStatsAndOwnership():
 	if(!playerName.is_empty()):
 		checkOwnedGuns(playerName)
-	else: print("function checkGunStatsAndOwnership - playerName is empty")
 func checkOwnedGuns(username : String):
 	pistol.owned = dbConnectionManager.isOwned(username, pistol.name)
 	smg.owned = dbConnectionManager.isOwned(username, smg.name)
@@ -112,7 +111,6 @@ func checkOwnedGuns(username : String):
 		gunToEquip = guns.PISTOL
 	if(gunToEquip != null):
 		equipGun(gunToEquip)
-	print("function checkOwnedGuns gonna call updateWeaponStats() next")
 	updateWeaponStats()
 enum weaponUpgrades{BULLETDAMAGE = 1, FIRERATE = 2, MAGAZINESIZE = 3, RELOADSPEED = 4} #To minimize "magic numbers in the below function
 ##Function will update each owned gun's stats based on those in the database

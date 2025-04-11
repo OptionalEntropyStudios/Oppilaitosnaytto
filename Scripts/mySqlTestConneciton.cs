@@ -69,12 +69,9 @@ public partial class mySqlTestConneciton : Node
             connection.Close();
             return true;
         }
-        else
-        {
-            reader.Close();
-            connection.Close();
-            return false;
-        }
+        reader.Close();
+        connection.Close();
+        return false;
     }
 
     //Checks for any entries into the weaponupgrade table referencing the owned weapon.
@@ -109,7 +106,6 @@ public partial class mySqlTestConneciton : Node
 
         string weaponInstanceID = owner + gunType; //The "owned" gun's id, which is just username + guntype
         
-        //start of the query, 
         string query = $"INSERT INTO weaponupgrade " +
             $"(weaponinstanceid, upgradeid, upgradetype, upgradeprice, upgradelevel) VALUES ";
 
@@ -133,6 +129,7 @@ public partial class mySqlTestConneciton : Node
         MySqlCommand command = connection.CreateCommand();
         command.CommandText = query;
         command.ExecuteNonQuery();
+        connection.Close();
     }
 
     string getWeaponAbbreviation(string gunName)
@@ -173,7 +170,6 @@ public partial class mySqlTestConneciton : Node
     }
     public int getUserCredits(string userName)
     {
-        GD.Print("C# getUserCredits() - trying to get the credit balance of " + userName);
         int creditsAmount = 0;
         string query = $"SELECT credits FROM player WHERE username = '{userName}'";
         connection = new MySqlConnection(connectionString);
@@ -194,7 +190,6 @@ public partial class mySqlTestConneciton : Node
             reader.Close();
         }
         connection.Close();
-        GD.Print("C# getUserCredits() - the credit balance of " + userName + " is " + creditsAmount.ToString());
         return creditsAmount;
     }
 
@@ -215,11 +210,9 @@ public partial class mySqlTestConneciton : Node
             }
             reader.Close();
             connection.Close();
-            GD.Print($"C# script GetWeaponPrice - {weaponType} costs {price} credits");
             return price;
         }
         price = 9999;
-        GD.Print($"C# script GetWeaponPrice - {weaponType} costs {price} credits");
         return price;
     }
 
@@ -232,7 +225,38 @@ public partial class mySqlTestConneciton : Node
         command.CommandText = awardQuery;
         command.ExecuteNonQuery();
         connection.Close();
-        GD.Print($"{username}'s credit balance is now {credits}");
+    }
+
+    public string GetPlayerAverageAccuracy(string username)
+    {
+        //If the player doesn't have any run entries, there will be no data, so default is 100%
+        string accuracyQuery = $"SELECT IFNULL(AVG(gunAccuracy),100) FROM defencerun WHERE player = '{username}'";
+
+
+        connection = new MySqlConnection(connectionString);
+        connection.Open();
+        MySqlCommand command = connection.CreateCommand();
+        command.CommandText = accuracyQuery;
+        //string result = command.ExecuteScalar().ToString();
+        //string formattedResult = result.ToString("0.00");
+        double result = Convert.ToDouble(command.ExecuteScalar());
+
+        connection.Close();
+        
+        return result.ToString("0.00");
+    }
+
+    public void UpdatePlayerAccuracy(string username)
+    {
+        float averageAccuracy = GetPlayerAverageAccuracy(username).ToFloat();
+        string formattedAvgAccuracy = averageAccuracy.ToString(CultureInfo.InvariantCulture); //Gotta format it to not have comma as decimal point
+        string updateAccuracyQuery = $"UPDATE player SET accuracy = {formattedAvgAccuracy} WHERE username = '{username}'";
+        connection = new MySqlConnection(connectionString);
+        connection.Open();
+        MySqlCommand command = connection.CreateCommand();
+        command.CommandText = updateAccuracyQuery;
+        command.ExecuteNonQuery();
+        connection.Close();
     }
     public bool CanBuyGun(string username, string gunType)
     {
@@ -240,12 +264,10 @@ public partial class mySqlTestConneciton : Node
         int weaponPrice = GetWeaponPrice(gunType);
         if (credits >= weaponPrice)
         {
-            GD.Print($"C# script CanBuyGun - {username} can buy {gunType}");
             return true;
         }
         else
         {
-            GD.Print($"C# script CanBuyGun - {username} cannot buy {gunType}");
             return false;
         }
     }
@@ -253,7 +275,7 @@ public partial class mySqlTestConneciton : Node
     //Create a new weaponinstance for the user, and remove the weapon price from the user's credits.
     public void BuyGun(string username, string gunType)
     {
-        GD.Print($"C# script BuyGun - {username} wants to buy {gunType}");
+
         int credits = getUserCredits(username); //get the user's credits
         int weaponPrice = GetWeaponPrice(gunType); //get the price of the weapon
         int newCredits = credits - weaponPrice; //substract gun price from credits
@@ -267,11 +289,10 @@ public partial class mySqlTestConneciton : Node
         connection = new MySqlConnection(connectionString);
         connection.Open();
         MySqlCommand command = connection.CreateCommand();
-        GD.Print($"C# script BuyGun - executing query '{weaponInstanceQuery}'");
+
         command.CommandText = weaponInstanceQuery;
         command.ExecuteNonQuery();
 
-        GD.Print($"C# script BuyGun - executing query '{playerQuery}'");
         command.CommandText = playerQuery;
         command.ExecuteNonQuery();
         connection.Close();
@@ -293,12 +314,10 @@ public partial class mySqlTestConneciton : Node
         int upgradePrice = GetUpgradePrice(upgradeInstanceID);
         if (credits >= upgradePrice)
         {
-            GD.Print($"C# script CanBuyGun - {username} can buy {upgradeID}");
             return true;
         }
         else
         {
-            GD.Print($"C# script CanBuyGun - {username} cannot buy {upgradeID}");
             return false;
         }
     }
@@ -314,18 +333,15 @@ public partial class mySqlTestConneciton : Node
         connection = new MySqlConnection(connectionString);
         connection.Open();
         MySqlCommand command = connection.CreateCommand();
-        GD.Print($"C# script BuyUpgrade - executing query '{purchaseQuery}'");
         command.CommandText = purchaseQuery;
         command.ExecuteNonQuery();
         string removeCreditsQuery = $"UPDATE player SET credits = {credits - upgradePrice} WHERE username = '{username}'";
         command.CommandText = removeCreditsQuery;
-        GD.Print($"C# script BuyUpgrade - executing query '{removeCreditsQuery}'");
         command.ExecuteNonQuery();
         connection.Close();
     }
     public int GetUpgradePrice(string upgradeID)
     {
-        GD.Print("C# GetUpgradePrice() - trying to get the price of " + upgradeID);
         string query = $"SELECT upgradePrice from weaponupgrade where upgradeId = '{upgradeID}'";
         connection = new MySqlConnection(connectionString);
         connection.Open();
@@ -341,11 +357,11 @@ public partial class mySqlTestConneciton : Node
             }
             reader.Close();
             connection.Close();
-            GD.Print($"C# script GetUpgradePrice - {upgradeID} costs {price} credits");
             return price;
         }
+        reader.Close();
+        connection.Close();
         price = 9999;
-        GD.Print($"C# script GetUpgradePrice - {upgradeID} costs {price} credits");
         return price;
     }
 
@@ -372,7 +388,6 @@ public partial class mySqlTestConneciton : Node
 
     public void updateOwnedEquipmentAmount(string username, string equipmentType, int ownedAmount)
     {
-        GD.Print("C# updateOwnedEquipmentAmount() - updating owned amount of " + equipmentType + " for " + username + " to be " + ownedAmount.ToString());
         string instanceID = username + equipmentType;
         string updateEquipmentQuery = $"UPDATE equipmentinstance SET equipmentAmount = {ownedAmount} WHERE instanceID = '{instanceID}'";
         connection = new MySqlConnection(connectionString);
@@ -389,33 +404,24 @@ public partial class mySqlTestConneciton : Node
         int equipmentPrice = getEquipmentPrice(equipmentType);
         if (usercredits >= equipmentPrice)
         {
-            GD.Print($"C# script canBuyEquipment - {username} can buy {equipmentType}");
             return true;
         }
-        else
-        {
-            GD.Print($"C# script canBuyEquipment - {username} cannot buy {equipmentType}");
-            return false;
-        }
+        return false;
     }
 
     public void BuyOneEquipment(string username, string equipmentType)
     {
-        GD.Print(username + " wants to buy " + equipmentType);
         int usercredits = getUserCredits(username);
         int equipmentPrice = getEquipmentPrice(equipmentType);
         int creditsAfterPurchase = usercredits - equipmentPrice;
-        GD.Print("checking if " + username + " already owns " + equipmentType);
         if (EquipmentRegisteredToUser(username, equipmentType))
         {
-            GD.Print("THe user owns the equipment, updating the amount");
             int ownedAmount = getOwnedEquipmentAmount(username, equipmentType);
             ownedAmount += 1;
             updateOwnedEquipmentAmount(username, equipmentType, ownedAmount);
         }
         else
         {   
-            GD.Print("user didn't own the equipment, creating new instance");
             CreateNewEquipmentInstance(username, equipmentType, 1);
         }
         string updateCreditsQuery = $"UPDATE player SET credits = {creditsAfterPurchase} WHERE username = '{username}'";
@@ -424,12 +430,12 @@ public partial class mySqlTestConneciton : Node
         MySqlCommand command = connection.CreateCommand();
         command.CommandText = updateCreditsQuery;
         command.ExecuteNonQuery();
+        connection.Close();
     }
 
     public bool EquipmentRegisteredToUser(string username, string equipmentType)
     {
         string equipmentInstanceID = username + equipmentType;
-        GD.Print("C# EquipmentRegisteredToUser() - checking if " + equipmentInstanceID + " exists");
         string equipmentQuery = $"SELECT * FROM equipmentInstance WHERE instanceid = '{equipmentInstanceID}'";
         connection = new MySqlConnection(connectionString);
         connection.Open();
@@ -440,15 +446,11 @@ public partial class mySqlTestConneciton : Node
         {
             reader.Close();
             connection.Close();
-            GD.Print("C# EquipmentRegisteredToUser() - equipment instance " + equipmentInstanceID + " exists");
             return true;
         }
-        else
-        {
-            reader.Close();
-            connection.Close();
-            return false;
-        }
+        reader.Close();
+        connection.Close();
+        return false;
     }
 
     public void CreateNewEquipmentInstance(string username, string equipmentType, int equipmentAmount)
@@ -579,6 +581,7 @@ public partial class mySqlTestConneciton : Node
         string bestRun = "";
         int runsTotal = 0;
         int playerBestRanking = 99999;
+        bool foundPlayerBest = false;
         if (reader.HasRows)
         {
             while (reader.Read())
@@ -590,6 +593,7 @@ public partial class mySqlTestConneciton : Node
                 }
                 else
                 {
+                    foundPlayerBest = true;
                     int waves = reader.GetInt32("survivedRounds");
                     float accuracy = reader.GetFloat("gunaccuracy");
                     int points = reader.GetInt32("points");
@@ -601,7 +605,12 @@ public partial class mySqlTestConneciton : Node
         }
         reader.Close();
         connection.Close ();
-        return playerBestRanking.ToString() + ". - " + bestRun;
+        if (foundPlayerBest)
+        {
+            return playerBestRanking.ToString() + ". - " + bestRun;
+        }
+        else return "N/A";
+        
     }
 
     public int GetRobotsDestroyedByPlayer(string username)
@@ -623,5 +632,17 @@ public partial class mySqlTestConneciton : Node
         reader.Close();
         connection.Close();
         return destroyedRobotsAmount;
+    }
+
+    public void UpdatePlayerRobotsDestroyedAmount(string username, int robotsDestroyed)
+    {
+        int recordedKills = GetRobotsDestroyedByPlayer(username);
+        int updatedAmount = robotsDestroyed + recordedKills;
+        string updateQuery = $"UPDATE player SET destroyedRobots = {updatedAmount} WHERE username = '{username}'";
+        connection = new MySqlConnection(connectionString);
+        connection.Open();
+        MySqlCommand command = connection.CreateCommand();
+        command.CommandText = updateQuery;
+        command.ExecuteNonQuery();
     }
 }

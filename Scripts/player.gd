@@ -129,14 +129,15 @@ func loadLastLoggedInUser() -> String:
 
 func takeDamage(damage : int):
 	health -= damage
-	healthIndicatorAlpha += 0.3
+	if(healthIndicatorAlpha < 0.7):
+		healthIndicatorAlpha += 0.3
 	healthCounter.text = str(health)
 	if(health <= 0):
 		die()
 
 signal playerDied
 func die():
-	print("I fucking died :(")
+	healthIndicatorAlpha = 1.0
 	playerDied.emit(weaponManager.accuracyPrcnt)
 	health = maxHealth
 	healthCounter.text = str(health)

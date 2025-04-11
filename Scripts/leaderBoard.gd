@@ -6,6 +6,7 @@ extends StaticBody3D
 @onready var pistolKills: Label3D = $pistolKillsLbl
 @onready var smgKills: Label3D = $smgKillsLbl
 @onready var allKills: Label3D = $allKills
+@onready var avgAccuracyLbl: Label3D = $averageAccuracyLabel
 
 @onready var dbConnectionScript = load("res://Scripts/mySqlTestConneciton.cs")
 var dbConnectionManager
@@ -21,6 +22,7 @@ func updateLeaderBoard():
 	currentUserPersonalBestLbl.text = dbConnectionManager.GetUserPersonalBestRun(playerName)
 	getPlayerGunStats()
 	getTotalRobotsDestroyedByPlayer()
+	getPlayerAverageAccuracy()
 
 func getPlayerGunStats():
 	var weaponID = playerName + "pistol"
@@ -31,4 +33,7 @@ func getPlayerGunStats():
 	shotgunKills.text = str(dbConnectionManager.GetRobotsDestroyedByWeapon(weaponID))
 
 func getTotalRobotsDestroyedByPlayer():
-	allKills.text = str(dbConnectionManager.GetRobotsDestroyedByPlayer(playerName))
+	allKills.text = "all kills  :" + str(dbConnectionManager.GetRobotsDestroyedByPlayer(playerName))
+
+func getPlayerAverageAccuracy():
+	avgAccuracyLbl.text = "Average accuracy = " + str(dbConnectionManager.GetPlayerAverageAccuracy(playerName)) + "%"

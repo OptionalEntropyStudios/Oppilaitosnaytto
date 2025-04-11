@@ -98,17 +98,17 @@ func toggleRobotSpawning():
 		startRun()
 signal hurtPlayer
 func robotReachedTheGoal():
-	print("script robotSpawner - A Robot has reached the goal, game over or smth idk")
-	needToSpawnRobots = false
-	var i = 0
-	var damage = 20
-	while i < 5:
-		hurtPlayer.emit(damage)
-		i += 1
+		needToSpawnRobots = false
+		var i = 0
+		var damage = 20
+		while i < 5:
+			hurtPlayer.emit(damage)
+			i += 1
 
 func robotDestroyed(gunThatKilledIt : String):
 	robotsDestroyedDuringRun += 1
 	robotsDestroyedThisWave += 1
+	trackRobotsKilledByDifferentGunsThisRun(gunThatKilledIt)
 	earnedCredits += creditAwardAmount * creditAwardAmountModifier
 	print("script robotSpawner - The player has destroyed " + str(robotsDestroyedThisWave) + " robots during this wave and " + str(robotsDestroyedDuringRun) + " during the run")
 
@@ -166,9 +166,9 @@ func countPlayerScore(accuracy : float) -> float:
 			healthPacksUsedPenalty -= 0.05
 		if(healthPacksUsedPenalty < 0):
 			healthPacksUsedPenalty = 0.3
-		score = (((wavesElapsed * (accuracy / 10)) + (robotsDestroyedDuringRun * 1.5)) * healthPacksUsedPenalty) * 10
+		score = (((wavesElapsed * accuracyMultiplier) + (robotsDestroyedDuringRun * 1.5)) * healthPacksUsedPenalty) * 10
 	else: 
-		score = (wavesElapsed * (accuracy / 10)) + (robotsDestroyedDuringRun * 1.5)
+		score = (wavesElapsed * accuracyMultiplier) + (robotsDestroyedDuringRun * 1.5)
 	return score
 
 func startRun():
@@ -188,9 +188,9 @@ func gameOver(accuracy : float):
 	if(accuracy > 100.0):
 		accuracy = 100.0
 	playerAccuracy = accuracy
-	for robot in get_children():
-		if(robot is breakable):
-			robot.queue_free()
+	for rbt in get_children():
+		if(rbt is breakable):
+			rbt.queue_free()
 	print("waves survived by the player = " + str(wavesElapsed))
 	print("robots destroyed by player = " + str(robotsDestroyedDuringRun))
 	print("credits earned by player = " + str(earnedCredits))
@@ -203,9 +203,15 @@ func gameOver(accuracy : float):
 	var totalCredits = currentUserCredits + earnedCredits
 	dbConnectionManager.updateUserCredits(playerName, totalCredits)
 	updateGunRobotKills()
+	updatePlayerAccuracy()
+	updatePlayerRobotKills()
 	refreshCredits.emit()
-
+func updatePlayerRobotKills():
+	dbConnectionManager.UpdatePlayerRobotsDestroyedAmount(playerName, robotsDestroyedDuringRun)
 func updateGunRobotKills():
 	dbConnectionManager.UpdateWeaponDestroyedRobotsAmount(playerName, "pistol", pistolKills)
 	dbConnectionManager.UpdateWeaponDestroyedRobotsAmount(playerName, "smg", smgKills)
 	dbConnectionManager.UpdateWeaponDestroyedRobotsAmount(playerName, "shotgun", shotgunKills)
+
+func updatePlayerAccuracy():
+	dbConnectionManager.UpdatePlayerAccuracy(playerName)

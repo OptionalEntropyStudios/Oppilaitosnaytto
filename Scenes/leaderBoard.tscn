@@ -137,7 +137,7 @@ vertical_alignment = 0
 [node name="allKills" type="Label3D" parent="."]
 transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, 0.965084, 0.325836, 0.541537)
 pixel_size = 0.001
-text = "smg kills"
+text = "all kills  :"
 font_size = 48
 outline_size = 37
 vertical_alignment = 0
