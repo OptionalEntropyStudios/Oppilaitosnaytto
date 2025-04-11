@@ -3,7 +3,7 @@ extends Node3D
 @onready var bullet = preload("res://Scenes/robotBullet.tscn")
 @export var gunshotSound : AudioStreamPlayer3D
 @export var bulletSpawnPos : Node3D
-
+@export var visibilityRay : RayCast3D
 @export var target : Node3D
 var canShoot : bool = false
 @export var timeBetweenShots : float = 1.5
@@ -14,8 +14,11 @@ func _process(delta: float) -> void:
 		look_at(target.global_position, Vector3.UP)
 		if(timeSinceLastShot >= timeBetweenShots):
 			timeSinceLastShot = 0.0
-			if(randf_range(0,1) > 0.5):
-				shoot()
+			if(visibilityRay.is_colliding()):
+				var hitObject = visibilityRay.get_collider()
+				if(hitObject.is_in_group("player")):
+					if(randf_range(0,1) > 0.5):
+						shoot()
 		else: 
 			timeSinceLastShot += delta * randf_range(1,2)
 

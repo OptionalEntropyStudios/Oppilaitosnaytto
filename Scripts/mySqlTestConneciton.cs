@@ -6,6 +6,8 @@ using Org.BouncyCastle.Security;
 using Mysqlx.Crud;
 using System.Web;
 using System.Diagnostics;
+using System.Transactions;
+using System.Globalization;
 public partial class mySqlTestConneciton : Node
 {
 	MySqlConnection connection;
@@ -345,5 +347,281 @@ public partial class mySqlTestConneciton : Node
         price = 9999;
         GD.Print($"C# script GetUpgradePrice - {upgradeID} costs {price} credits");
         return price;
+    }
+
+    public int getOwnedEquipmentAmount(string username, string equipmentType)
+    {
+        string equipmentQuery = $"SELECT equipmentamount FROM equipmentinstance WHERE equipmentOwner = '{username}' AND equipmentType = '{equipmentType}'";
+        connection = new MySqlConnection(connectionString);
+        connection.Open();
+        MySqlCommand command = connection.CreateCommand();
+        command.CommandText = equipmentQuery;
+        MySqlDataReader reader = command.ExecuteReader();
+        int ownedAmount = 0;
+        if(reader.HasRows)
+        {
+            while (reader.Read())
+            {
+                ownedAmount = reader.GetInt32("equipmentAmount");
+            }
+        }
+        reader.Close();
+        connection.Close();
+        return ownedAmount;
+    }
+
+    public void updateOwnedEquipmentAmount(string username, string equipmentType, int ownedAmount)
+    {
+        GD.Print("C# updateOwnedEquipmentAmount() - updating owned amount of " + equipmentType + " for " + username + " to be " + ownedAmount.ToString());
+        string instanceID = username + equipmentType;
+        string updateEquipmentQuery = $"UPDATE equipmentinstance SET equipmentAmount = {ownedAmount} WHERE instanceID = '{instanceID}'";
+        connection = new MySqlConnection(connectionString);
+        connection.Open();
+        MySqlCommand command = connection.CreateCommand();
+        command.CommandText = updateEquipmentQuery;
+        command.ExecuteNonQuery();
+        connection.Close();
+    }
+
+    public bool canBuyEquipment(string username, string equipmentType)
+    {
+        int usercredits = getUserCredits(username);
+        int equipmentPrice = getEquipmentPrice(equipmentType);
+        if (usercredits >= equipmentPrice)
+        {
+            GD.Print($"C# script canBuyEquipment - {username} can buy {equipmentType}");
+            return true;
+        }
+        else
+        {
+            GD.Print($"C# script canBuyEquipment - {username} cannot buy {equipmentType}");
+            return false;
+        }
+    }
+
+    public void BuyOneEquipment(string username, string equipmentType)
+    {
+        GD.Print(username + " wants to buy " + equipmentType);
+        int usercredits = getUserCredits(username);
+        int equipmentPrice = getEquipmentPrice(equipmentType);
+        int creditsAfterPurchase = usercredits - equipmentPrice;
+        GD.Print("checking if " + username + " already owns " + equipmentType);
+        if (EquipmentRegisteredToUser(username, equipmentType))
+        {
+            GD.Print("THe user owns the equipment, updating the amount");
+            int ownedAmount = getOwnedEquipmentAmount(username, equipmentType);
+            ownedAmount += 1;
+            updateOwnedEquipmentAmount(username, equipmentType, ownedAmount);
+        }
+        else
+        {   
+            GD.Print("user didn't own the equipment, creating new instance");
+            CreateNewEquipmentInstance(username, equipmentType, 1);
+        }
+        string updateCreditsQuery = $"UPDATE player SET credits = {creditsAfterPurchase} WHERE username = '{username}'";
+        connection = new MySqlConnection(connectionString);
+        connection.Open();
+        MySqlCommand command = connection.CreateCommand();
+        command.CommandText = updateCreditsQuery;
+        command.ExecuteNonQuery();
+    }
+
+    public bool EquipmentRegisteredToUser(string username, string equipmentType)
+    {
+        string equipmentInstanceID = username + equipmentType;
+        GD.Print("C# EquipmentRegisteredToUser() - checking if " + equipmentInstanceID + " exists");
+        string equipmentQuery = $"SELECT * FROM equipmentInstance WHERE instanceid = '{equipmentInstanceID}'";
+        connection = new MySqlConnection(connectionString);
+        connection.Open();
+        MySqlCommand command = connection.CreateCommand();
+        command.CommandText = equipmentQuery;
+        MySqlDataReader reader = command.ExecuteReader();
+        if (reader.HasRows)
+        {
+            reader.Close();
+            connection.Close();
+            GD.Print("C# EquipmentRegisteredToUser() - equipment instance " + equipmentInstanceID + " exists");
+            return true;
+        }
+        else
+        {
+            reader.Close();
+            connection.Close();
+            return false;
+        }
+    }
+
+    public void CreateNewEquipmentInstance(string username, string equipmentType, int equipmentAmount)
+    {
+        string equipmentInstanceID = username + equipmentType;
+        GD.Print("C# CreateNewEquipmentInstance() - creating new equipment instance for " + username + " with id " + equipmentInstanceID);
+        string createEquipmentQuery = $"INSERT INTO equipmentInstance (equipmentOwner, equipmentType, equipmentAmount, instanceID) VALUES ('{username}', '{equipmentType}', {equipmentAmount}, '{equipmentInstanceID}')";
+        connection = new MySqlConnection(connectionString);
+        connection.Open();
+        MySqlCommand command = connection.CreateCommand();
+        command.CommandText = createEquipmentQuery;
+        command.ExecuteNonQuery();
+        connection.Close();
+    }
+    public int getEquipmentPrice(string equipmentType)
+    {
+        string priceQuery = $"SELECT equipmentPrice FROM equipment WHERE equipmentType = '{equipmentType}'";
+        connection = new MySqlConnection(connectionString);
+        connection.Open();
+        MySqlCommand command = connection.CreateCommand();
+        command.CommandText = priceQuery;
+        MySqlDataReader reader = command.ExecuteReader();
+        int price = 0;
+        if (reader.HasRows)
+        {
+            while (reader.Read())
+            {
+                price = reader.GetInt32("equipmentPrice");
+            }
+
+        }
+        reader.Close();
+        connection.Close();
+        return price;
+    }
+
+    public int GetRobotsDestroyedByWeapon(string weaponID)
+    {
+
+        string robotsDestroyedQuery = $"SELECT destroyedRobots FROM weaponinstance WHERE instanceID = '{weaponID}'";
+        connection = new MySqlConnection(connectionString);
+        connection.Open();
+        MySqlCommand command = connection.CreateCommand();
+        command.CommandText = robotsDestroyedQuery;
+        MySqlDataReader reader = command.ExecuteReader();
+        int robotsDestroyed = 0;
+        if (reader.HasRows)
+        {
+            while (reader.Read())
+            {
+                robotsDestroyed = reader.GetInt32("destroyedRobots");
+            }    
+        }
+        reader.Close();
+        connection.Close ();
+        return robotsDestroyed;
+    }
+
+    public void UpdateWeaponDestroyedRobotsAmount(string username, string weaponType, int amount)
+    {
+        string weaponID = username + weaponType;
+        int recordedDestructionAmount = GetRobotsDestroyedByWeapon(weaponID);
+        int updatedAmount = amount + recordedDestructionAmount;
+        string updateDestructionAmountQuery = $"UPDATE weaponinstance SET destroyedRobots = {updatedAmount} WHERE instanceID = '{weaponID}'";
+        connection = new MySqlConnection(connectionString);
+        connection.Open();
+        MySqlCommand command = connection.CreateCommand();
+        command.CommandText = updateDestructionAmountQuery;
+        command.ExecuteNonQuery();
+        connection.Close();
+    }
+    
+    public void AddNewRunEntry(string username, int survivedWaves, int points, float accuracy)
+    {
+        //Each run id is username fllowed by the current year without the "prefix" 20 + month + date and then the current time in 2359 format.
+        DateTime currentDate = DateTime.Now;
+        string runYear = (currentDate.Year % 100).ToString(); //Get the end of the year: 25 for 2025 etc
+        string runMonth = currentDate.Month.ToString("D2");
+        string runDay = currentDate.Day.ToString("D2");
+        string runTime = currentDate.ToString("HHmm");
+        string runID = username + runYear + runMonth + runDay + runTime; //IDs are formated ie. optionalentropy2504101738
+        string formattedAccuracy = accuracy.ToString(CultureInfo.InvariantCulture); //C# formats floats with a , separator instead of a . separator - it needs to be formatted to be passed into MySQL
+        string runQuery = $"INSERT INTO defencerun(survivedrounds, gunaccuracy, points, player, runid) VALUES" +
+            $"({survivedWaves}, {formattedAccuracy}, {points}, '{username}', '{runID}')";
+        connection = new MySqlConnection(connectionString) ;
+        connection.Open();
+        MySqlCommand command = connection.CreateCommand();
+        command.CommandText = runQuery;
+        command.ExecuteNonQuery();
+    }
+
+    public string GetTop10Runs()
+    {
+        string runQuery = "SELECT survivedrounds, gunaccuracy, points, player FROM defencerun ORDER BY points DESC LIMIT 10";
+        connection = new MySqlConnection(connectionString);
+        connection.Open();
+        MySqlCommand command = connection.CreateCommand();
+        command.CommandText = runQuery;
+        MySqlDataReader reader = command.ExecuteReader();
+        string rankingText = "";
+        int ranking = 1;
+        if (reader.HasRows)
+        {
+
+            while (reader.Read())
+            {
+                int waves = reader.GetInt32("survivedRounds");
+                float accuracy = reader.GetFloat("gunaccuracy");
+                int points = reader.GetInt32("points");
+                string playerName = reader.GetString("player");
+                rankingText += ranking.ToString()+ " - " + playerName + " | " + waves.ToString() + " | " + points.ToString() + " | " + accuracy.ToString() + "%\n";
+                ranking++;
+            }
+        }
+        reader.Close();
+        connection.Close();
+        return rankingText;
+    }
+
+    public string GetUserPersonalBestRun(string username)
+    {
+        string allRunsQuery = "SELECT * FROM defencerun ORDER BY points DESC";
+        connection = new MySqlConnection(connectionString);
+        connection.Open();
+        MySqlCommand command = connection.CreateCommand();
+        command.CommandText = allRunsQuery;
+        MySqlDataReader reader = command.ExecuteReader();
+        string bestRun = "";
+        int runsTotal = 0;
+        int playerBestRanking = 99999;
+        if (reader.HasRows)
+        {
+            while (reader.Read())
+            {
+                runsTotal += 1;
+                if (reader.GetString("player") != username)
+                {
+                    continue;
+                }
+                else
+                {
+                    int waves = reader.GetInt32("survivedRounds");
+                    float accuracy = reader.GetFloat("gunaccuracy");
+                    int points = reader.GetInt32("points");
+                    bestRun = waves.ToString() + " | " + points.ToString() + " |" + accuracy.ToString() + "%";
+                    playerBestRanking = runsTotal;
+                    break;
+                }
+            }
+        }
+        reader.Close();
+        connection.Close ();
+        return playerBestRanking.ToString() + ". - " + bestRun;
+    }
+
+    public int GetRobotsDestroyedByPlayer(string username)
+    {
+        string robotQuery = $"SELECT destroyedRobots FROM player WHERE username = '{username}'";
+        connection = new MySqlConnection(connectionString);
+        connection.Open();
+        MySqlCommand command = connection.CreateCommand();
+        command.CommandText = robotQuery;
+        MySqlDataReader reader = command.ExecuteReader();
+        int destroyedRobotsAmount = 0;
+        if (reader.HasRows)
+        {
+            while (reader.Read())
+            {
+                destroyedRobotsAmount = reader.GetInt32("destroyedRobots");
+            }
+        }
+        reader.Close();
+        connection.Close();
+        return destroyedRobotsAmount;
     }
 }

@@ -12,17 +12,18 @@ class_name breakable
 
 signal destroyed
 var gotKilled : bool = false
-func takeDamage(damage : int):
+func takeDamage(damage : int , attacker : String):
 	health -= damage
 	hitSound.play()
+	print("the attacker was " + attacker)
 	if(health <= 0 and !gotKilled):
-		die()
+		die(attacker)
 		hitBox.disabled = true
 
 
-func die():
+func die(killer : String):
 	gotKilled = true
-	destroyed.emit()
+	destroyed.emit(killer)
 	deathSound.play()
 	deathEffect.emitting = true
 	for child in get_children():

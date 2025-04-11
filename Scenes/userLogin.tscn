@@ -45,7 +45,7 @@ light_color = Color(0.908581, 0.900621, 1.54018e-06, 1)
 shadow_enabled = true
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(0.997165, 0.00303657, 0.0751785, 0.00464309, 0.994797, -0.101767, -0.0750964, 0.101828, 0.991964, 0, 0.117387, 1.11996)
+transform = Transform3D(0.992937, 0.00747893, 0.11841, 0.00464309, 0.994797, -0.101767, -0.118555, 0.101598, 0.987736, -1.54897, 0.117387, -0.87487)
 current = true
 fov = 26.1
 near = 0.001
@@ -487,59 +487,75 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = 303.0
-offset_bottom = -303.0
 grow_horizontal = 2
 grow_vertical = 2
 
 [node name="loginButton" type="Button" parent="Container/buttonContainer"]
 layout_mode = 1
-anchors_preset = 7
+anchors_preset = 8
 anchor_left = 0.5
-anchor_top = 1.0
+anchor_top = 0.5
 anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -73.0
-offset_top = -38.0
-offset_right = 73.0
-offset_bottom = 7.0
+anchor_bottom = 0.5
+offset_left = -59.0001
+offset_top = 166.0
+offset_right = 81.0
+offset_bottom = 211.0
 grow_horizontal = 2
-grow_vertical = 0
+grow_vertical = 2
+scale = Vector2(3.24, 3.24)
+pivot_offset = Vector2(71.15, 0)
+theme_override_font_sizes/font_size = 26
 action_mode = 0
 text = "Login"
 
+[node name="quitButton" type="Button" parent="Container/buttonContainer"]
+layout_mode = 1
+offset_left = 174.0
+offset_top = 19.0
+offset_right = 256.0
+offset_bottom = 51.0
+scale = Vector2(3.24, 3.24)
+pivot_offset = Vector2(71.15, 0)
+theme_override_font_sizes/font_size = 26
+action_mode = 0
+text = "Quit"
+
 [node name="registerButton" type="Button" parent="Container/buttonContainer"]
 layout_mode = 1
-anchors_preset = 7
+anchors_preset = 8
 anchor_left = 0.5
-anchor_top = 1.0
+anchor_top = 0.5
 anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -71.0
-offset_top = 19.0
-offset_right = 71.0
-offset_bottom = 62.0
+anchor_bottom = 0.5
+offset_left = -65.0001
+offset_top = 350.0
+offset_right = 77.0
+offset_bottom = 393.0
 grow_horizontal = 2
-grow_vertical = 0
+grow_vertical = 2
+scale = Vector2(3.24, 3.24)
+pivot_offset = Vector2(71.15, 0)
+theme_override_font_sizes/font_size = 26
 action_mode = 0
 text = "Register"
 
-[node name="lineEditContainer" type="BoxContainer" parent="Container"]
+[node name="usernameLineEdit" type="LineEdit" parent="Container"]
 layout_mode = 1
-anchors_preset = 14
+anchors_preset = 8
+anchor_left = 0.5
 anchor_top = 0.5
-anchor_right = 1.0
+anchor_right = 0.5
 anchor_bottom = 0.5
-offset_top = -15.5
-offset_bottom = 15.5
+offset_left = -221.0
+offset_top = -46.0
+offset_right = 236.0
+offset_bottom = 46.0
 grow_horizontal = 2
 grow_vertical = 2
-alignment = 1
-
-[node name="usernameLineEdit" type="LineEdit" parent="Container/lineEditContainer"]
-layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
+theme_override_font_sizes/font_size = 46
 placeholder_text = "ENTER USERNAME"
 alignment = 1
 max_length = 15
@@ -549,4 +565,5 @@ select_all_on_focus = true
 caret_blink = true
 
 [connection signal="pressed" from="Container/buttonContainer/loginButton" to="Container" method="onLoginButtonPressed"]
+[connection signal="pressed" from="Container/buttonContainer/quitButton" to="Container" method="quitGame"]
 [connection signal="pressed" from="Container/buttonContainer/registerButton" to="Container" method="onRegisterButtonPressed"]

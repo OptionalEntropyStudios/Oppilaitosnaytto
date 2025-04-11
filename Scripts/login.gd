@@ -2,7 +2,7 @@ extends Control
 
 @onready var loginButton: Button = $buttonContainer/loginButton
 @onready var registerButton: Button = $buttonContainer/registerButton
-@onready var usernameInput: LineEdit = $lineEditContainer/usernameLineEdit
+@onready var usernameInput: LineEdit = $usernameLineEdit
 @onready var dbConnectionScript = load("res://Scripts/mySqlTestConneciton.cs")
 var dbConnectionManager
 var userFile : FileAccess
@@ -42,3 +42,6 @@ func loadLastLoggedInUser() -> String:
 			return username
 		else: return ""
 	else: return ""
+
+func quitGame():
+	get_tree().quit()

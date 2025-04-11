@@ -2,17 +2,20 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://uf8jth87nacx"
-path.s3tc="res://.godot/imported/texture_08.png-cf28c5f22d9f4f9efbf717a297db47bd.s3tc.ctex"
+uid="uid://dg83ripk58x1y"
+path.s3tc="res://.godot/imported/healthPack_healthPackDiffuse.png-37393573d18ee80c7d38dff51aa07eb1.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
+generator_parameters={
+"md5": "23eb3a27450e6cfe77d5310ee22fe575"
+}
 
 [deps]
 
-source_file="res://Textures/Developer Textures/PNG/Purple/texture_08.png"
-dest_files=["res://.godot/imported/texture_08.png-cf28c5f22d9f4f9efbf717a297db47bd.s3tc.ctex"]
+source_file="res://Models/healthPack_healthPackDiffuse.png"
+dest_files=["res://.godot/imported/healthPack_healthPackDiffuse.png-37393573d18ee80c7d38dff51aa07eb1.s3tc.ctex"]
 
 [params]
 

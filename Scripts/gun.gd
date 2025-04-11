@@ -36,12 +36,16 @@ var owned : bool = false
 @export var shotGunSpreadAmount : float = 10
 signal oneAmmoLoaded
 
+signal shotFired
+signal shotMissed
+signal shotHit
 func shoot(shootRay : RayCast3D, shotgunRayParent : Node3D):
 	if(equipped and !reloading):
 		if(!ammoInMagazine > 0):
 			reload()
 		else:
 			if(not fullAuto and triggerReset and !animationPlayer.is_playing()):
+				shotFired.emit()
 				applyRecoil()
 				triggerReset = false
 				muzzleEffect.rotation.z = randf_range(0, 180)
@@ -55,27 +59,39 @@ func shoot(shootRay : RayCast3D, shotgunRayParent : Node3D):
 						var hitObject = shootRay.get_collider()
 						addHitHole(hitObject, shootRay.get_collision_point(), shootRay.get_collision_normal())
 						if(hitObject is breakable):
-							hitObject.takeDamage(bulletDamage)
+							shotHit.emit()
+							hitObject.takeDamage(bulletDamage, name)
 							var damageIndicator = hitDamageIndicator.instantiate()
 							get_tree().root.add_child(damageIndicator)
 							damageIndicator.global_position = shootRay.get_collision_point()
 							damageIndicator.damageText.text = "-" + str(bulletDamage)
-							#damageIndicator.look_at(self.global_position, Vector3.UP)
+						else: shotMissed.emit()
+					else: shotMissed.emit()
 				else:
+					var pelletsFired : int = 0
+					var pelletsMissed : int = 0
 					for pelletRay in shotgunRayParent.get_children():
+						pelletsFired += 1
 						pelletRay.rotation_degrees.x = randf_range(-shotGunSpreadAmount,shotGunSpreadAmount)
 						pelletRay.rotation_degrees.y = randf_range(-shotGunSpreadAmount,shotGunSpreadAmount)
 						if(pelletRay.is_colliding() and pelletRay.get_collider() != null):
 							var hitObject = pelletRay.get_collider()
 							addHitHole(hitObject, pelletRay.get_collision_point(), pelletRay.get_collision_normal())
 							if(hitObject is breakable):
-								hitObject.takeDamage(bulletDamage)
+								hitObject.takeDamage(bulletDamage, name)
 								var damageIndicator = hitDamageIndicator.instantiate()
 								get_tree().root.add_child(damageIndicator)
 								damageIndicator.global_position = pelletRay.get_collision_point()
 								damageIndicator.damageText.text = "-" + str(bulletDamage)
 								#damageIndicator.look_at(self.global_position, Vector3.UP)
+							else: pelletsMissed += 1
+						else: pelletsMissed += 1
+					print(str(pelletsFired) + " pellets were fired and " + str(pelletsMissed) + " of them missed")
+					if(pelletsMissed > pelletsFired / 2):
+						shotMissed.emit()
+					else: shotHit.emit()
 			elif(fullAuto and cycleFinished and !animationPlayer.is_playing()):
+				shotFired.emit()
 				applyRecoil()
 				muzzleEffect.rotation.z = randf_range(0, 180)
 				muzzleEffect.show()
@@ -87,12 +103,14 @@ func shoot(shootRay : RayCast3D, shotgunRayParent : Node3D):
 					var hitObject = shootRay.get_collider()
 					addHitHole(hitObject, shootRay.get_collision_point(), shootRay.get_collision_normal())
 					if(hitObject is breakable):
-						hitObject.takeDamage(bulletDamage)
+						shotHit.emit()
+						hitObject.takeDamage(bulletDamage, name)
 						var damageIndicator = hitDamageIndicator.instantiate()
 						get_tree().root.add_child(damageIndicator)
 						damageIndicator.global_position = shootRay.get_collision_point()
 						damageIndicator.damageText.text = "-" + str(bulletDamage)
-						#damageIndicator.look_at(self.global_position, Vector3.UP)
+					else: shotMissed.emit()
+				else: shotMissed.emit()
 
 func onReloadAnimationFinished(): #Called when the reload animation is done
 	var bulletsMissingFromMagazine = magazineSize - ammoInMagazine #check how many bullets are missing from the mag

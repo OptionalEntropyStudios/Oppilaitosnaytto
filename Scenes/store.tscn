@@ -1,8 +1,9 @@
-[gd_scene load_steps=46 format=4 uid="uid://bq1xtqimjoq4p"]
+[gd_scene load_steps=51 format=4 uid="uid://bq1xtqimjoq4p"]
 
 [ext_resource type="Script" uid="uid://bgepx8tw7vfct" path="res://Scripts/store.gd" id="1_c3i85"]
 [ext_resource type="PackedScene" uid="uid://d3hhupns508pe" path="res://Scenes/baseScenes/button.tscn" id="2_h38w0"]
-[ext_resource type="Script" uid="uid://ynlw5o5b74ph" path="res://Scripts/menu.gd" id="2_lkwxl"]
+[ext_resource type="Texture2D" uid="uid://bj3x78vddeufk" path="res://Textures/Developer Textures/PNG/Red/texture_03.png" id="2_mcup1"]
+[ext_resource type="Texture2D" uid="uid://ca3jurrr3qonw" path="res://Textures/Developer Textures/PNG/Purple/texture_06.png" id="2_y7o6j"]
 [ext_resource type="Script" uid="uid://h8ejiiicirh6" path="res://Scripts/guns_menu.gd" id="3_j65sj"]
 [ext_resource type="Texture2D" uid="uid://b5cpavxbsqnu1" path="res://Models/xPistol_pistolTexture.png" id="4_m7h4d"]
 [ext_resource type="Texture2D" uid="uid://cmm546f4nmnge" path="res://Models/xPistol_pistolMagazineDiffuse.png" id="5_a54sg"]
@@ -10,6 +11,8 @@
 [ext_resource type="Texture2D" uid="uid://661tv40fwlql" path="res://Models/shotgun_shotgunFrameDiffuse.png" id="7_cwvkk"]
 [ext_resource type="Texture2D" uid="uid://ba44am2t460fg" path="res://Models/shotgun_shellSlideNSight.png" id="8_w72gx"]
 [ext_resource type="Texture2D" uid="uid://cmrayc3v4sl0t" path="res://Models/sgSight_shotgunFrameDiffuse.png" id="9_w72gx"]
+[ext_resource type="Script" uid="uid://o3bkr5577ixm" path="res://Scripts/equipmentMenu.gd" id="10_w72gx"]
+[ext_resource type="PackedScene" uid="uid://hdqgdfjsi3p4" path="res://Scenes/healthPack.tscn" id="11_cd1ed"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_w72gx"]
 size = Vector3(2.0061, 0.916443, 0.126099)
@@ -17,10 +20,20 @@ size = Vector3(2.0061, 0.916443, 0.126099)
 [sub_resource type="BoxShape3D" id="BoxShape3D_cd1ed"]
 size = Vector3(2.0061, 0.697388, 0.431641)
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_r6ftr"]
+albedo_texture = ExtResource("2_mcup1")
+uv1_triplanar = true
+
 [sub_resource type="BoxMesh" id="BoxMesh_mcxav"]
+material = SubResource("StandardMaterial3D_r6ftr")
 size = Vector3(2, 0.92, 0.13)
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mcup1"]
+albedo_texture = ExtResource("2_y7o6j")
+uv1_triplanar = true
+
 [sub_resource type="BoxMesh" id="BoxMesh_c3i85"]
+material = SubResource("StandardMaterial3D_mcup1")
 size = Vector3(2, 0.44, 0.69)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_i3jk1"]
@@ -515,17 +528,20 @@ textOnTheButton = "equipment menu"
 
 [node name="creditsAmountLbl" type="Label3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.455856, 0.890054, 0, -0.890054, 0.455856, 0.00417385, -0.411097, 0.563231)
+pixel_size = 0.001
 modulate = Color(1, 1, 0.443137, 1)
 text = "credits :100"
-font_size = 15
+font_size = 85
 
 [node name="usernameLbl" type="Label3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.750596, 0.660762, 0, -0.660762, 0.750596, 0.0025239, -0.353624, 0.489397)
+pixel_size = 0.001
 modulate = Color(1, 1, 0.443137, 1)
 text = "current user : fortnite uuh"
-font_size = 15
+font_size = 65
 
 [node name="gunsMenu" type="Node3D" parent="."]
+visible = false
 script = ExtResource("3_j65sj")
 
 [node name="upgradeButtons" type="Node3D" parent="gunsMenu"]
@@ -571,13 +587,13 @@ textOnTheButton = "open buy menu"
 visible = false
 
 [node name="menuTitle" type="Label3D" parent="gunsMenu/pistolMenu"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.614615, -0.00118631)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.00693566, -0.00118631)
 modulate = Color(1, 0.360784, 1, 1)
 text = "PISTOL"
 font_size = 20
 
 [node name="pistolMesh" type="Node3D" parent="gunsMenu/pistolMenu"]
-transform = Transform3D(-1.96701e-09, 0, -0.045, 0, 0.045, 0, 0.045, 0, -1.96701e-09, -0.0407138, 0.499518, -0.0367478)
+transform = Transform3D(-1.96701e-09, 0, -0.045, 0, 0.045, 0, 0.045, 0, -1.96701e-09, -0.0407138, 0.142702, -0.0367478)
 
 [node name="pistolFrame" type="MeshInstance3D" parent="gunsMenu/pistolMenu/pistolMesh"]
 mesh = SubResource("ArrayMesh_2w7xe")
@@ -810,13 +826,30 @@ pixel_size = 0.001
 modulate = Color(1, 1, 0.341176, 1)
 text = "botom text"
 
-[node name="equipmentMenu" type="Node3D" parent="."]
+[node name="equipmentMenu" type="Node3D" parent="." node_paths=PackedStringArray("store")]
 visible = false
-script = ExtResource("2_lkwxl")
+script = ExtResource("10_w72gx")
+store = NodePath("..")
 
 [node name="menuTitle" type="Label3D" parent="equipmentMenu"]
 transform = Transform3D(1, 0, 0, 0, 0.978885, -0.204411, 0, 0.204411, 0.978885, 0, 0.736223, 0.00598999)
 text = "equipment menu"
+
+[node name="healthPackOption" type="Node3D" parent="equipmentMenu"]
+
+[node name="healthPack" parent="equipmentMenu/healthPackOption" instance=ExtResource("11_cd1ed")]
+transform = Transform3D(0.4, 3.49691e-08, -1.52855e-15, 0, -1.74846e-08, -0.4, -3.49691e-08, 0.4, -1.74846e-08, -0.469386, 0.165907, -0.0116136)
+
+[node name="healthPackText" type="Label3D" parent="equipmentMenu/healthPackOption"]
+transform = Transform3D(1, 0, 0, 0, 0.985085, -0.172067, 0, 0.172067, 0.985085, -0.4507, 0.435124, 0.0323148)
+pixel_size = 0.001
+modulate = Color(0, 0.596512, 3.85046e-07, 1)
+text = "Healthpack"
+font_size = 142
+
+[node name="buyHealthPackButton" parent="equipmentMenu" instance=ExtResource("2_h38w0")]
+transform = Transform3D(0.205, 0, 0, 0, 0.205, 0, 0, 0, 0.205, -0.4663, -0.020566, -0.0324358)
+textOnTheButton = "buy +1"
 
 [connection signal="storeReady" from="." to="gunsMenu" method="storeDone"]
 [connection signal="buttonPressed" from="screen/buttonPanel/gunMenuBtn" to="." method="selectGunsMenu"]
@@ -833,3 +866,4 @@ text = "equipment menu"
 [connection signal="buttonPressed" from="gunsMenu/buyMenu/buyPistolButton" to="gunsMenu" method="buyPistol"]
 [connection signal="buttonPressed" from="gunsMenu/buyMenu/buySmgButton" to="gunsMenu" method="buySmg"]
 [connection signal="buttonPressed" from="gunsMenu/buyMenu/buyShotgunButton" to="gunsMenu" method="buyShotgun"]
+[connection signal="buttonPressed" from="equipmentMenu/buyHealthPackButton" to="equipmentMenu" method="buyHealthPack"]

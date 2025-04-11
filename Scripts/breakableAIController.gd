@@ -3,6 +3,7 @@ extends breakable
 @onready var navAgent: NavigationAgent3D = $NavigationAgent3D
 var moveTarget: Node3D
 @export var cannon : Node3D
+@export var cannon2: Node3D
 @export var moveSpeed : float
 @export var accelerationSpeed : float
 var direction
@@ -15,8 +16,6 @@ func _physics_process(delta: float) -> void:
 			var nextTargetPos = navAgent.get_next_path_position()
 			#Get the Vector3 pointing toward next moveposition
 			direction = nextTargetPos - global_position
-			
-			
 			#Normalize the vector to remove weird movement glitches
 			direction = direction.normalized()
 			#look at direction of travel

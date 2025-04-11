@@ -2,9 +2,11 @@ extends CharacterBody3D
 
 @export var health : int = 100
 @export var maxHealth : int = 100
+signal usedHealthPack
 var healthIndicatorAlpha : float = 0.0
+
 var username : String
-var setUsername : bool = false
+
 @onready var weaponManager: Node3D = $playerCamera/weaponManager
 
 @export var stopSpeed : float = 3 * 10
@@ -85,9 +87,9 @@ func doMovementStuff(delta : float):
 	if(moveDirection): #if the vector has something, the player obviously wants to move
 		var playerMoveState = checkMoveState() #check if player wants to run or walk
 		currentSpeed = checkMoveSpeed(playerMoveState, playerStandState) #check and assign the movespeed according to the player state
-		if(is_on_floor()): #Movement will only change when on the ground
-			velocity.x = moveDirection.x * currentSpeed * delta * 10
-			velocity.z = moveDirection.z * currentSpeed * delta * 10
+		#apply the movement direction to the character body
+		velocity.x = moveDirection.x * currentSpeed * delta * 10
+		velocity.z = moveDirection.z * currentSpeed * delta * 10
 		#THIS PART FOR DEBUGGING
 		if(playerMoveState != prevMoveState):
 			moveStateLbl.text = "MOVESTATE : " + str(moveState.keys()[playerMoveState])
@@ -135,8 +137,19 @@ func takeDamage(damage : int):
 signal playerDied
 func die():
 	print("I fucking died :(")
-	playerDied.emit()
+	playerDied.emit(weaponManager.accuracyPrcnt)
 	health = maxHealth
 	healthCounter.text = str(health)
 func getAmmo():
 	weaponManager.addAmmoToGunReservers()
+
+func resetGunAccuracyCounters():
+	weaponManager.firedShots = 0
+	weaponManager.missedShots = 0
+	weaponManager.hitShots = 0
+	weaponManager.updateShotstatsLbl()
+
+@onready var healthManager: Node3D = $healthManager
+
+func onHealthPackBought():
+	healthManager.checkOwnedHealthPacks()

@@ -1,9 +1,10 @@
-[gd_scene load_steps=15 format=3 uid="uid://dlnlalfhir7cd"]
+[gd_scene load_steps=17 format=3 uid="uid://dlnlalfhir7cd"]
 
 [ext_resource type="Script" uid="uid://dxa0bwyy34ccj" path="res://Scripts/player.gd" id="1_v0iea"]
 [ext_resource type="Script" uid="uid://dnuip41re4566" path="res://Scripts/interactionManager.gd" id="2_8erm5"]
 [ext_resource type="Script" uid="uid://cnm0ekkxl4ry" path="res://Scripts/playerCamera.gd" id="2_cvnsp"]
 [ext_resource type="Script" uid="uid://crgkcws0dma23" path="res://Scripts/weaponManager.gd" id="2_fkybt"]
+[ext_resource type="Script" uid="uid://dboa6u57t1c7q" path="res://Scripts/healthManager.gd" id="2_tx1dd"]
 [ext_resource type="PackedScene" uid="uid://duxk1kj5jiwfe" path="res://Scenes/fpsPistol.tscn" id="2_vgqql"]
 [ext_resource type="Texture2D" uid="uid://dfoukqnfyx05t" path="res://Textures/crosshair.png" id="3_6t5aa"]
 [ext_resource type="Script" uid="uid://ocsked4lccm7" path="res://Scripts/gunHolder.gd" id="5_f1ek2"]
@@ -21,9 +22,13 @@ outline_color = Color(0, 0, 0, 1)
 
 [sub_resource type="LabelSettings" id="LabelSettings_tx1dd"]
 font_size = 100
-font_color = Color(1, 0, 0.266667, 1)
+font_color = Color(1.49205e-06, 0.832942, 0.278366, 1)
 outline_size = 10
 outline_color = Color(0.400756, 0.147507, 0.237757, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_gymyn"]
+font_size = 50
+font_color = Color(1, 0.284923, 0.526198, 1)
 
 [sub_resource type="LabelSettings" id="LabelSettings_8erm5"]
 font_size = 20
@@ -34,6 +39,15 @@ font_size = 20
 
 [node name="Player" type="CharacterBody3D" groups=["player"]]
 script = ExtResource("1_v0iea")
+walkingSpeed = 45.0
+runningSpeed = 60.0
+crouchingSpeed = 25.0
+jumpForce = 15.0
+
+[node name="healthManager" type="Node3D" parent="." node_paths=PackedStringArray("player")]
+script = ExtResource("2_tx1dd")
+healAmount = 15
+player = NodePath("..")
 
 [node name="playerBody" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
@@ -66,6 +80,7 @@ swayRight = Vector3(0, -0.3, 0)
 
 [node name="smg" parent="playerCamera/weaponManager/gunHolder" node_paths=PackedStringArray("camera", "body") instance=ExtResource("5_x3wgy")]
 transform = Transform3D(1, 0, -7.45058e-09, 0, 1, 0, 7.45058e-09, 0, 1, -0.01, 0.02, 0.0951872)
+visible = false
 camera = NodePath("../../..")
 body = NodePath("../../../..")
 ammoInMagazine = 200
@@ -84,7 +99,7 @@ reserveAmmoAmount = 50
 magazineSize = 10
 
 [node name="shotgun" parent="playerCamera/weaponManager/gunHolder" node_paths=PackedStringArray("camera", "body") instance=ExtResource("6_3smsa")]
-transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, -0.035, -0.00999999, 0.0141872)
+transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, -0.03, -0.03, -0.031)
 visible = false
 camera = NodePath("../../..")
 body = NodePath("../../../..")
@@ -145,6 +160,7 @@ debug_shape_custom_color = Color(0.87451, 0, 0.121569, 0.498039)
 debug_shape_thickness = 1
 
 [node name="playerUI" type="Control" parent="."]
+visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -206,6 +222,25 @@ size_flags_horizontal = 0
 text = "100"
 label_settings = SubResource("LabelSettings_tx1dd")
 
+[node name="healthPackIndicator" type="MarginContainer" parent="playerUI"]
+custom_minimum_size = Vector2(10, 10)
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -233.14
+offset_right = 171.0
+offset_bottom = -96.14
+grow_vertical = 0
+
+[node name="healthPacksAmtIndicator" type="Label" parent="playerUI/healthPackIndicator"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "+ 3"
+label_settings = SubResource("LabelSettings_gymyn")
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="moveStateLable" type="Label" parent="playerUI"]
 layout_mode = 0
 offset_left = 2.0
@@ -213,6 +248,16 @@ offset_top = -6.0
 offset_right = 196.0
 offset_bottom = 39.0
 text = "moveState:"
+label_settings = SubResource("LabelSettings_8erm5")
+uppercase = true
+
+[node name="firedShotsLbl" type="Label" parent="playerUI"]
+layout_mode = 0
+offset_left = 0.595
+offset_top = 247.54
+offset_right = 194.595
+offset_bottom = 292.54
+text = "shots fired"
 label_settings = SubResource("LabelSettings_8erm5")
 uppercase = true
 
@@ -284,8 +329,26 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(1, 0, 0, 0)
 
+[node name="healIndicator" type="ColorRect" parent="playerUI"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 1, 0, 0)
+
 [connection signal="canLookNow" from="." to="playerCamera" method="onLevelLoaded"]
 [connection signal="reloadButtonPressed" from="playerCamera/weaponManager" to="playerCamera/weaponManager/gunHolder/smg" method="reload"]
 [connection signal="reloadButtonPressed" from="playerCamera/weaponManager" to="playerCamera/weaponManager/gunHolder/pistol" method="reload"]
 [connection signal="reloadButtonPressed" from="playerCamera/weaponManager" to="playerCamera/weaponManager/gunHolder/shotgun" method="reload"]
+[connection signal="shotFired" from="playerCamera/weaponManager/gunHolder/smg" to="playerCamera/weaponManager" method="onShotFired"]
+[connection signal="shotHit" from="playerCamera/weaponManager/gunHolder/smg" to="playerCamera/weaponManager" method="onShotHit"]
+[connection signal="shotMissed" from="playerCamera/weaponManager/gunHolder/smg" to="playerCamera/weaponManager" method="onShotMissed"]
+[connection signal="shotFired" from="playerCamera/weaponManager/gunHolder/pistol" to="playerCamera/weaponManager" method="onShotFired"]
+[connection signal="shotHit" from="playerCamera/weaponManager/gunHolder/pistol" to="playerCamera/weaponManager" method="onShotHit"]
+[connection signal="shotMissed" from="playerCamera/weaponManager/gunHolder/pistol" to="playerCamera/weaponManager" method="onShotMissed"]
 [connection signal="oneAmmoLoaded" from="playerCamera/weaponManager/gunHolder/shotgun" to="playerCamera/weaponManager" method="updateEquippedGunAmmoCounter"]
+[connection signal="shotFired" from="playerCamera/weaponManager/gunHolder/shotgun" to="playerCamera/weaponManager" method="onShotFired"]
+[connection signal="shotHit" from="playerCamera/weaponManager/gunHolder/shotgun" to="playerCamera/weaponManager" method="onShotHit"]
+[connection signal="shotMissed" from="playerCamera/weaponManager/gunHolder/shotgun" to="playerCamera/weaponManager" method="onShotMissed"]

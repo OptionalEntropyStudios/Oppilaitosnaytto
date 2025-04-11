@@ -2,7 +2,9 @@ extends RigidBody3D
 
 var fired : bool = false
 
-@export var damageAmount : int = 5
+
+@export var minDamage : int
+@export var maxDamage : int
 @export var speed : float = 1
 
 var lifetimeLimit : float = 10
@@ -19,5 +21,6 @@ func _physics_process(delta: float) -> void:
 
 func bulletHitSomething(body: Node3D) -> void:
 	if(body.is_in_group("player")):
-		body.takeDamage(damageAmount)
+		var damage = randi_range(minDamage, maxDamage)
+		body.takeDamage(damage)
 	queue_free()

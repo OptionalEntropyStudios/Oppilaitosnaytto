@@ -1,0 +1,151 @@
+[gd_scene load_steps=4 format=3 uid="uid://b422mbvsy4kn1"]
+
+[ext_resource type="Script" uid="uid://dhfglcudew5ba" path="res://Scripts/leaderBoard.gd" id="1_5d84t"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5d84t"]
+emission_enabled = true
+emission = Color(0, 0.603922, 1, 1)
+emission_energy_multiplier = 5.81
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_yd8h3"]
+size = Vector3(1, 1.68579, 0.191528)
+
+[node name="leaderBoard" type="StaticBody3D"]
+script = ExtResource("1_5d84t")
+
+[node name="screen" type="CSGBox3D" parent="."]
+transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0, 0)
+size = Vector3(1.03711, 1.68579, 0.133789)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="screen"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.0828438)
+operation = 2
+size = Vector3(0.774414, 1.46387, 0.159119)
+material = SubResource("StandardMaterial3D_5d84t")
+
+[node name="leaderBoardLogo" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.984698, -0.174267, 0, 0.174267, 0.984698, 0, 0.840681, 0.130495)
+pixel_size = 0.001
+modulate = Color(1, 1, 0.419608, 1)
+text = "LEADERBOARD"
+font_size = 142
+outline_size = 62
+
+[node name="rankingTexts" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.704065, 0.0812211)
+pixel_size = 0.001
+modulate = Color(0.664599, 0.655556, 0, 1)
+text = "92 explorer"
+font_size = 52
+vertical_alignment = 0
+
+[node name="rankingsExplainedText" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.776701, 0.109342)
+pixel_size = 0.001
+text = "username   |   waves survived   |   points   |   accuracy"
+font_size = 40
+outline_size = 37
+vertical_alignment = 0
+
+[node name="secondScreen" type="CSGBox3D" parent="."]
+transform = Transform3D(-0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, -0.707107, 1.04181, 0.401029, 0.488655)
+size = Vector3(1.2041, 0.648071, 0.133789)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="secondScreen"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.0828438)
+operation = 2
+size = Vector3(1.10742, 0.577148, 0.159119)
+material = SubResource("StandardMaterial3D_5d84t")
+
+[node name="collider" type="CollisionShape3D" parent="."]
+transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0, -0.0282593)
+shape = SubResource("BoxShape3D_yd8h3")
+
+[node name="personalStats" type="Label3D" parent="."]
+transform = Transform3D(0.707107, -0.123225, -0.696287, 0, 0.984698, -0.174267, 0.707107, 0.123225, 0.696287, 0.954582, 0.840681, 0.573202)
+pixel_size = 0.001
+modulate = Color(1, 1, 0.419608, 1)
+text = "PERSONAL STATS"
+font_size = 142
+outline_size = 62
+
+[node name="personalRankingExplained" type="Label3D" parent="."]
+transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, 0.965084, 0.76775, 0.541537)
+pixel_size = 0.001
+text = "					PERSONAL BEST
+ranking  -  waves survived   |   points   |   accuracy"
+font_size = 48
+outline_size = 37
+vertical_alignment = 0
+
+[node name="averageAccuracyLabel" type="Label3D" parent="."]
+transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, 0.822903, 0.210563, 0.399356)
+pixel_size = 0.001
+text = "average accuracy : "
+font_size = 48
+outline_size = 37
+vertical_alignment = 0
+
+[node name="totalPistolKillsLbl" type="Label3D" parent="."]
+transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, 0.696105, 0.486023, 0.272557)
+pixel_size = 0.001
+text = "pistol kills"
+font_size = 48
+outline_size = 37
+vertical_alignment = 0
+
+[node name="totalSMGKillsLbl" type="Label3D" parent="."]
+transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, 0.965084, 0.495889, 0.541537)
+pixel_size = 0.001
+text = "smg kills"
+font_size = 48
+outline_size = 37
+vertical_alignment = 0
+
+[node name="totalShotgunKillsLbl" type="Label3D" parent="."]
+transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, 1.2568, 0.485642, 0.833251)
+pixel_size = 0.001
+text = "shotgun kills"
+font_size = 48
+outline_size = 37
+vertical_alignment = 0
+
+[node name="shotgunKillsLbl" type="Label3D" parent="."]
+transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, 1.2568, 0.419094, 0.833251)
+pixel_size = 0.001
+text = "shotgun kills"
+font_size = 48
+outline_size = 37
+vertical_alignment = 0
+
+[node name="pistolKillsLbl" type="Label3D" parent="."]
+transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, 0.696105, 0.413361, 0.272557)
+pixel_size = 0.001
+text = "pistol kills"
+font_size = 48
+outline_size = 37
+vertical_alignment = 0
+
+[node name="smgKillsLbl" type="Label3D" parent="."]
+transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, 0.965084, 0.414009, 0.541537)
+pixel_size = 0.001
+text = "smg kills"
+font_size = 48
+outline_size = 37
+vertical_alignment = 0
+
+[node name="allKills" type="Label3D" parent="."]
+transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, 0.965084, 0.325836, 0.541537)
+pixel_size = 0.001
+text = "smg kills"
+font_size = 48
+outline_size = 37
+vertical_alignment = 0
+
+[node name="personalBest" type="Label3D" parent="."]
+transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, 0.962476, 0.582685, 0.538928)
+pixel_size = 0.001
+modulate = Color(0.664599, 0.655556, 0, 1)
+text = "5.  9 | 208 | 99.9%"
+font_size = 115
+outline_size = 32

@@ -5,9 +5,9 @@ var userCredits : int
 var dbConnectionScript = preload("res://Scripts/mySqlTestConneciton.cs")
 var dbConnectionManager
 var ownedGuns : Array
-@onready var player = $"../Player"
-@onready var weaponManager: Node3D = $"../Player/playerCamera/weaponManager"
-@onready var gunHolder: Node3D = $"../Player/playerCamera/weaponManager/gunHolder"
+@onready var player: CharacterBody3D = $"../../Player"
+@onready var weaponManager: Node3D = $"../../Player/playerCamera/weaponManager"
+@onready var gunHolder: Node3D = $"../../Player/playerCamera/weaponManager/gunHolder"
 
 @onready var gunsMenu = $gunsMenu
 @onready var equipmentMenu = $equipmentMenu
@@ -38,6 +38,7 @@ func selectGunsMenu():
 	gunsMenu.hideAllBuyGunButtons()
 	gunsMenu.hideAllGunMenus()
 	gunsMenu.hideUpgradeButtons()
+	equipmentMenu.disableAllButtons()
 	if(!gunsMenu.pistolOwned or !gunsMenu.smgOwned or !gunsMenu.shotgun):
 		gunsMenu.showGunBuyMenuButton()
 func selectEquipmentMenu():
@@ -47,6 +48,7 @@ func selectEquipmentMenu():
 	gunsMenu.hideAllGunMenuButtons()
 	gunsMenu.hideAllBuyGunButtons()
 	gunsMenu.hideGunBuyMenuButton()
+	equipmentMenu.enableAllButtons()
 func loadLastLoggedInUser() -> String:
 	var currentUserFile = FileAccess.open("user://currentUser.txt", FileAccess.READ)
 	if(currentUserFile != null):
@@ -60,3 +62,5 @@ func loadLastLoggedInUser() -> String:
 
 func onGunBought():
 	updateUserGunOwnership.emit() #Start the chain reaction that will end in player.weaponManager.CheckWeaponownership 
+
+signal healthPackBought

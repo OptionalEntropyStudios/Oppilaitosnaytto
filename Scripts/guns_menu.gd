@@ -80,10 +80,13 @@ func openShotgunMenu():
 
 func showOwnedGunMenus():
 	if(pistolOwned):
+		print("user owns the pistol")
 		showPistolMenuButton()
 	if(smgOwned):
+		print("user owns the smg")
 		showSmgMenuButton()
 	if(shotgunOwned):
+		print("user owns the shotgun")
 		showShotgunMenuButton()
 @onready var pistolPriceLbl: Label3D = $buyMenu/buyPistolButton/buyPistol/priceLbl
 @onready var smgPriceLbl: Label3D = $buyMenu/buySmgButton/buySmg/priceLbl

@@ -1,10 +1,10 @@
 extends Node3D
 
-#for testing, will be removed
+
 signal giveAmmo
-####
 
 
+signal resetGunAccuracyCounters
 
 @onready var robot = preload("res://Scenes/robot1_breakable.tscn")
 
@@ -22,12 +22,14 @@ var timeSinceLastRobotSpawned : float
 #for data reasons
 var robotsDestroyedDuringRun : int = 0 # how many robots the pa
 var wavesElapsed : int = 0
-var robotsPerWave : int = 5
+var robotsPerWave : int = 8
 var robotsSpawnedThisWave : int = 0
 var robotsDestroyedThisWave : int = 0
 var earnedCredits : int = 0
 var creditAwardAmount : int = 1
 var creditAwardAmountModifier : int = 1
+var healthPacksUsedByThePlayer : int = 0
+var playerAccuracy : float
 ##THE STATS FOR THE ROBOTS TO BE INCREASED EVERY WAVE
 var robotHealth
 @export var robotStartHealth : int = 10
@@ -49,6 +51,7 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if(needToSpawnRobots):
 		if(timeSinceLastRobotSpawned > robotSpawnInterval):
+			print("it is tiem to spawn a robot")
 			timeSinceLastRobotSpawned = 0.0
 			if(robotsSpawnedThisWave < robotsPerWave):
 				print(str(robotsSpawnedThisWave) + " robots spawned, need to spawn " + str(robotsPerWave))
@@ -73,10 +76,12 @@ func spawnRobot():
 	robotInstance.global_position = spawnPos
 	robotInstance.health = robotHealth
 	robotInstance.moveSpeed = robotSpeed
-	robotInstance.navAgent.target_reached.connect(robotReachedTheGoal)
+	robotInstance.navAgent.navigation_finished.connect(robotReachedTheGoal)
 	robotInstance.destroyed.connect(robotDestroyed)
 	robotInstance.cannon.target = player
+	robotInstance.cannon2.target = player
 	robotInstance.cannon.canShoot = true
+	robotInstance.cannon2.canShoot = true
 	#for testing, if player assigned, make it look at player
 	if(moveTarget != null):
 		robotInstance.moveTarget = moveTarget
@@ -90,24 +95,38 @@ func spawnRobot():
 func toggleRobotSpawning():
 	needToSpawnRobots = !needToSpawnRobots
 	if(needToSpawnRobots):
-		robotsDestroyedDuringRun = 0
-		wavesElapsed = 1
-		earnedCredits = 0
-		playerCharacter.global_position = defencePosition.global_position
-		elevateRobotStats()
-		
-
+		startRun()
+signal hurtPlayer
 func robotReachedTheGoal():
 	print("script robotSpawner - A Robot has reached the goal, game over or smth idk")
 	needToSpawnRobots = false
-	print("the player destroyed " + str(robotsDestroyedDuringRun) + " and earned " + str(earnedCredits) + " credits in total")
+	var i = 0
+	var damage = 20
+	while i < 5:
+		hurtPlayer.emit(damage)
+		i += 1
 
-func robotDestroyed():
+func robotDestroyed(gunThatKilledIt : String):
 	robotsDestroyedDuringRun += 1
 	robotsDestroyedThisWave += 1
 	earnedCredits += creditAwardAmount * creditAwardAmountModifier
 	print("script robotSpawner - The player has destroyed " + str(robotsDestroyedThisWave) + " robots during this wave and " + str(robotsDestroyedDuringRun) + " during the run")
 
+var pistolKills : int = 0
+var smgKills : int = 0
+var shotgunKills : int = 0
+func trackRobotsKilledByDifferentGunsThisRun(weapon : String):
+	if(weapon == "pistol"):
+		pistolKills += 1
+	if(weapon == "smg"):
+		smgKills += 1
+	if(weapon == "shotgun"):
+		shotgunKills += 1
+
+func resetTrackedGunStats():
+	pistolKills = 0
+	smgKills = 0
+	shotgunKills = 0
 func elevateRobotStats():
 	if(wavesElapsed > 1): 
 		robotHealth = robotHealthWaveModifier * wavesElapsed
@@ -132,14 +151,61 @@ func elevateRobotStats():
 	print("script robotSpawner - The robotSpeed for the next wave will be " + str(robotSpeed) + " and health will be " + str(robotHealth) + " and we will spawn " + str(robotsPerWave) + " of them")
 
 signal refreshCredits
-func onPlayerDied() -> void:
+func onPlayerDied(accuracy : float) -> void:
+	gameOver(accuracy)
+
+func onPlayerUsedHealthPack():
+	healthPacksUsedByThePlayer += 1
+
+func countPlayerScore(accuracy : float) -> float:
+	var accuracyMultiplier = accuracy / 10 #aka 95% accuracy would be 9.5%
+	var score : float
+	if(healthPacksUsedByThePlayer > 0):
+		var healthPacksUsedPenalty = 1
+		for i in range(healthPacksUsedByThePlayer, 0, -1):
+			healthPacksUsedPenalty -= 0.05
+		if(healthPacksUsedPenalty < 0):
+			healthPacksUsedPenalty = 0.3
+		score = (((wavesElapsed * (accuracy / 10)) + (robotsDestroyedDuringRun * 1.5)) * healthPacksUsedPenalty) * 10
+	else: 
+		score = (wavesElapsed * (accuracy / 10)) + (robotsDestroyedDuringRun * 1.5)
+	return score
+
+func startRun():
+	robotsDestroyedDuringRun = 0
+	robotsSpawnedThisWave = 0
+	wavesElapsed = 1
+	earnedCredits = 0
+	healthPacksUsedByThePlayer = 0
+	resetGunAccuracyCounters.emit()
+	playerCharacter.global_position = defencePosition.global_position
+	playerCharacter.health = playerCharacter.maxHealth
+	resetTrackedGunStats()
+	elevateRobotStats()
+
+func gameOver(accuracy : float):
 	needToSpawnRobots = false
+	if(accuracy > 100.0):
+		accuracy = 100.0
+	playerAccuracy = accuracy
 	for robot in get_children():
 		if(robot is breakable):
 			robot.queue_free()
-	print("the player destroyed " + str(robotsDestroyedDuringRun) + " and earned " + str(earnedCredits) + " credits in total before dying")
+	print("waves survived by the player = " + str(wavesElapsed))
+	print("robots destroyed by player = " + str(robotsDestroyedDuringRun))
+	print("credits earned by player = " + str(earnedCredits))
+	print("healthpacks used by player = " + str(healthPacksUsedByThePlayer))
+	print("the accuracy of the player = " + str(accuracy) + "%")
+	print("The final score of the player is " + str(countPlayerScore(playerAccuracy)))
+	dbConnectionManager.AddNewRunEntry(playerName, wavesElapsed, countPlayerScore(playerAccuracy), playerAccuracy)
 	playerCharacter.global_position = basePosition.global_position
 	var currentUserCredits = dbConnectionManager.getUserCredits(playerName)
 	var totalCredits = currentUserCredits + earnedCredits
 	dbConnectionManager.updateUserCredits(playerName, totalCredits)
+	updateGunRobotKills()
 	refreshCredits.emit()
+
+func updateGunRobotKills():
+	dbConnectionManager.UpdateWeaponDestroyedRobotsAmount(playerName, "pistol", pistolKills)
+	dbConnectionManager.UpdateWeaponDestroyedRobotsAmount(playerName, "smg", smgKills)
+	dbConnectionManager.UpdateWeaponDestroyedRobotsAmount(playerName, "shotgun", shotgunKills)

@@ -17,6 +17,13 @@ var equippedGunEnum : guns #Keeps track of the enumerator value for which gun is
 var equippedGun : gun
 var gunToEquip
 
+#tracking accuracy
+var firedShots : int = 0
+var missedShots : int = 0
+var hitShots : int = 0
+var accuracyPrcnt : float = 100.0
+@onready var shotStatsLbl: Label = $"../../playerUI/firedShotsLbl"
+
 @onready var shotGunRaysParent: Node3D = $shotGunRays
 
 
@@ -44,7 +51,9 @@ func _process(delta: float) -> void:
 		updateEquippedGunAmmoCounter()
 	else:
 		ammoCounter.visible = false
-func equipGun(firearm : guns):
+
+
+func equipGun(firearm : guns): #Check which gun the player wants to equip
 	match firearm:
 		guns.PISTOL:
 			pistol.getEquipped()
@@ -174,3 +183,26 @@ func addAmmoToGunReservers():
 	smg.reserveAmmoAmount += smg.magazineSize * 2
 	shotgun.reserveAmmoAmount += shotgun.magazineSize * 2
 	updateEquippedGunAmmoCounter()
+
+func onShotFired():
+	firedShots += 1
+	updateShotstatsLbl()
+
+func onShotMissed():
+	missedShots += 1
+	updateShotstatsLbl()
+
+func onShotHit():
+	hitShots += 1
+	updateShotstatsLbl()
+
+func updateShotstatsLbl():
+	countShotAccuracy()
+	shotStatsLbl.text = "Total shots = " + str(firedShots) + "\n hit shots = " + str(hitShots) + "\n missed shots = " + str(missedShots) + "\n accuracy% = " + str(accuracyPrcnt)
+
+func countShotAccuracy():
+	var shotsFloat = float(firedShots)
+	var hitShotsFloat = float(hitShots)
+	if(firedShots > 0):
+		var unRoundedAccuracyPrcnt = float(hitShotsFloat / shotsFloat) * 100
+		accuracyPrcnt = snapped(unRoundedAccuracyPrcnt, 0.01)

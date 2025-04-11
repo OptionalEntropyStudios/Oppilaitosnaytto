@@ -1,8 +1,8 @@
 [gd_scene load_steps=12 format=4 uid="uid://7w2clgeffpes"]
 
-[ext_resource type="Script" uid="uid://huhvcjijh3bw" path="res://Scenes/breakableAIController.gd" id="1_17rk6"]
+[ext_resource type="Script" uid="uid://huhvcjijh3bw" path="res://Scripts/breakableAIController.gd" id="1_17rk6"]
 [ext_resource type="Texture2D" uid="uid://bpuo5oxxo8pal" path="res://Models/robot_meatShield_robot1Diffuse.png" id="2_c5t10"]
-[ext_resource type="PackedScene" uid="uid://vvayuvxv2yev" path="res://robotCannon.tscn" id="3_c5t10"]
+[ext_resource type="PackedScene" uid="uid://vvayuvxv2yev" path="res://Scenes/robotCannon.tscn" id="3_c5t10"]
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_lb0jm"]
 direction = Vector3(1, 1, 0)
@@ -69,11 +69,12 @@ radius = 1.06445
 [sub_resource type="SphereShape3D" id="SphereShape3D_c5t10"]
 radius = 1.11546
 
-[node name="robot1" type="CharacterBody3D" node_paths=PackedStringArray("cannon", "hitSound", "deathSound", "deathEffect", "mesh", "hitBox", "headHitBox")]
+[node name="robot1" type="CharacterBody3D" node_paths=PackedStringArray("cannon", "cannon2", "hitSound", "deathSound", "deathEffect", "mesh", "hitBox", "headHitBox")]
 collision_layer = 9
 collision_mask = 9
 script = ExtResource("1_17rk6")
 cannon = NodePath("robotCannon")
+cannon2 = NodePath("robotCannon2")
 moveSpeed = 3.0
 accelerationSpeed = 15.0
 health = 10
@@ -122,6 +123,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.4142, 0)
 shape = SubResource("SphereShape3D_c5t10")
 
 [node name="robotCannon" parent="." instance=ExtResource("3_c5t10")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.44152, 1.57737, -1.09749)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2515, 1.57737, -0.911772)
+
+[node name="robotCannon2" parent="." instance=ExtResource("3_c5t10")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.1785, 1.57737, -0.911772)
 
 [connection signal="finished" from="deathEffect" to="." method="onDeathEffectFinished"]

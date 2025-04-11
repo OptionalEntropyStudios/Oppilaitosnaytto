@@ -44,10 +44,11 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_wchtr")
 
-[node name="robotCannon" type="Node3D" node_paths=PackedStringArray("gunshotSound", "bulletSpawnPos")]
+[node name="robotCannon" type="Node3D" node_paths=PackedStringArray("gunshotSound", "bulletSpawnPos", "visibilityRay")]
 script = ExtResource("1_8dgbo")
 gunshotSound = NodePath("gunshotSound")
 bulletSpawnPos = NodePath("bulletSpawnPosition")
+visibilityRay = NodePath("visibilityRay")
 timeBetweenShots = 0.5
 
 [node name="cannonMesh" type="MeshInstance3D" parent="."]
@@ -59,3 +60,9 @@ skeleton = NodePath("")
 transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0.0849242, 0, -1.25)
 
 [node name="gunshotSound" type="AudioStreamPlayer3D" parent="."]
+
+[node name="visibilityRay" type="RayCast3D" parent="."]
+transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0, 0)
+target_position = Vector3(0, 0, 100)
+debug_shape_custom_color = Color(1, 0.273989, 0.21327, 1)
+debug_shape_thickness = 5
