@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3 uid="uid://d056snonfvi60"]
+[gd_scene load_steps=28 format=3 uid="uid://d056snonfvi60"]
 
 [ext_resource type="Script" uid="uid://lgwkiwnyg0f" path="res://Scripts/gameManager.gd" id="1_60nol"]
 [ext_resource type="Texture2D" uid="uid://c83308uqsktgw" path="res://Textures/Developer Textures/PNG/Dark/texture_03.png" id="1_hrvet"]
@@ -12,7 +12,6 @@
 [ext_resource type="PackedScene" uid="uid://b422mbvsy4kn1" path="res://Scenes/leaderBoard.tscn" id="11_bqkuw"]
 [ext_resource type="Texture2D" uid="uid://uf8jth87nacx" path="res://Textures/Developer Textures/PNG/Purple/texture_08.png" id="11_flirm"]
 [ext_resource type="Texture2D" uid="uid://j38sty2v51cj" path="res://Textures/Developer Textures/PNG/Light/texture_13.png" id="11_jcudg"]
-[ext_resource type="Script" uid="uid://b50wp2d8yqfg4" path="res://Scripts/pauseMenu.gd" id="12_bqkuw"]
 [ext_resource type="PackedScene" uid="uid://bq1xtqimjoq4p" path="res://Scenes/store.tscn" id="12_flirm"]
 [ext_resource type="PackedScene" uid="uid://cv85wapmyimam" path="res://Scenes/changeGunNameUI.tscn" id="14_p5s0v"]
 
@@ -1174,7 +1173,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.176419, 0.176419, 0.176419, 0.164706)
-script = ExtResource("12_bqkuw")
 
 [node name="continueButton" type="Button" parent="pauseMenu"]
 layout_mode = 1

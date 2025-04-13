@@ -862,6 +862,7 @@ modulate = Color(1, 1, 0.341176, 1)
 text = "botom text"
 
 [node name="equipmentMenu" type="Node3D" parent="." node_paths=PackedStringArray("store")]
+visible = false
 script = ExtResource("10_w72gx")
 store = NodePath("..")
 
