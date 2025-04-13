@@ -2,17 +2,20 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dk8o82rjww802"
-path.s3tc="res://.godot/imported/african_realistic_baseColor.png-67cf0f3230115c16edbeaf7b76430f7c.s3tc.ctex"
+uid="uid://dq5xnnteuc7tb"
+path.s3tc="res://.godot/imported/shotgun_shellSlideNSight.png-c8c830a7a67e173a4f9972cddfd2f3cb.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
+generator_parameters={
+"md5": "3706c91d3368f4d6287b17671f73eb88"
+}
 
 [deps]
 
-source_file="res://addons/godot-xr-tools/hands/textures/african_realistic_baseColor.png"
-dest_files=["res://.godot/imported/african_realistic_baseColor.png-67cf0f3230115c16edbeaf7b76430f7c.s3tc.ctex"]
+source_file="res://Textures/shotgun_shellSlideNSight.png"
+dest_files=["res://.godot/imported/shotgun_shellSlideNSight.png-c8c830a7a67e173a4f9972cddfd2f3cb.s3tc.ctex"]
 
 [params]
 
