@@ -1,15 +1,17 @@
-[gd_scene load_steps=5 format=3 uid="uid://34d41xek5lk0"]
+[gd_scene load_steps=9 format=3 uid="uid://34d41xek5lk0"]
 
 [ext_resource type="Script" uid="uid://dxl536pe8fh3x" path="res://Scripts/robotBullet.gd" id="1_hu5yp"]
+[ext_resource type="AudioStream" uid="uid://6kcof70ojypd" path="res://Sounds/cannonBallSound.wav" id="2_2kie4"]
+[ext_resource type="AudioStream" uid="uid://dv143bdnpimbw" path="res://Sounds/ballHitSound.wav" id="3_hmgic"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_eu46w"]
-albedo_color = Color(0, 1, 0, 1)
+albedo_color = Color(0, 1, 0, 0.494118)
 metallic = 0.78
 metallic_specular = 0.53
 roughness = 0.0
 emission_enabled = true
 emission = Color(0, 1, 0, 1)
-emission_energy_multiplier = 3.49
+emission_energy_multiplier = 4.48
 
 [sub_resource type="SphereMesh" id="SphereMesh_eu46w"]
 material = SubResource("StandardMaterial3D_eu46w")
@@ -19,10 +21,21 @@ height = 0.5
 [sub_resource type="SphereShape3D" id="SphereShape3D_eu46w"]
 radius = 0.3
 
-[node name="robotBullet" type="RigidBody3D"]
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_hmgic"]
+angle_min = -720.0
+angle_max = 720.0
+spread = 180.0
+initial_velocity_max = 8.37
+
+[sub_resource type="QuadMesh" id="QuadMesh_l7iaj"]
+material = SubResource("StandardMaterial3D_eu46w")
+size = Vector2(0.05, 0.1)
+
+[node name="robotBullet" type="RigidBody3D" node_paths=PackedStringArray("wibblyWobblySound")]
 collision_layer = 0
 gravity_scale = 0.0
 script = ExtResource("1_hu5yp")
+wibblyWobblySound = NodePath("wibblyWobblysound")
 minDamage = 3
 maxDamage = 8
 speed = 25.0
@@ -31,8 +44,33 @@ speed = 25.0
 mesh = SubResource("SphereMesh_eu46w")
 
 [node name="hitDetector" type="Area3D" parent="."]
+collision_layer = 0
 
 [node name="hitCollider" type="CollisionShape3D" parent="hitDetector"]
 shape = SubResource("SphereShape3D_eu46w")
 
+[node name="wibblyWobblysound" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("2_2kie4")
+volume_db = -12.03
+pitch_scale = 1.27
+
+[node name="hitSound" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("3_hmgic")
+volume_db = -13.233
+max_distance = 50.0
+max_polyphony = 5
+
+[node name="hitEffect" type="GPUParticles3D" parent="."]
+emitting = false
+amount = 100
+lifetime = 0.5
+one_shot = true
+preprocess = 0.4
+explosiveness = 0.2
+transform_align = 3
+process_material = SubResource("ParticleProcessMaterial_hmgic")
+draw_pass_1 = SubResource("QuadMesh_l7iaj")
+
 [connection signal="body_entered" from="hitDetector" to="." method="bulletHitSomething"]
+[connection signal="finished" from="wibblyWobblysound" to="." method="onWibblyWobblyFinished"]
+[connection signal="finished" from="hitSound" to="." method="onHitSoundFinished"]

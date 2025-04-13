@@ -8,8 +8,13 @@ var moveTarget: Node3D
 @export var accelerationSpeed : float
 var direction
 @export var canMove : bool = false
+@export var hoveringSound : AudioStreamPlayer3D
+var startedSound : bool = false
 func _physics_process(delta: float) -> void:
 	if(canMove):
+		if(!startedSound):
+			startedSound = true
+			hoveringSound.play()
 		direction = Vector3() #Cast the variable as a Vector3 to minimize errors later in function
 		if(navAgent != null):
 			navAgent.target_position = moveTarget.global_position #Set the navigationAgent's targetpos to be the target we want the moving thing to move toward
@@ -23,3 +28,8 @@ func _physics_process(delta: float) -> void:
 			#move toward the target at the speed specified
 			velocity = velocity.lerp(direction * moveSpeed, accelerationSpeed * delta)
 			move_and_slide()
+	if(gotKilled and hoveringSound.is_playing()):
+		hoveringSound.stop()
+
+func _on_hovering_sound_finished() -> void:
+	hoveringSound.play()

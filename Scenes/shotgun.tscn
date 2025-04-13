@@ -1,9 +1,10 @@
-[gd_scene load_steps=28 format=4 uid="uid://j77oe421boc8"]
+[gd_scene load_steps=29 format=4 uid="uid://j77oe421boc8"]
 
 [ext_resource type="PackedScene" uid="uid://rmplx8vqgi6x" path="res://Scenes/baseScenes/gunBase.tscn" id="1_8claw"]
 [ext_resource type="Texture2D" uid="uid://661tv40fwlql" path="res://Models/shotgun_shotgunFrameDiffuse.png" id="2_0vijm"]
 [ext_resource type="Texture2D" uid="uid://ba44am2t460fg" path="res://Models/shotgun_shellSlideNSight.png" id="3_voe37"]
 [ext_resource type="Texture2D" uid="uid://cmrayc3v4sl0t" path="res://Models/sgSight_shotgunFrameDiffuse.png" id="4_0vijm"]
+[ext_resource type="AudioStream" uid="uid://dyoobvs71arcf" path="res://Sounds/shotgunShootSound.wav" id="5_voe37"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jpiiv"]
 resource_name = "Material"
@@ -641,8 +642,9 @@ material = SubResource("StandardMaterial3D_udryi")
 size = Vector2(0.175, 0.215)
 orientation = 2
 
-[node name="shotgun" node_paths=PackedStringArray("muzzleEffect") instance=ExtResource("1_8claw")]
+[node name="shotgun" node_paths=PackedStringArray("muzzleEffect", "shootSound") instance=ExtResource("1_8claw")]
 muzzleEffect = NodePath("MeshInstance3D")
+shootSound = NodePath("shootSound")
 baseDamage = 10
 baseFirerate = 1.0
 baseMagazineSize = 5
@@ -681,6 +683,12 @@ libraries = {
 }
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." index="2"]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0.0264055, 0.504)
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 1.18135e-09, 0.0264055, 0.517513)
 visible = false
 mesh = SubResource("PlaneMesh_0vijm")
+
+[node name="shootSound" type="AudioStreamPlayer3D" parent="." index="3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0249912, 0.512225)
+visible = false
+stream = ExtResource("5_voe37")
+volume_db = -31.887

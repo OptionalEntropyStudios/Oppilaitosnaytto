@@ -1,5 +1,6 @@
 extends Node3D
 
+var dbConnectionManager
 @onready var player: CharacterBody3D = $Player
 var currentUser
 @onready var pauseMenu: ColorRect = $pauseMenu
@@ -7,6 +8,7 @@ var currentUser
 
 var showPauseMenu : bool = false
 func _ready() -> void:
+	dbConnectionManager = get_tree().get_first_node_in_group("sql")
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED) #Capture the mouse, so it don't leave the screen
 	currentUser = loadLastLoggedInUser()
 	player.username = currentUser

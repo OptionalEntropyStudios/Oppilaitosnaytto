@@ -27,4 +27,5 @@ func shoot():
 	get_tree().root.add_child(blt)
 	blt.global_position = bulletSpawnPos.global_position
 	blt.look_at(target.global_position, Vector3.UP)
+	gunshotSound.play()
 	blt.fired = true

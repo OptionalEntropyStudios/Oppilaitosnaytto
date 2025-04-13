@@ -1,7 +1,7 @@
-[gd_scene load_steps=11 format=3 uid="uid://dlhnk4bxiffhf"]
+[gd_scene load_steps=15 format=3 uid="uid://dlhnk4bxiffhf"]
 
 [ext_resource type="Texture2D" uid="uid://o44ier5w6fry" path="res://Textures/Developer Textures/PNG/Purple/texture_09.png" id="1_tih4t"]
-[ext_resource type="Texture2D" uid="uid://xjpsfy4slwal" path="res://Textures/Developer Textures/PNG/Dark/texture_02.png" id="2_ndd2h"]
+[ext_resource type="Texture2D" uid="uid://mnrosgdr5w8" path="res://Textures/Developer Textures/PNG/Red/texture_06.png" id="2_ndd2h"]
 [ext_resource type="Script" uid="uid://dhh34dguvbpjf" path="res://Scripts/login.gd" id="2_wdro6"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_tih4t"]
@@ -32,7 +32,27 @@ uv1_triplanar = true
 
 [sub_resource type="BoxMesh" id="BoxMesh_tih4t"]
 material = SubResource("StandardMaterial3D_1iclm")
-size = Vector3(0.2, 5, 0.2)
+size = Vector3(0.365, 5, 0.2)
+
+[sub_resource type="LabelSettings" id="LabelSettings_wdro6"]
+font_size = 61
+font_color = Color(1, 0.27451, 0.211765, 0)
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_kgsdm"]
+font_size = 61
+font_color = Color(1, 0.27451, 0.211765, 0)
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_ndd2h"]
+font_size = 61
+font_color = Color(1, 0.27451, 0.211765, 0)
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_1iclm"]
+font_size = 61
+font_color = Color(0, 1, 0, 0)
+outline_color = Color(0, 0, 0, 1)
 
 [node name="loginScreen" type="Node3D"]
 
@@ -42,6 +62,10 @@ environment = SubResource("Environment_wdro6")
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.794416, -0.519663, -0.314411, -0.578428, 0.805203, 0.130651, 0.18527, 0.285655, -0.940253, 0, 0, 0)
 light_color = Color(0.908581, 0.900621, 1.54018e-06, 1)
+light_energy = 4.528
+light_indirect_energy = 1.63
+light_volumetric_fog_energy = 6.417
+light_angular_distance = 38.27
 shadow_enabled = true
 
 [node name="Camera3D" type="Camera3D" parent="."]
@@ -82,7 +106,7 @@ transform = Transform3D(0.960707, -0.277566, 0, 0.277566, 0.960707, 0, 0, 0, 1, 
 mesh = SubResource("BoxMesh_tih4t")
 
 [node name="MeshInstance3D8" type="MeshInstance3D" parent="MeshInstance3D"]
-transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0.123, 1.09479, -3.45902)
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -1.17673, 0.822261, -3.45902)
 mesh = SubResource("BoxMesh_tih4t")
 
 [node name="MeshInstance3D9" type="MeshInstance3D" parent="MeshInstance3D"]
@@ -504,7 +528,7 @@ offset_bottom = 211.0
 grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(3.24, 3.24)
-pivot_offset = Vector2(71.15, 0)
+pivot_offset = Vector2(71.15, 24.415)
 theme_override_font_sizes/font_size = 26
 action_mode = 0
 text = "Login"
@@ -535,7 +559,7 @@ offset_bottom = 393.0
 grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(3.24, 3.24)
-pivot_offset = Vector2(71.15, 0)
+pivot_offset = Vector2(71.15, 24.415)
 theme_override_font_sizes/font_size = 26
 action_mode = 0
 text = "Register"
@@ -547,9 +571,9 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -221.0
+offset_left = -400.0
 offset_top = -46.0
-offset_right = 236.0
+offset_right = 415.0
 offset_bottom = 46.0
 grow_horizontal = 2
 grow_vertical = 2
@@ -563,6 +587,64 @@ expand_to_text_length = true
 emoji_menu_enabled = false
 select_all_on_focus = true
 caret_blink = true
+
+[node name="userDoesNotExistlbl" type="Label" parent="Container"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -543.5
+offset_right = 543.5
+offset_bottom = 84.0
+grow_horizontal = 2
+text = "THE SPECIFIED USER DOES NOT EXIST"
+label_settings = SubResource("LabelSettings_wdro6")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="fieldEmptyLbl" type="Label" parent="Container"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -543.5
+offset_right = 543.5
+offset_bottom = 200.84
+grow_horizontal = 2
+text = "THE INPUT FIELD IS EMPTY"
+label_settings = SubResource("LabelSettings_kgsdm")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="userExistsAlready" type="Label" parent="Container"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -656.5
+offset_top = 15.335
+offset_right = 656.5
+offset_bottom = 303.475
+grow_horizontal = 2
+text = "THE SPECIFIED USER IS ALREADY REGISTERED"
+label_settings = SubResource("LabelSettings_ndd2h")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="userRegisteredSuccesfully" type="Label" parent="Container"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -611.0
+offset_top = 75.12
+offset_right = 611.0
+offset_bottom = 363.26
+grow_horizontal = 2
+text = "USERNAME REGISTERED, USE IT TO LOGIN"
+label_settings = SubResource("LabelSettings_1iclm")
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [connection signal="pressed" from="Container/buttonContainer/loginButton" to="Container" method="onLoginButtonPressed"]
 [connection signal="pressed" from="Container/buttonContainer/quitButton" to="Container" method="quitGame"]

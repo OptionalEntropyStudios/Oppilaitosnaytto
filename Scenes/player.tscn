@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://dlnlalfhir7cd"]
+[gd_scene load_steps=23 format=3 uid="uid://dlnlalfhir7cd"]
 
 [ext_resource type="Script" uid="uid://dxa0bwyy34ccj" path="res://Scripts/player.gd" id="1_v0iea"]
 [ext_resource type="Script" uid="uid://dnuip41re4566" path="res://Scripts/interactionManager.gd" id="2_8erm5"]
@@ -10,6 +10,11 @@
 [ext_resource type="Script" uid="uid://ocsked4lccm7" path="res://Scripts/gunHolder.gd" id="5_f1ek2"]
 [ext_resource type="PackedScene" uid="uid://dw5fnend2q2to" path="res://Scenes/smg.tscn" id="5_x3wgy"]
 [ext_resource type="PackedScene" uid="uid://j77oe421boc8" path="res://Scenes/shotgun.tscn" id="6_3smsa"]
+[ext_resource type="AudioStream" uid="uid://dv5k2fuco1gn7" path="res://Sounds/playerHurt.wav" id="11_ukyrk"]
+[ext_resource type="AudioStream" uid="uid://dtwb7tfvtkipb" path="res://Sounds/playerHealSound.wav" id="12_7dp3o"]
+[ext_resource type="AudioStream" uid="uid://ba1jn71unpnjn" path="res://Sounds/playerDeathSound.wav" id="13_h4iuc"]
+[ext_resource type="AudioStream" uid="uid://cug1c428t1bha" path="res://Sounds/playerJumpSound.wav" id="14_7dp3o"]
+[ext_resource type="AudioStream" uid="uid://nh7jrkbqefms" path="res://Sounds/playerLandingSound.wav" id="15_h4iuc"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_f60y1"]
 radius = 0.3
@@ -34,11 +39,19 @@ font_color = Color(1, 0.284923, 0.526198, 1)
 font_size = 20
 
 [sub_resource type="LabelSettings" id="LabelSettings_f1ek2"]
-line_spacing = -10.0
-font_size = 20
+line_spacing = -11.19
+font_size = 45
+font_color = Color(0.607843, 0.607843, 0.607843, 0.552941)
+
+[sub_resource type="LabelSettings" id="LabelSettings_pu2lt"]
+font_size = 56
+font_color = Color(1, 0.32549, 1, 0.678431)
+outline_size = 17
+outline_color = Color(0.122252, 0.122252, 0.122252, 1)
 
 [node name="Player" type="CharacterBody3D" groups=["player"]]
 script = ExtResource("1_v0iea")
+stopSpeed = 0.1
 walkingSpeed = 45.0
 runningSpeed = 60.0
 crouchingSpeed = 25.0
@@ -60,6 +73,9 @@ fov = 65.0
 near = 0.001
 script = ExtResource("2_cvnsp")
 lookSensitivity = 20.0
+
+[node name="AudioListener3D" type="AudioListener3D" parent="playerCamera"]
+current = true
 
 [node name="interactionManager" type="Node3D" parent="playerCamera"]
 script = ExtResource("2_8erm5")
@@ -160,7 +176,6 @@ debug_shape_custom_color = Color(0.87451, 0, 0.121569, 0.498039)
 debug_shape_thickness = 1
 
 [node name="playerUI" type="Control" parent="."]
-visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -212,8 +227,9 @@ layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
+offset_left = 30.12
 offset_top = -137.0
-offset_right = 171.0
+offset_right = 201.12
 grow_vertical = 0
 
 [node name="healthIndicator" type="Label" parent="playerUI/healthTextContainer"]
@@ -228,9 +244,10 @@ layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_top = -233.14
-offset_right = 171.0
-offset_bottom = -96.14
+offset_left = 36.345
+offset_top = -206.28
+offset_right = 207.345
+offset_bottom = -69.28
 grow_vertical = 0
 
 [node name="healthPacksAmtIndicator" type="Label" parent="playerUI/healthPackIndicator"]
@@ -242,6 +259,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="moveStateLable" type="Label" parent="playerUI"]
+visible = false
 layout_mode = 0
 offset_left = 2.0
 offset_top = -6.0
@@ -252,6 +270,7 @@ label_settings = SubResource("LabelSettings_8erm5")
 uppercase = true
 
 [node name="firedShotsLbl" type="Label" parent="playerUI"]
+visible = false
 layout_mode = 0
 offset_left = 0.595
 offset_top = 247.54
@@ -262,6 +281,7 @@ label_settings = SubResource("LabelSettings_8erm5")
 uppercase = true
 
 [node name="standStateLabel" type="Label" parent="playerUI"]
+visible = false
 layout_mode = 0
 offset_left = 1.0
 offset_top = 11.0
@@ -272,6 +292,7 @@ label_settings = SubResource("LabelSettings_f1ek2")
 uppercase = true
 
 [node name="groundedStateLabel" type="Label" parent="playerUI"]
+visible = false
 layout_mode = 0
 offset_top = 27.0
 offset_right = 284.0
@@ -281,6 +302,7 @@ label_settings = SubResource("LabelSettings_f1ek2")
 uppercase = true
 
 [node name="gunNameLabel" type="Label" parent="playerUI"]
+visible = false
 layout_mode = 0
 offset_top = 44.0
 offset_right = 284.0
@@ -290,6 +312,7 @@ label_settings = SubResource("LabelSettings_f1ek2")
 uppercase = true
 
 [node name="gunDamageLabel" type="Label" parent="playerUI"]
+visible = false
 layout_mode = 0
 offset_left = 1.0
 offset_top = 61.0
@@ -300,6 +323,7 @@ label_settings = SubResource("LabelSettings_f1ek2")
 uppercase = true
 
 [node name="gunFullAutoStatus" type="Label" parent="playerUI"]
+visible = false
 layout_mode = 0
 offset_top = 77.0
 offset_right = 284.0
@@ -309,14 +333,18 @@ label_settings = SubResource("LabelSettings_f1ek2")
 uppercase = true
 
 [node name="bindInfo" type="Label" parent="playerUI"]
-layout_mode = 0
-offset_left = 4.0
-offset_top = 168.0
-offset_right = 288.0
-offset_bottom = 232.0
-text = "[1] = Pistol
-[2] = Smg
-[3] = Shotgun"
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -180.0
+offset_top = -38.0
+offset_right = 180.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "[1] = Pistol [2] = Smg [3] = Shotgun"
 label_settings = SubResource("LabelSettings_f1ek2")
 uppercase = true
 
@@ -337,6 +365,64 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 1, 0, 0)
+
+[node name="weaponNameContainer" type="Control" parent="playerUI"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="weaponName" type="Label" parent="playerUI/weaponNameContainer"]
+visible = false
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -506.0
+offset_top = -206.895
+offset_bottom = -88.895
+grow_horizontal = 0
+grow_vertical = 0
+text = "the yassifier"
+label_settings = SubResource("LabelSettings_pu2lt")
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="hurtSound" type="AudioStreamPlayer3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5105, 0)
+visible = false
+stream = ExtResource("11_ukyrk")
+volume_db = -38.496
+
+[node name="healSound" type="AudioStreamPlayer3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5105, 0)
+visible = false
+stream = ExtResource("12_7dp3o")
+volume_db = -37.293
+
+[node name="deathSound" type="AudioStreamPlayer3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5105, 0)
+visible = false
+stream = ExtResource("13_h4iuc")
+volume_db = -34.887
+
+[node name="jumpSound" type="AudioStreamPlayer3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.363305, 0)
+visible = false
+stream = ExtResource("14_7dp3o")
+volume_db = -37.293
+pitch_scale = 1.69
+
+[node name="landingSound" type="AudioStreamPlayer3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.363305, 0)
+visible = false
+stream = ExtResource("15_h4iuc")
+volume_db = -33.684
+pitch_scale = 1.06
 
 [connection signal="canLookNow" from="." to="playerCamera" method="onLevelLoaded"]
 [connection signal="reloadButtonPressed" from="playerCamera/weaponManager" to="playerCamera/weaponManager/gunHolder/smg" method="reload"]

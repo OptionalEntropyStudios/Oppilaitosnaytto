@@ -1,8 +1,9 @@
-[gd_scene load_steps=21 format=4 uid="uid://duxk1kj5jiwfe"]
+[gd_scene load_steps=22 format=4 uid="uid://duxk1kj5jiwfe"]
 
 [ext_resource type="PackedScene" uid="uid://rmplx8vqgi6x" path="res://Scenes/baseScenes/gunBase.tscn" id="1_s1xqh"]
 [ext_resource type="Texture2D" uid="uid://b5cpavxbsqnu1" path="res://Models/xPistol_pistolTexture.png" id="2_4jper"]
 [ext_resource type="Texture2D" uid="uid://cmm546f4nmnge" path="res://Models/xPistol_pistolMagazineDiffuse.png" id="3_0s8pg"]
+[ext_resource type="AudioStream" uid="uid://b3xlbgaje4t8f" path="res://Sounds/pistolShootSound.wav" id="4_4jper"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_i3jk1"]
 resource_name = "Material.001"
@@ -385,8 +386,9 @@ emission_energy_multiplier = 16.0
 material = SubResource("StandardMaterial3D_s1xqh")
 size = Vector2(0.195, 0.24)
 
-[node name="pistol" node_paths=PackedStringArray("muzzleEffect") instance=ExtResource("1_s1xqh")]
+[node name="pistol" node_paths=PackedStringArray("muzzleEffect", "shootSound") instance=ExtResource("1_s1xqh")]
 muzzleEffect = NodePath("MeshInstance3D")
+shootSound = NodePath("shootSound")
 usesMagazines = true
 ammoInMagazine = 12
 reserveAmmoAmount = 10000
@@ -396,6 +398,7 @@ baseMagazineSize = 8
 baseReloadSpeed = 1.0
 magazineSize = 12
 recoilAmount = 1.0
+spreadAmount = 0.2
 
 [node name="gunMesh2" type="Node3D" parent="." index="0"]
 
@@ -428,3 +431,11 @@ libraries = {
 transform = Transform3D(-1, 0, 1.50996e-07, 0, 1, 0, -1.50996e-07, 0, -1, 0, 0.113997, 0.425354)
 visible = false
 mesh = SubResource("QuadMesh_4jper")
+
+[node name="shootSound" type="AudioStreamPlayer3D" parent="." index="3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.117706, 0.379175)
+visible = false
+stream = ExtResource("4_4jper")
+attenuation_model = 2
+volume_db = -80.0
+max_polyphony = 20

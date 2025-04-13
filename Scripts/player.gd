@@ -5,6 +5,14 @@ extends CharacterBody3D
 signal usedHealthPack
 var healthIndicatorAlpha : float = 0.0
 
+@onready var hurtSound: AudioStreamPlayer3D = $hurtSound
+@onready var healSound: AudioStreamPlayer3D = $healSound
+@onready var deathSound: AudioStreamPlayer3D = $deathSound
+@onready var jumpSound: AudioStreamPlayer3D = $jumpSound
+@onready var landingSound: AudioStreamPlayer3D = $landingSound
+
+
+
 var username : String
 
 @onready var weaponManager: Node3D = $playerCamera/weaponManager
@@ -44,6 +52,8 @@ func _physics_process(delta: float) -> void:
 	doMovementStuff(delta) #Handle all the movement logic in this function
 	move_and_slide() #Built in script to handle the actual translation of the player body when input is applied
 func _process(delta: float) -> void:
+	if(is_on_floor() and prevGroundedState == false): #if the player lands after being in the air, landing sound is played
+		landingSound.play()
 	if(is_on_floor() != prevGroundedState):
 		groundedStateLbl.text = "GROUNDEDSTATE : " + str(is_on_floor())
 		prevGroundedState = is_on_floor()
@@ -96,18 +106,21 @@ func doMovementStuff(delta : float):
 			prevMoveState = playerMoveState
 		#END FOR DEBUGGING
 	else:
-		velocity.x = move_toward(velocity.x, 0, stopSpeed) #If no input, move to a halt
-		velocity.z = move_toward(velocity.z, 0, stopSpeed) #If no input, move to a halt
+		velocity.x = lerpf(velocity.x, 0, delta * stopSpeed) #If no input, move to a halt
+		velocity.z = lerpf(velocity.z, 0, delta * stopSpeed) #If no input, move to a halt
 func gravity():
 	if(!is_on_floor()):
 		velocity.y -= gravityForce
 func checkJump():
 	if(Input.is_action_just_pressed("jump") and is_on_floor()):
+		jumpSound.play()
 		velocity.y += jumpForce
 
 signal canLookNow
 func tellCameraItIsOkToLook():
 	canLookNow.emit()
+	await get_tree().create_timer(0.5).timeout
+	weaponManager.updateWeaponNameLabel()
 
 func makeGunManagerCheckGunOwnerships():
 	if(!username.is_empty()):
@@ -129,6 +142,7 @@ func loadLastLoggedInUser() -> String:
 
 func takeDamage(damage : int):
 	health -= damage
+	hurtSound.play()
 	if(healthIndicatorAlpha < 0.7):
 		healthIndicatorAlpha += 0.3
 	healthCounter.text = str(health)
@@ -138,11 +152,12 @@ func takeDamage(damage : int):
 signal playerDied
 func die():
 	healthIndicatorAlpha = 1.0
+	deathSound.play()
 	playerDied.emit(weaponManager.accuracyPrcnt)
 	health = maxHealth
 	healthCounter.text = str(health)
-func getAmmo():
-	weaponManager.addAmmoToGunReservers()
+func getAmmo(startOfgame :bool):
+	weaponManager.addAmmoToGunReserves(startOfgame)
 
 func resetGunAccuracyCounters():
 	weaponManager.firedShots = 0
@@ -154,3 +169,7 @@ func resetGunAccuracyCounters():
 
 func onHealthPackBought():
 	healthManager.checkOwnedHealthPacks()
+
+
+func _on_change_name_button_pressed() -> void:
+	weaponManager.updateWeaponNameLabel()

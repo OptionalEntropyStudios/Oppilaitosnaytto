@@ -1,7 +1,8 @@
-[gd_scene load_steps=17 format=4 uid="uid://dw5fnend2q2to"]
+[gd_scene load_steps=18 format=4 uid="uid://dw5fnend2q2to"]
 
 [ext_resource type="PackedScene" uid="uid://rmplx8vqgi6x" path="res://Scenes/baseScenes/gunBase.tscn" id="1_2ecjt"]
 [ext_resource type="Texture2D" uid="uid://hrusl3x1x232" path="res://Models/smg_smgFrameDiffuse.png" id="2_sovh5"]
+[ext_resource type="AudioStream" uid="uid://cu3p481ld34o" path="res://Sounds/smgShootSound.wav" id="3_sovh5"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wb3w0"]
 resource_name = "Material.001"
@@ -367,8 +368,9 @@ material = SubResource("StandardMaterial3D_udryi")
 size = Vector2(0.06, 0.06)
 orientation = 2
 
-[node name="smg" node_paths=PackedStringArray("muzzleEffect") instance=ExtResource("1_2ecjt")]
+[node name="smg" node_paths=PackedStringArray("muzzleEffect", "shootSound") instance=ExtResource("1_2ecjt")]
 muzzleEffect = NodePath("MeshInstance3D")
+shootSound = NodePath("shootSound")
 usesMagazines = true
 fullAuto = true
 ammoInMagazine = 20
@@ -379,6 +381,7 @@ baseMagazineSize = 20
 baseReloadSpeed = 1.0
 magazineSize = 20
 recoilAmount = 1.5
+spreadAmount = 0.5
 
 [node name="gunMesh" type="Node3D" parent="." index="0"]
 transform = Transform3D(-0.055, 0, 1.39435e-07, 0, 0.055, 0, -1.39435e-07, 0, -0.055, 0, 0, 0)
@@ -405,3 +408,11 @@ libraries = {
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.546425)
 visible = false
 mesh = SubResource("PlaneMesh_udryi")
+
+[node name="shootSound" type="AudioStreamPlayer3D" parent="." index="3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.5)
+visible = false
+stream = ExtResource("3_sovh5")
+attenuation_model = 1
+volume_db = -51.729
+max_polyphony = 30

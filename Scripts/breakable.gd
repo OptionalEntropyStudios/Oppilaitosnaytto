@@ -15,7 +15,6 @@ var gotKilled : bool = false
 func takeDamage(damage : int , attacker : String):
 	health -= damage
 	hitSound.play()
-	print("the attacker was " + attacker)
 	if(health <= 0 and !gotKilled):
 		die(attacker)
 		hitBox.disabled = true
@@ -27,7 +26,7 @@ func die(killer : String):
 	deathSound.play()
 	deathEffect.emitting = true
 	for child in get_children():
-		if(child is not GPUParticles3D):
+		if(child is not GPUParticles3D and child is not AudioStreamPlayer3D):
 			child.queue_free()
 
 func onDeathEffectFinished():

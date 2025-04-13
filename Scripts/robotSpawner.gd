@@ -41,25 +41,21 @@ var robotSpeedWaveModifier : float = .1
 var wavesSinceLastIncreasedCreditAwardAmount : int = 0
 var creditAwardIncreaseInterval : int = 2
 var playerName
-var dbConnectionScript = preload("res://Scripts/mySqlTestConneciton.cs")
 var dbConnectionManager
 func _ready() -> void:
 	timeSinceLastRobotSpawned = 0.0
 	await get_tree().create_timer(0.5).timeout
 	playerName = playerCharacter.username
-	dbConnectionManager = dbConnectionScript.new()
+	dbConnectionManager = get_tree().get_first_node_in_group("sql")
 func _process(delta: float) -> void:
 	if(needToSpawnRobots):
 		if(timeSinceLastRobotSpawned > robotSpawnInterval):
-			print("it is tiem to spawn a robot")
 			timeSinceLastRobotSpawned = 0.0
 			if(robotsSpawnedThisWave < robotsPerWave):
-				print(str(robotsSpawnedThisWave) + " robots spawned, need to spawn " + str(robotsPerWave))
 				spawnRobot()
 			else:
 				if(robotsDestroyedThisWave >= robotsSpawnedThisWave):
 					robotsSpawnedThisWave = 0
-					print("the " + str(wavesElapsed) + ". wave has been finished")
 					wavesElapsed += 1
 					elevateRobotStats()
 		else:
@@ -85,11 +81,10 @@ func spawnRobot():
 	#for testing, if player assigned, make it look at player
 	if(moveTarget != null):
 		robotInstance.moveTarget = moveTarget
-		
-		robotInstance.canMove = true
 	else:
 		robotInstance.moveTarget = player
-		robotInstance.canMove = true
+	robotInstance.canMove = true
+	#robotInstance.hitSound.play()
 	robotsSpawnedThisWave += 1
 
 func toggleRobotSpawning():
@@ -110,7 +105,6 @@ func robotDestroyed(gunThatKilledIt : String):
 	robotsDestroyedThisWave += 1
 	trackRobotsKilledByDifferentGunsThisRun(gunThatKilledIt)
 	earnedCredits += creditAwardAmount * creditAwardAmountModifier
-	print("script robotSpawner - The player has destroyed " + str(robotsDestroyedThisWave) + " robots during this wave and " + str(robotsDestroyedDuringRun) + " during the run")
 
 var pistolKills : int = 0
 var smgKills : int = 0
@@ -140,15 +134,13 @@ func elevateRobotStats():
 	if(wavesSinceLastIncreasedCreditAwardAmount >= creditAwardIncreaseInterval):
 		creditAwardAmountModifier += 1
 		wavesSinceLastIncreasedCreditAwardAmount = 0
-		print("Increased the credits awarded per robot to " + str(creditAwardAmountModifier))
 	else:
 		wavesSinceLastIncreasedCreditAwardAmount += 1
 	#3 robots per second is pretty good for a maximum spawn speed
 	if(robotSpawnInterval > 0.3):
 		robotSpawnInterval -= 0.05
 	robotsDestroyedThisWave = 0
-	giveAmmo.emit()
-	print("script robotSpawner - The robotSpeed for the next wave will be " + str(robotSpeed) + " and health will be " + str(robotHealth) + " and we will spawn " + str(robotsPerWave) + " of them")
+	giveAmmo.emit(false) #false means that it's not the start of game, and just add some
 
 signal refreshCredits
 func onPlayerDied(accuracy : float) -> void:
@@ -182,6 +174,7 @@ func startRun():
 	playerCharacter.health = playerCharacter.maxHealth
 	resetTrackedGunStats()
 	elevateRobotStats()
+	giveAmmo.emit(true) #True means that it's the start of game, so the ammo will be the starting amount
 
 func gameOver(accuracy : float):
 	needToSpawnRobots = false
@@ -191,12 +184,6 @@ func gameOver(accuracy : float):
 	for rbt in get_children():
 		if(rbt is breakable):
 			rbt.queue_free()
-	print("waves survived by the player = " + str(wavesElapsed))
-	print("robots destroyed by player = " + str(robotsDestroyedDuringRun))
-	print("credits earned by player = " + str(earnedCredits))
-	print("healthpacks used by player = " + str(healthPacksUsedByThePlayer))
-	print("the accuracy of the player = " + str(accuracy) + "%")
-	print("The final score of the player is " + str(countPlayerScore(playerAccuracy)))
 	dbConnectionManager.AddNewRunEntry(playerName, wavesElapsed, countPlayerScore(playerAccuracy), playerAccuracy)
 	playerCharacter.global_position = basePosition.global_position
 	var currentUserCredits = dbConnectionManager.getUserCredits(playerName)

@@ -11,6 +11,8 @@ signal buttonPressed
 @export var textOnTheButton : String
 @onready var buttonText: Label3D = $buttonMesh/buttonText
 @onready var animationPlayer: AnimationPlayer = $AnimationPlayer
+@onready var pressedSound: AudioStreamPlayer3D = $pressedSound
+
 func _ready() -> void:
 	buttonText.text = textOnTheButton
 	await get_tree().create_timer(0.5).timeout
@@ -18,6 +20,7 @@ func _ready() -> void:
 func press():
 	if(!animationPlayer.is_playing()):
 		animationPlayer.play("pressed")
+		pressedSound.play()
 		buttonPressed.emit()
 
 #If the button is not visible, the collider needs to be disabled, so the button cannot be pressed

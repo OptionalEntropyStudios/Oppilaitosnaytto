@@ -7,7 +7,6 @@ extends Node3D
 @onready var smg = $gunHolder/smg
 @onready var shotgun = $gunHolder/shotgun
 
-var dbConnectionScript = preload("res://Scripts/mySqlTestConneciton.cs")
 var dbConnectionManager
 @onready var hand: Node3D = $gunHolder
 
@@ -34,14 +33,16 @@ var accuracyPrcnt : float = 100.0
 
 #DEBUG OVER
 func _ready() -> void:
-	dbConnectionManager = dbConnectionScript.new()
+	dbConnectionManager = get_tree().get_first_node_in_group("sql")
 	randomizePelletRays()
+
 func _process(delta: float) -> void:
 	if(equippedGun != null):
 		if(!equippedGun.animationPlayer.is_playing()):
 			getGunSelection()
 			if(gunToEquip != equippedGunEnum):
 				equipGun(gunToEquip)
+				updateWeaponNameLabel()
 		if(Input.is_action_pressed("shoot")):
 			equippedGun.shoot(shootRay, shotGunRaysParent)
 		if(Input.is_action_just_released("shoot")):
@@ -85,11 +86,18 @@ func getGunSelection():
 		gunToEquip = guns.SHOTGUN
 
 @onready var ammoCounter: Label = $"../../playerUI/ammoTextContainer/ammoCounter"
+@onready var weaponNameLbl: Label = $"../../playerUI/weaponNameContainer/weaponName"
 
 func updateEquippedGunAmmoCounter():
 	if(!ammoCounter.visible):
 		ammoCounter.visible = true
 	ammoCounter.text = str(equippedGun.ammoInMagazine) + " / " + str(equippedGun.reserveAmmoAmount)
+
+func updateWeaponNameLabel():
+	if(equippedGun != null):
+		weaponNameLbl.text = dbConnectionManager.GetWeaponName(playerName, equippedGun.name)
+		weaponNameLbl.show()
+	else: weaponNameLbl.hide()
 func randomizePelletRays():
 	var spread = shotgun.shotGunSpreadAmount
 	for ray in shotGunRaysParent.get_children():
@@ -99,6 +107,7 @@ func randomizePelletRays():
 func checkGunStatsAndOwnership():
 	if(!playerName.is_empty()):
 		checkOwnedGuns(playerName)
+		
 func checkOwnedGuns(username : String):
 	pistol.owned = dbConnectionManager.isOwned(username, pistol.name)
 	smg.owned = dbConnectionManager.isOwned(username, smg.name)
@@ -112,6 +121,7 @@ func checkOwnedGuns(username : String):
 	if(gunToEquip != null):
 		equipGun(gunToEquip)
 	updateWeaponStats()
+	updateWeaponNameLabel()
 enum weaponUpgrades{BULLETDAMAGE = 1, FIRERATE = 2, MAGAZINESIZE = 3, RELOADSPEED = 4} #To minimize "magic numbers in the below function
 ##Function will update each owned gun's stats based on those in the database
 func updateWeaponStats():
@@ -137,6 +147,7 @@ func updateWeaponStats():
 		shotgun.firerate = shotgun.baseFirerate + getWeaponStat(weaponUpgrades.FIRERATE, "shotgun")
 		shotgun.magazineSize = shotgun.baseMagazineSize + getWeaponStat(weaponUpgrades.MAGAZINESIZE, "shotgun")
 		shotgun.reloadSpeed = shotgun.baseReloadSpeed + getWeaponStat(weaponUpgrades.RELOADSPEED, "shotgun")
+		print("the shotgun's reload speed is " + str(shotgun.reloadSpeed))
 		shotgun.ammoInMagazine = shotgun.magazineSize
 		shotgun.reserveAmmoAmount = shotgun.magazineSize * 5
 	
@@ -176,10 +187,15 @@ func getWeaponStat(stat : weaponUpgrades, weapon : String) -> float:
 	return 0.0
 
 
-func addAmmoToGunReservers():
-	pistol.reserveAmmoAmount += pistol.magazineSize * 2
-	smg.reserveAmmoAmount += smg.magazineSize * 2
-	shotgun.reserveAmmoAmount += shotgun.magazineSize * 2
+func addAmmoToGunReserves(startOfGame : bool):
+	if(startOfGame):
+		pistol.reserveAmmoAmount = pistol.magazineSize * 4
+		smg.reserveAmmoAmount = smg.magazineSize * 3
+		shotgun.reserveAmmoAmount = shotgun.magazineSize * 2
+	else: 
+		pistol.reserveAmmoAmount += pistol.magazineSize * 3
+		shotgun.reserveAmmoAmount += shotgun.magazineSize * 3
+		smg.reserveAmmoAmount += smg.magazineSize * 3
 	updateEquippedGunAmmoCounter()
 
 func onShotFired():

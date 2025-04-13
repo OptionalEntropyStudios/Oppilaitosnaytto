@@ -1,7 +1,7 @@
 extends menu
 
 
-var dbConnectionScript = preload("res://Scripts/mySqlTestConneciton.cs")
+
 var dbConnectionManager
 
 var pistolOwned : bool = false
@@ -29,13 +29,15 @@ var shotgun
 @onready var buyPistolButton: button = $buyMenu/buyPistolButton
 @onready var buySmgButton: button = $buyMenu/buySmgButton
 @onready var buyShotgunButton: button = $buyMenu/buyShotgunButton
+@onready var changeGunNameButton: button = $changeNameButton
 
 var username
 func storeDone() -> void:
-	dbConnectionManager = dbConnectionScript.new()
+	dbConnectionManager = get_tree().get_first_node_in_group("sql")
 	username = store.loadLastLoggedInUser()
 	getOwnedGuns()
 	if(gunHolder != null):
+		#store the gun objects that the player has on them for later reference
 		smg = gunHolder.get_child(0)
 		pistol = gunHolder.get_child(1)
 		shotgun = gunHolder.get_child(2)
@@ -54,6 +56,8 @@ func openPistolMenu():
 	smgMenu.visible = false
 	shotgunMenu.visible = false
 	gunBuyMenu.visible = false
+	changeGunNameButton.enabled = true
+	changeGunNameButton.checkPressability()
 	hideAllBuyGunButtons()
 	updatePistolStatLabels()
 	showUpgradeButtons()
@@ -64,6 +68,8 @@ func openSmgMenu():
 	smgMenu.visible = true
 	shotgunMenu.visible = false
 	gunBuyMenu.visible = false
+	changeGunNameButton.enabled = true
+	changeGunNameButton.checkPressability()
 	hideAllBuyGunButtons()
 	updateSmgStatLabels()
 	showUpgradeButtons()
@@ -74,20 +80,32 @@ func openShotgunMenu():
 	smgMenu.visible = false
 	shotgunMenu.visible = true
 	gunBuyMenu.visible = false
+	changeGunNameButton.enabled = true
+	changeGunNameButton.checkPressability()
 	hideAllBuyGunButtons()
 	updateShotgunStatLabels()
 	showUpgradeButtons()
 
+
+@export var changeGunNameMenu: Control
+
+func changeOwnedGunName():
+	var targetGun = weaponToApplyUpgradeTo
+	changeGunNameMenu.username = username
+	changeGunNameMenu.targetGun = targetGun
+	changeGunNameMenu.gunName.text = targetGun
+	changeGunNameMenu.dbConnectionManager = dbConnectionManager
+	changeGunNameMenu.openMenu()
+
+
 func showOwnedGunMenus():
 	if(pistolOwned):
-		print("user owns the pistol")
 		showPistolMenuButton()
 	if(smgOwned):
-		print("user owns the smg")
 		showSmgMenuButton()
 	if(shotgunOwned):
-		print("user owns the shotgun")
 		showShotgunMenuButton()
+	updateGunNames()
 @onready var pistolPriceLbl: Label3D = $buyMenu/buyPistolButton/buyPistol/priceLbl
 @onready var smgPriceLbl: Label3D = $buyMenu/buySmgButton/buySmg/priceLbl
 @onready var shotgunPriceLbl: Label3D = $buyMenu/buyShotgunButton/buyShotgun/priceLbl
@@ -97,6 +115,8 @@ func openGunBuyMenu():
 	pistolMenu.visible = false
 	smgMenu.visible = false
 	shotgunMenu.visible = false
+	changeGunNameButton.enabled = false
+	changeGunNameButton.checkPressability()
 	if(!pistolOwned):
 		showBuyPistolButton()
 	if(!smgOwned):
@@ -145,6 +165,12 @@ func getGunPrices():
 @onready var firerateUpBtn: button = $upgradeButtons/firerateUpgrade
 @onready var reloadUpBtn: button = $upgradeButtons/reloadUpgrade
 
+@onready var damageUpPriceLbl: Label3D = $upgradeButtons/damageUpgradePrice
+@onready var capacityUpPriceLbl: Label3D = $upgradeButtons/capacityUpgradePrice
+@onready var firerateUpPriceLbl: Label3D = $upgradeButtons/firerateUpgradePrice
+@onready var reloadSpeedUpPriceLbl: Label3D = $upgradeButtons/reloadSpeedUpgradePrice
+
+
 func showUpgradeButtons():
 	damageUpBtn.enabled = true
 	damageUpBtn.checkPressability()
@@ -154,6 +180,7 @@ func showUpgradeButtons():
 	firerateUpBtn.checkPressability()
 	reloadUpBtn.enabled= true
 	reloadUpBtn.checkPressability()
+	updateUpgradePriceTags()
 func hideUpgradeButtons():
 	damageUpBtn.enabled = false
 	damageUpBtn.checkPressability()
@@ -163,35 +190,38 @@ func hideUpgradeButtons():
 	firerateUpBtn.checkPressability()
 	reloadUpBtn.enabled= false
 	reloadUpBtn.checkPressability()
+	damageUpPriceLbl.hide()
+	capacityUpPriceLbl.hide()
+	firerateUpPriceLbl.hide()
+	reloadSpeedUpPriceLbl.hide()
 func buyDamageUpgrade():
 	if(dbConnectionManager.CanBuyUpgrade(username, weaponToApplyUpgradeTo, 1)):
-		print("The user would like to buy the damage upgrade for " + weaponToApplyUpgradeTo)
 		dbConnectionManager.BuyUpgrade(username, weaponToApplyUpgradeTo, 1)
 		store.refreshCreditsAmount()
-		updateStatsAfterUpgradePurchase()
+		updateStatsAndPriceTags()
 
 func buyFirerateUpgrade():
 	if(dbConnectionManager.CanBuyUpgrade(username, weaponToApplyUpgradeTo, 2)):
-		print("The user would like to buy the firerate upgrade for " + weaponToApplyUpgradeTo)
 		dbConnectionManager.BuyUpgrade(username, weaponToApplyUpgradeTo, 2)
 		store.refreshCreditsAmount()
-		updateStatsAfterUpgradePurchase()
+		updateStatsAndPriceTags()
+
 
 func buyMagazineCapacityUpgrade():
 	if(dbConnectionManager.CanBuyUpgrade(username, weaponToApplyUpgradeTo, 3)):
-		print("The user would like to buy the magazine capacity upgrade for " + weaponToApplyUpgradeTo)
 		dbConnectionManager.BuyUpgrade(username, weaponToApplyUpgradeTo, 3)
 		store.refreshCreditsAmount()
-		updateStatsAfterUpgradePurchase()
+		updateStatsAndPriceTags()
 
 func buyReloadSpeedUpgrade():
 	if(dbConnectionManager.CanBuyUpgrade(username, weaponToApplyUpgradeTo, 4)):
-		print("The user would like to buy the reloadspeed upgrade for " + weaponToApplyUpgradeTo)
 		dbConnectionManager.BuyUpgrade(username, weaponToApplyUpgradeTo, 4)
 		store.refreshCreditsAmount()
-		updateStatsAfterUpgradePurchase()
+		updateStatsAndPriceTags()
 
-
+func updateStatsAndPriceTags():
+	updateStatsAfterUpgradePurchase()
+	updateUpgradePriceTags()
 #the labels for pistol stats
 @onready var pistolDamageLbl: Label3D = $pistolMenu/damageLbl
 @onready var pistolFirerateLbl: Label3D = $pistolMenu/firerateLbl
@@ -216,6 +246,17 @@ func updateStatsAfterUpgradePurchase():
 	else:
 		updateShotgunStatLabels()
 	weaponManager.updateWeaponStats()
+
+func updateUpgradePriceTags():
+	var chosenWeaponAbrvtn = str(dbConnectionManager.getWeaponAbbreviation(weaponToApplyUpgradeTo))
+	damageUpPriceLbl.text = str(dbConnectionManager.GetUpgradePrice(username + chosenWeaponAbrvtn + "1"))
+	capacityUpPriceLbl.text = str(dbConnectionManager.GetUpgradePrice(username + chosenWeaponAbrvtn + "3"))
+	firerateUpPriceLbl.text = str(dbConnectionManager.GetUpgradePrice(username + chosenWeaponAbrvtn + "2"))
+	reloadSpeedUpPriceLbl.text = str(dbConnectionManager.GetUpgradePrice(username + chosenWeaponAbrvtn + "4"))
+	damageUpPriceLbl.show()
+	capacityUpPriceLbl.show()
+	firerateUpPriceLbl.show()
+	reloadSpeedUpPriceLbl.show()
 func updatePistolStatLabels():
 	pistolDamageLbl.text = "damage\n" + str(pistol.baseDamage + weaponManager.getWeaponStat(1, "pistol"))
 	pistolFirerateLbl.text = "firerate\n" +str(pistol.baseFirerate + weaponManager.getWeaponStat(2, "pistol"))
@@ -232,6 +273,20 @@ func updateShotgunStatLabels():
 	shotgunMagazineSizeLbl.text = "capacity\n" +str(shotgun.baseMagazineSize  + weaponManager.getWeaponStat(3, "shotgun"))
 	shotgunReloadSpeedLbl.text = "reload speed\n" +str(shotgun.baseReloadSpeed  + weaponManager.getWeaponStat(4, "shotgun"))
 
+@onready var pistolNameLbl: Label3D = $pistolMenu/pistolName
+@onready var smgNameLbl: Label3D = $smgMenu/smgName
+@onready var shotgunNameLbl: Label3D = $shotgunMenu/shotgunName
+
+func updateGunNames():
+	if(pistolOwned):
+		pistolNameLbl.text = dbConnectionManager.GetWeaponName(username, "pistol")
+	else: pistolNameLbl.text = "pistol"
+	if(smgOwned):
+		smgNameLbl.text = dbConnectionManager.GetWeaponName(username, "smg")
+	else: smgNameLbl.text = "smg"
+	if(shotgunOwned):
+		shotgunNameLbl.text = dbConnectionManager.GetWeaponName(username, "shotgun")
+	else: shotgunNameLbl.text = "shotgun"
 func hideGunBuyMenuButton():
 	gunBuyMenuButton.enabled = false
 	gunBuyMenuButton.checkPressability()
@@ -246,6 +301,8 @@ func hideAllGunMenuButtons():
 	hidePistolMenuButton()
 	hideSmgMenuButton()
 	hideShotgunMenuButton()
+	changeGunNameButton.enabled = false
+	changeGunNameButton.checkPressability()
 
 func hideAllBuyGunButtons():
 	hideBuyPistolButton()

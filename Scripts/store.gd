@@ -2,7 +2,7 @@ extends Node3D
 
 var username
 var userCredits : int
-var dbConnectionScript = preload("res://Scripts/mySqlTestConneciton.cs")
+
 var dbConnectionManager
 var ownedGuns : Array
 @onready var player: CharacterBody3D = $"../../Player"
@@ -17,7 +17,7 @@ signal storeReady
 func _ready() -> void:
 	username = loadLastLoggedInUser()
 	$usernameLbl.text = "current user : " + username
-	dbConnectionManager = dbConnectionScript.new()
+	dbConnectionManager = get_tree().get_first_node_in_group("sql")
 	refreshCreditsAmount()
 	gunsMenu.weaponManager = weaponManager
 	gunsMenu.gunHolder = gunHolder
@@ -26,6 +26,7 @@ func _ready() -> void:
 	gunsMenu.hideAllGunMenuButtons()
 	gunsMenu.hideGunBuyMenuButton()
 	gunsMenu.hideUpgradeButtons()
+	equipmentMenu.username = username
 	storeReady.emit()
 func refreshCreditsAmount():
 	userCredits = dbConnectionManager.getUserCredits(username)

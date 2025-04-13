@@ -8,12 +8,12 @@ extends StaticBody3D
 @onready var allKills: Label3D = $allKills
 @onready var avgAccuracyLbl: Label3D = $averageAccuracyLabel
 
-@onready var dbConnectionScript = load("res://Scripts/mySqlTestConneciton.cs")
+
 var dbConnectionManager
 var playerName
 @export var store : StaticBody3D
 func _ready() -> void:
-	dbConnectionManager = dbConnectionScript.new()
+	dbConnectionManager = get_tree().get_first_node_in_group("sql")
 	await get_tree().create_timer(0.2).timeout
 	playerName = store.username
 	updateLeaderBoard()

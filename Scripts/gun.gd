@@ -7,7 +7,7 @@ var owned : bool = false
 @export var body: CharacterBody3D
 @onready var animationPlayer: AnimationPlayer = $AnimationPlayer
 @export var muzzleEffect : MeshInstance3D
-
+@export var shootSound : AudioStreamPlayer3D
 @export var reloading : bool
 @export var usesMagazines : bool
 @export var equipped : bool #Check if the gun is equipped or not
@@ -34,6 +34,7 @@ var owned : bool = false
 
 @export var isShotgun : bool
 @export var shotGunSpreadAmount : float = 10
+@export var spreadAmount : float = 4
 signal oneAmmoLoaded
 
 signal shotFired
@@ -44,8 +45,12 @@ func shoot(shootRay : RayCast3D, shotgunRayParent : Node3D):
 		if(!ammoInMagazine > 0):
 			reload()
 		else:
+			shootRay.rotation_degrees.x = randf_range(-spreadAmount,spreadAmount)
+			shootRay.rotation_degrees.y = randf_range(-spreadAmount,spreadAmount)
 			if(not fullAuto and triggerReset and !animationPlayer.is_playing()):
 				shotFired.emit()
+				if(shootSound != null):
+					shootSound.play()
 				applyRecoil()
 				triggerReset = false
 				muzzleEffect.rotation.z = randf_range(0, 180)
@@ -61,6 +66,7 @@ func shoot(shootRay : RayCast3D, shotgunRayParent : Node3D):
 						if(hitObject is breakable):
 							shotHit.emit()
 							hitObject.takeDamage(bulletDamage, name)
+							hitObject.hitSound.play()
 							var damageIndicator = hitDamageIndicator.instantiate()
 							get_tree().root.add_child(damageIndicator)
 							damageIndicator.global_position = shootRay.get_collision_point()
@@ -79,6 +85,7 @@ func shoot(shootRay : RayCast3D, shotgunRayParent : Node3D):
 							addHitHole(hitObject, pelletRay.get_collision_point(), pelletRay.get_collision_normal())
 							if(hitObject is breakable):
 								hitObject.takeDamage(bulletDamage, name)
+								hitObject.hitSound.play()
 								var damageIndicator = hitDamageIndicator.instantiate()
 								get_tree().root.add_child(damageIndicator)
 								damageIndicator.global_position = pelletRay.get_collision_point()
@@ -92,6 +99,8 @@ func shoot(shootRay : RayCast3D, shotgunRayParent : Node3D):
 					else: shotHit.emit()
 			elif(fullAuto and cycleFinished and !animationPlayer.is_playing()):
 				shotFired.emit()
+				if(shootSound != null):
+					shootSound.play()
 				applyRecoil()
 				muzzleEffect.rotation.z = randf_range(0, 180)
 				muzzleEffect.show()
@@ -105,6 +114,7 @@ func shoot(shootRay : RayCast3D, shotgunRayParent : Node3D):
 					if(hitObject is breakable):
 						shotHit.emit()
 						hitObject.takeDamage(bulletDamage, name)
+						hitObject.hitSound.play()
 						var damageIndicator = hitDamageIndicator.instantiate()
 						get_tree().root.add_child(damageIndicator)
 						damageIndicator.global_position = shootRay.get_collision_point()
@@ -129,13 +139,13 @@ func reload():
 	else: #If the gun has individual shells or bullets being used, like sniper os shotgun
 		if(reserveAmmoAmount > 0 and ammoInMagazine < magazineSize):
 			reloading = true
-			animationPlayer.play("reloadStart")
+			animationPlayer.play("reloadStart", -1, reloadSpeed)
 
 func onReloadStartAnimationFinished(): #When the start animation for the reload has finished
 	if(ammoInMagazine < magazineSize and reserveAmmoAmount > 0 and !Input.is_action_pressed("shoot")): #check if the gun needs reloading or not
 		keepReloading() #Play the single shot reload animation
 	else: #If no more reload needed, go on and finish the reload animation
-		animationPlayer.play("reloadFinish")
+		animationPlayer.play("reloadFinish", -1, reloadSpeed)
 
 func singleReloadFinished():
 	ammoInMagazine += 1
@@ -143,7 +153,7 @@ func singleReloadFinished():
 	oneAmmoLoaded.emit()
 	onReloadStartAnimationFinished()
 func keepReloading():
-	animationPlayer.play("singleReload")
+	animationPlayer.play("singleReload", -1, reloadSpeed)
 func onShootAnimationFinished():
 	cycleFinished = true
 

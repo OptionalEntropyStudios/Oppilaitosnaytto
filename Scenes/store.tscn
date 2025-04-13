@@ -1,4 +1,4 @@
-[gd_scene load_steps=51 format=4 uid="uid://bq1xtqimjoq4p"]
+[gd_scene load_steps=52 format=4 uid="uid://bq1xtqimjoq4p"]
 
 [ext_resource type="Script" uid="uid://bgepx8tw7vfct" path="res://Scripts/store.gd" id="1_c3i85"]
 [ext_resource type="PackedScene" uid="uid://d3hhupns508pe" path="res://Scenes/baseScenes/button.tscn" id="2_h38w0"]
@@ -13,6 +13,7 @@
 [ext_resource type="Texture2D" uid="uid://cmrayc3v4sl0t" path="res://Models/sgSight_shotgunFrameDiffuse.png" id="9_w72gx"]
 [ext_resource type="Script" uid="uid://o3bkr5577ixm" path="res://Scripts/equipmentMenu.gd" id="10_w72gx"]
 [ext_resource type="PackedScene" uid="uid://hdqgdfjsi3p4" path="res://Scenes/healthPack.tscn" id="11_cd1ed"]
+[ext_resource type="PackedScene" uid="uid://cv85wapmyimam" path="res://Scenes/changeGunNameUI.tscn" id="14_r6ftr"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_w72gx"]
 size = Vector3(2.0061, 0.916443, 0.126099)
@@ -547,7 +548,7 @@ script = ExtResource("3_j65sj")
 [node name="upgradeButtons" type="Node3D" parent="gunsMenu"]
 
 [node name="damageUpgrade" parent="gunsMenu/upgradeButtons" instance=ExtResource("2_h38w0")]
-transform = Transform3D(0.215, 0, 0, 0, 0.215, 0, 0, 0, 0.215, -0.756377, 0, -0.0444247)
+transform = Transform3D(0.215, 0, 0, 0, 0.215, 0, 0, 0, 0.215, -0.775611, 0, -0.0444247)
 textOnTheButton = "damage  +1"
 
 [node name="capacityUpgrade" parent="gunsMenu/upgradeButtons" instance=ExtResource("2_h38w0")]
@@ -555,12 +556,40 @@ transform = Transform3D(0.215, 0, 0, 0, 0.215, 0, 0, 0, 0.215, -0.38113, 0, -0.0
 textOnTheButton = "cap + 1"
 
 [node name="firerateUpgrade" parent="gunsMenu/upgradeButtons" instance=ExtResource("2_h38w0")]
-transform = Transform3D(0.215, 0, 0, 0, 0.215, 0, 0, 0, 0.215, 0.224276, 0, -0.0444247)
+transform = Transform3D(0.215, 0, 0, 0, 0.215, 0, 0, 0, 0.215, 0.317697, 0, -0.0444247)
 textOnTheButton = "firerate + 1"
 
 [node name="reloadUpgrade" parent="gunsMenu/upgradeButtons" instance=ExtResource("2_h38w0")]
-transform = Transform3D(0.215, 0, 0, 0, 0.215, 0, 0, 0, 0.215, 0.716612, 0, -0.0444247)
+transform = Transform3D(0.215, 0, 0, 0, 0.215, 0, 0, 0, 0.215, 0.790799, 0, -0.0444247)
 textOnTheButton = "reload + 1"
+
+[node name="damageUpgradePrice" type="Label3D" parent="gunsMenu/upgradeButtons"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.775415, -0.0740346, 0)
+pixel_size = 0.001
+modulate = Color(0.868024, 0.860536, 7.70092e-07, 1)
+text = "cost"
+font_size = 42
+
+[node name="capacityUpgradePrice" type="Label3D" parent="gunsMenu/upgradeButtons"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.379914, -0.0740346, 0)
+pixel_size = 0.001
+modulate = Color(0.868024, 0.860536, 7.70092e-07, 1)
+text = "cost"
+font_size = 42
+
+[node name="firerateUpgradePrice" type="Label3D" parent="gunsMenu/upgradeButtons"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.317569, -0.0740346, 0)
+pixel_size = 0.001
+modulate = Color(0.868024, 0.860536, 7.70092e-07, 1)
+text = "cost"
+font_size = 42
+
+[node name="reloadSpeedUpgradePrice" type="Label3D" parent="gunsMenu/upgradeButtons"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.791001, -0.0740346, 0)
+pixel_size = 0.001
+modulate = Color(0.868024, 0.860536, 7.70092e-07, 1)
+text = "cost"
+font_size = 42
 
 [node name="menuTitle" type="Label3D" parent="gunsMenu"]
 transform = Transform3D(1, 0, 0, 0, 0.978885, -0.204411, 0, 0.204411, 0.978885, 0, 0.738816, -0.00642904)
@@ -583,17 +612,21 @@ transform = Transform3D(0.255, 0, 0, 0, 0.117513, 0.226309, 0, -0.226309, 0.1175
 enabled = false
 textOnTheButton = "open buy menu"
 
-[node name="pistolMenu" type="Node3D" parent="gunsMenu"]
-visible = false
+[node name="changeNameButton" parent="gunsMenu" instance=ExtResource("2_h38w0")]
+transform = Transform3D(0.155, 0, 0, 0, 0.0733574, 0.136542, 0, -0.136542, 0.0733574, -0.819992, -0.431827, 0.549976)
+textOnTheButton = "change name"
 
-[node name="menuTitle" type="Label3D" parent="gunsMenu/pistolMenu"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.00693566, -0.00118631)
+[node name="pistolMenu" type="Node3D" parent="gunsMenu"]
+
+[node name="pistolName" type="Label3D" parent="gunsMenu/pistolMenu"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.580119, 0)
+pixel_size = 0.001
 modulate = Color(1, 0.360784, 1, 1)
 text = "PISTOL"
-font_size = 20
+font_size = 115
 
 [node name="pistolMesh" type="Node3D" parent="gunsMenu/pistolMenu"]
-transform = Transform3D(-1.96701e-09, 0, -0.045, 0, 0.045, 0, 0.045, 0, -1.96701e-09, -0.0407138, 0.142702, -0.0367478)
+transform = Transform3D(-1.96701e-09, 0, -0.045, 0, 0.045, 0, 0.045, 0, -1.96701e-09, -0.0407138, 0.1, -0.0367478)
 
 [node name="pistolFrame" type="MeshInstance3D" parent="gunsMenu/pistolMenu/pistolMesh"]
 mesh = SubResource("ArrayMesh_2w7xe")
@@ -617,31 +650,32 @@ pixel_size = 0.002
 text = "damage"
 
 [node name="firerateLbl" type="Label3D" parent="gunsMenu/pistolMenu"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.170854, 0.344573, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.330218, 0.344573, 0)
 pixel_size = 0.002
 text = "firerate"
 
 [node name="magazinesizeLbl" type="Label3D" parent="gunsMenu/pistolMenu"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.368865, 0.349027, 5.96046e-08)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.355127, 0.349027, 5.96046e-08)
 pixel_size = 0.002
 text = "capacity"
 
 [node name="reloadSpeedLbl" type="Label3D" parent="gunsMenu/pistolMenu"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.669793, 0.340997, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.768709, 0.340997, 0)
 pixel_size = 0.002
 text = "reload speed"
 
 [node name="smgMenu" type="Node3D" parent="gunsMenu"]
 visible = false
 
-[node name="menuTitle" type="Label3D" parent="gunsMenu/smgMenu"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0320098, -0.00118631)
+[node name="smgName" type="Label3D" parent="gunsMenu/smgMenu"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.580119, 0)
+pixel_size = 0.001
 modulate = Color(1, 0.360784, 1, 1)
 text = "SMG"
-font_size = 20
+font_size = 115
 
 [node name="smgMesh" type="Node3D" parent="gunsMenu/smgMenu"]
-transform = Transform3D(-1.1365e-08, 0, -0.26, 0, 0.26, 0, 0.26, 0, -1.1365e-08, 0.0541653, 0.214058, -0.0355922)
+transform = Transform3D(-1.1365e-08, 0, -0.26, 0, 0.26, 0, 0.26, 0, -1.1365e-08, 0.0541653, 0.1, -0.0355922)
 
 [node name="SMG" type="MeshInstance3D" parent="gunsMenu/smgMenu/smgMesh"]
 transform = Transform3D(0.1514, 0, 0, 0, 0.1514, 0, 0, 0, 0.1514, 0, 0, 0)
@@ -677,14 +711,15 @@ pixel_size = 0.002
 [node name="shotgunMenu" type="Node3D" parent="gunsMenu"]
 visible = false
 
-[node name="menuTitle" type="Label3D" parent="gunsMenu/shotgunMenu"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0320098, -0.00118631)
+[node name="shotgunName" type="Label3D" parent="gunsMenu/shotgunMenu"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.580119, 0)
+pixel_size = 0.001
 modulate = Color(1, 0.360784, 1, 1)
 text = "SHOTGUN"
-font_size = 20
+font_size = 115
 
 [node name="shotgunMesh" type="Node3D" parent="gunsMenu/shotgunMenu"]
-transform = Transform3D(-2.16371e-08, 0, -0.495, 0, 0.495, 0, 0.495, 0, -2.16371e-08, 0, 0.0699439, -0.034052)
+transform = Transform3D(-2.16371e-08, 0, -0.495, 0, 0.495, 0, 0.495, 0, -2.16371e-08, 0, 0.1, -0.034052)
 
 [node name="shotgunFrame" type="MeshInstance3D" parent="gunsMenu/shotgunMenu/shotgunMesh"]
 mesh = SubResource("ArrayMesh_ik22o")
@@ -827,7 +862,6 @@ modulate = Color(1, 1, 0.341176, 1)
 text = "botom text"
 
 [node name="equipmentMenu" type="Node3D" parent="." node_paths=PackedStringArray("store")]
-visible = false
 script = ExtResource("10_w72gx")
 store = NodePath("..")
 
@@ -851,6 +885,8 @@ font_size = 142
 transform = Transform3D(0.205, 0, 0, 0, 0.205, 0, 0, 0, 0.205, -0.4663, -0.020566, -0.0324358)
 textOnTheButton = "buy +1"
 
+[node name="changeGunNameUI" parent="." instance=ExtResource("14_r6ftr")]
+
 [connection signal="storeReady" from="." to="gunsMenu" method="storeDone"]
 [connection signal="buttonPressed" from="screen/buttonPanel/gunMenuBtn" to="." method="selectGunsMenu"]
 [connection signal="buttonPressed" from="screen/buttonPanel/equipmentMenuBtn" to="." method="selectEquipmentMenu"]
@@ -863,6 +899,7 @@ textOnTheButton = "buy +1"
 [connection signal="buttonPressed" from="gunsMenu/smgMenuButton" to="gunsMenu" method="openSmgMenu"]
 [connection signal="buttonPressed" from="gunsMenu/shotgunmenuButton" to="gunsMenu" method="openShotgunMenu"]
 [connection signal="buttonPressed" from="gunsMenu/gunBuyMenuButton" to="gunsMenu" method="openGunBuyMenu"]
+[connection signal="buttonPressed" from="gunsMenu/changeNameButton" to="gunsMenu" method="changeOwnedGunName"]
 [connection signal="buttonPressed" from="gunsMenu/buyMenu/buyPistolButton" to="gunsMenu" method="buyPistol"]
 [connection signal="buttonPressed" from="gunsMenu/buyMenu/buySmgButton" to="gunsMenu" method="buySmg"]
 [connection signal="buttonPressed" from="gunsMenu/buyMenu/buyShotgunButton" to="gunsMenu" method="buyShotgun"]
